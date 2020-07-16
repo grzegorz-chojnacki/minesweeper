@@ -1,0 +1,21 @@
+<form class="form">
+  <mat-form-field class="full-width">
+    <mat-label>Choose difficulty</mat-label>
+    <mat-select value="1"> <!-- https://stackoverflow.com/questions/50650790/set-default-option-in-mat-select/50651042 -->
+      <mat-option value="0">Custom</mat-option>
+      <mat-option value="1">Easy</mat-option>
+      <mat-option value="2">Intermediate</mat-option>
+      <mat-option value="3">Hard</mat-option>
+      <mat-option value="4">Master</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="full-width">
+    <mat-label>Board dimension</mat-label>
+    <input matInput type="number">
+  </mat-form-field>
+  <mat-form-field class="full-width">
+    <mat-label>Number of Bombs</mat-label>
+    <input matInput type="number">
+  </mat-form-field>
+  <button mat-flat-button color="primary" class="centered-button">Start</button>
+</form>
