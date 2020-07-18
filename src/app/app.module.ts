@@ -8,6 +8,7 @@ import { MatSidenavModule } from '@angular/material/sidenav'
 import { MatSelectModule } from '@angular/material/select'
 import { MatInputModule } from '@angular/material/input'
 import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatSliderModule } from '@angular/material/slider'
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SettingsComponent } from './components/settings/settings.component';
@@ -26,7 +27,8 @@ import { SettingsComponent } from './components/settings/settings.component';
     MatSidenavModule,
     MatSelectModule,
     MatInputModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatSliderModule
   ],
   providers: [],
   bootstrap: [AppComponent]

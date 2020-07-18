@@ -5,3 +5,15 @@
 .full-width {
   width: 100%;
 }
+
+.slider-longer {
+  width: 90%;
+}
+
+h4 {
+  margin: 0;
+}
+
+.slider-container {
+  margin: 1em 0;
+}
