@@ -17,13 +17,17 @@
     <mat-label>Number of Bombs</mat-label>
     <input matInput type="number">
   </mat-form-field>
-  <div class="slider-container">
+  <div class="field-width-container">
     <h4>Field width</h4>
-    <mat-slider
-      min="30" max="60"
-      color="primary"
-      class="slider-longer">
-    </mat-slider>
+    <div class="slider-container">
+      <mat-slider
+        #slider
+        min="30" max="60"
+        color="primary"
+        class="slider-longer">
+      </mat-slider>
+      <span [innerHTML]="slider.value + 'px'"></span>
+    </div>
   </div>
   <button mat-raised-button color="primary">Start</button>
 </form>

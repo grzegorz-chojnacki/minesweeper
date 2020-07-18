@@ -2,12 +2,17 @@
   text-align: center;
 }
 
+.field-width-container {
+  margin: 1em 0 2em;
+}
+
 .full-width {
   width: 100%;
 }
 
 .slider-longer {
-  width: 90%;
+  flex-grow: 1;
+  margin-right: 0.5em;
 }
 
 h4 {
@@ -15,5 +20,7 @@ h4 {
 }
 
 .slider-container {
-  margin: 1em 0;
+  display: flex;
+  align-items: center;
+  margin: 0 1em;
 }
