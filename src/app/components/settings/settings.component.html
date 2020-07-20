@@ -1,21 +1,25 @@
-<form class="form">
+<div>
   <mat-form-field class="full-width">
     <mat-label>Choose difficulty</mat-label>
-    <mat-select value="1"> <!-- https://stackoverflow.com/questions/50650790/set-default-option-in-mat-select/50651042 -->
-      <mat-option value="0">Custom</mat-option>
-      <mat-option value="1">Easy</mat-option>
-      <mat-option value="2">Intermediate</mat-option>
-      <mat-option value="3">Hard</mat-option>
-      <mat-option value="4">Master</mat-option>
+    <mat-select [(ngModel)]="difficulty" (ngModelChange)="updateInputs()">
+      <mat-option value="Custom">Custom</mat-option>
+      <mat-option *ngFor="let difficultyName of difficultyNames"
+        [value]="difficultyName">
+        {{ difficultyName }}
+      </mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field class="full-width">
     <mat-label>Board dimension</mat-label>
-    <input matInput type="number">
+    <input matInput type="number"
+    [(ngModel)]="boardDimension"
+    (change)="updateSelect()">
   </mat-form-field>
   <mat-form-field class="full-width">
     <mat-label>Number of Bombs</mat-label>
-    <input matInput type="number">
+    <input matInput type="number"
+    [(ngModel)]="numberOfBombs"
+    (change)="updateSelect()">
   </mat-form-field>
   <div class="field-width-container">
     <h4>Field width</h4>
@@ -29,5 +33,5 @@
       <span [innerHTML]="slider.value + 'px'"></span>
     </div>
   </div>
-  <button mat-raised-button color="primary">Start</button>
-</form>
+  <button class="start-button" mat-raised-button color="primary">Start</button>
+</div>
