@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatButtonModule } from '@angular/material/button'
@@ -12,15 +13,18 @@ import { MatSliderModule } from '@angular/material/slider'
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SettingsComponent } from './components/settings/settings.component';
+import { BoardComponent } from './components/board/board.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    SettingsComponent
+    SettingsComponent,
+    BoardComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    FormsModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,

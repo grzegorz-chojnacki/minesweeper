@@ -4,10 +4,6 @@
   flex-direction: column;
 }
 
-.mat-sidenav-transition .mat-sidenav-backdrop.mat-sidenav-shown {
-  background: skyblue;  /* replace skyblue with any color */
-}
-
 /* Stretch page to 100% height */
 mat-sidenav-container {
   flex: 1;
