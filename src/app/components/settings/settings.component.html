@@ -2,10 +2,9 @@
   <mat-form-field class="full-width">
     <mat-label>Choose difficulty</mat-label>
     <mat-select [(ngModel)]="difficulty" (ngModelChange)="updateInputs()">
-      <mat-option value="Custom">Custom</mat-option>
-      <mat-option *ngFor="let difficultyName of difficultyNames"
-        [value]="difficultyName">
-        {{ difficultyName }}
+      <mat-option *ngFor="let difficulty of difficulties"
+        [value]="difficulty">
+        {{ difficulty.name }}
       </mat-option>
     </mat-select>
   </mat-form-field>
