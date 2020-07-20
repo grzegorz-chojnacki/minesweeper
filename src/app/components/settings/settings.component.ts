@@ -11,14 +11,15 @@ export class SettingsComponent implements OnInit {
   difficulties = difficulties;
   difficultyNames = Object.keys(difficulties);
 
+  // Set initial difficulty
   difficulty: string = this.difficultyNames[0];
   boardDimension: number;
   numberOfBombs: number;
 
   // Update inputs based on selected preset, but prevent setting them to
   // undefined if the user sets custom values
-  updateInputs() {
-    if (this.difficulty != 'Custom') {
+  updateInputs(): void {
+    if (this.difficulty !== 'Custom') {
       this.boardDimension = difficulties[this.difficulty].boardDimension;
       this.numberOfBombs = difficulties[this.difficulty].numberOfBombs;
     }
@@ -26,10 +27,10 @@ export class SettingsComponent implements OnInit {
 
   // Change the difficulty of the selected preset to 'Custom',
   // or find matching preset
-  updateSelect() {
-    for (let name of this.difficultyNames) {
-      if (this.boardDimension == difficulties[name].boardDimension &&
-        this.numberOfBombs == difficulties[name].numberOfBombs) {
+  updateSelect(): void {
+    for (const name of this.difficultyNames) {
+      if (this.boardDimension === difficulties[name].boardDimension &&
+        this.numberOfBombs === difficulties[name].numberOfBombs) {
         this.difficulty = name;
         return;
       }
@@ -40,7 +41,6 @@ export class SettingsComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.difficulty)
     this.updateInputs();
   }
 

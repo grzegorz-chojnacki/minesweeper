@@ -1,17 +1,17 @@
 export const difficulties = {
-  'Beginner': {
+  Beginner: {
     boardDimension: 10,
     numberOfBombs: 10
   },
-  'Intermediate': {
+  Intermediate: {
     boardDimension: 20,
     numberOfBombs: 50
   },
-  'Advanced': {
+  Advanced: {
     boardDimension: 25,
     numberOfBombs: 120
   },
-  'Master': {
+  Master: {
     boardDimension: 25,
     numberOfBombs: 180
   }
