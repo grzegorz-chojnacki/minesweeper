@@ -4,11 +4,11 @@
   </button>
   <span>{{ title | titlecase }}</span>
 </mat-toolbar>
-<mat-sidenav-container>
-  <mat-sidenav #sidenav >
+<mat-sidenav-container hasBackdrop="false">
+  <mat-sidenav #sidenav opened="true">
     <app-settings></app-settings>
   </mat-sidenav>
-  <mat-sidenav-content>
+  <mat-sidenav-content (click)="sidenav.close()">
     <app-board></app-board>
   </mat-sidenav-content>
 </mat-sidenav-container>
