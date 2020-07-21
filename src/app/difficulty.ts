@@ -2,6 +2,12 @@ export class Difficulty {
   name: string;
   boardDimension: number;
   numberOfBombs: number;
+
+  constructor(name: string, boardDimension: number, numberOfBombs: number) {
+    this.name = name;
+    this.boardDimension = boardDimension;
+    this.numberOfBombs = numberOfBombs;
+  }
 }
 
 export const difficulties: Difficulty[] = [

@@ -61,8 +61,13 @@ export class SettingsComponent implements OnInit {
       this.isBoardDimensionInvalid();
   }
 
+  // TODO: Make it so that `this.difficulty` is used instead of new object
   start(): void {
-    this.newGameEvent.emit(this.difficulty);
+    this.newGameEvent.emit(new Difficulty(
+      this.difficulty.name,
+      this.boardDimension,
+      this.numberOfBombs
+    ));
   }
 
 }
