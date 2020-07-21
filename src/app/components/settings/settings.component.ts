@@ -7,7 +7,6 @@ import { Difficulty, difficulties } from '../../difficulty';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-
   difficulties = difficulties;
   difficultyNames = difficulties.map(difficulty => difficulty.name);
 
@@ -16,8 +15,8 @@ export class SettingsComponent implements OnInit {
 
   // Set initial difficulty
   difficulty: Difficulty = difficulties[1];
-  boardDimension: number;
-  numberOfBombs: number;
+  boardDimension: number = this.difficulty.boardDimension;
+  numberOfBombs: number = this.difficulty.numberOfBombs;
 
   // Update inputs based on selected preset, but prevent setting them to
   // undefined if the user chooses the 'Custom' preset
@@ -32,14 +31,36 @@ export class SettingsComponent implements OnInit {
   updateSelect(): void {
     this.difficulty = difficulties.find(difficulty => {
       return this.boardDimension === difficulty.boardDimension &&
-             this.numberOfBombs === difficulty.numberOfBombs;
+        this.numberOfBombs === difficulty.numberOfBombs;
     }) || this.customDifficulty;
   }
 
   constructor() { }
 
   ngOnInit(): void {
-    this.updateInputs();
+  }
+
+  isBoardDimensionInvalid(): boolean {
+    return this.boardDimension < 1;
+  }
+
+  // Every field on the board can have a bomb, except the clicked one
+  maxNumberOfBombs(): number {
+    return this.boardDimension ** 2 - 1;
+  }
+
+  isNumberOfBombsInvalid(): boolean {
+    return this.numberOfBombs < 0 ||
+      this.numberOfBombs > this.maxNumberOfBombs();
+  }
+
+  isInvalid(): boolean {
+    return this.isNumberOfBombsInvalid() ||
+      this.isBoardDimensionInvalid();
+  }
+
+  start(): void {
+    console.log(this.difficulty);
   }
 
 }

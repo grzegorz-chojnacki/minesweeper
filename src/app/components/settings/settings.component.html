@@ -1,36 +1,34 @@
-<div>
-  <mat-form-field class="full-width">
+<form>
+  <mat-form-field class="full-width" appearance="fill">
     <mat-label>Choose difficulty</mat-label>
-    <mat-select [(ngModel)]="difficulty" (ngModelChange)="updateInputs()">
-      <mat-option *ngFor="let difficulty of difficulties"
-        [value]="difficulty">
+    <mat-select name="difficulty" [(ngModel)]="difficulty"
+      (ngModelChange)="updateInputs()">
+      <mat-option *ngFor="let difficulty of difficulties" [value]="difficulty">
         {{ difficulty.name }}
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field class="full-width">
+  <mat-form-field class="full-width" appearance="fill">
     <mat-label>Board dimension</mat-label>
-    <input matInput type="number"
-    [(ngModel)]="boardDimension"
-    (change)="updateSelect()">
+    <input matInput type="number" name="boardDimension"
+      [(ngModel)]="boardDimension" min="1" (change)="updateSelect()">
+    <mat-error *ngIf="numberOfBombs > boardDimension">Min size: 10px</mat-error>
   </mat-form-field>
-  <mat-form-field class="full-width">
+  <mat-form-field class="full-width" appearance="fill">
     <mat-label>Number of Bombs</mat-label>
-    <input matInput type="number"
-    [(ngModel)]="numberOfBombs"
-    (change)="updateSelect()">
+    <input matInput type="number" name="numberOfBombs"
+      [(ngModel)]="numberOfBombs" min="0" [max]="maxNumberOfBombs()"
+      (change)="updateSelect()">
   </mat-form-field>
   <div class="field-width-container">
     <h4>Field width</h4>
     <div class="slider-container">
-      <mat-slider
-        #slider
-        min="30" max="60"
-        color="primary"
+      <mat-slider #slider min="30" max="60" color="primary"
         class="slider-longer">
       </mat-slider>
       <span [innerHTML]="slider.value + 'px'"></span>
     </div>
   </div>
-  <button class="start-button" mat-raised-button color="primary">Start</button>
-</div>
+  <button class="start-button" [disabled]="isInvalid()" mat-raised-button
+    color="primary" (click)="start()">Start</button>
+</form>
