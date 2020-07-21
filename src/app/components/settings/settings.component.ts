@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Difficulty, difficulties } from '../../difficulty';
 
 @Component({
@@ -7,6 +7,8 @@ import { Difficulty, difficulties } from '../../difficulty';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
+  @Output() newGameEvent = new EventEmitter<Difficulty>();
+
   difficulties = difficulties;
   difficultyNames = difficulties.map(difficulty => difficulty.name);
 
@@ -60,7 +62,7 @@ export class SettingsComponent implements OnInit {
   }
 
   start(): void {
-    console.log(this.difficulty);
+    this.newGameEvent.emit(this.difficulty);
   }
 
 }
