@@ -1,7 +1,10 @@
 <div class="grid-container"
   [style.grid-template-columns]="getCSSGridTemplate()">
-  <button mat-raised-button color="basic" class="field" *ngFor="let field of board"
-    [style.height.px]="fieldSize" [style.width.px]="fieldSize">
-    {{ field }}
+  <button mat-raised-button color="basic" class="field"
+    *ngFor="let field of board"
+    [style.height.px]="fieldSize"
+    [style.width.px]="fieldSize"
+    [style.fontSize.px]="fieldSize / 2">
+    {{ field % 10 }}
   </button>
 </div>

@@ -12,7 +12,7 @@ export class BoardComponent implements OnInit, OnChanges {
   board: number[];
 
   // Controlls the size of each field on the board, in pixels
-  fieldSize = 40;
+  fieldSize: number;
 
   // [Temporary] generate testing number array that can represent the board
   generateBoard(boardDimension): number[] {
