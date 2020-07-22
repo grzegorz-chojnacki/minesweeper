@@ -11,7 +11,6 @@ export class AppComponent {
   difficulty: Difficulty;
 
   onNewGameEvent(difficulty: Difficulty): void {
-    console.log(difficulty);
     this.difficulty = difficulty;
   }
 }

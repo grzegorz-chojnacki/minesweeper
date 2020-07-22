@@ -39,7 +39,9 @@ export class SettingsComponent implements OnInit {
 
   constructor() { }
 
+  // Emit initial new game event
   ngOnInit(): void {
+    this.newGameEvent.emit(this.difficulty);
   }
 
   isBoardDimensionInvalid(): boolean {
