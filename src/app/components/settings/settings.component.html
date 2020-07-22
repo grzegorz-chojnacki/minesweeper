@@ -11,11 +11,11 @@
   <mat-form-field class="full-width" appearance="fill">
     <mat-label>Board dimension</mat-label>
     <input matInput type="number" name="boardDimension"
-      [(ngModel)]="boardDimension" min="1" (change)="onInputUpdate()">
+      [(ngModel)]="boardDimension" min="1" max="20" (change)="onInputUpdate()">
     <mat-error *ngIf="numberOfBombs > boardDimension">Min size: 10px</mat-error>
   </mat-form-field>
   <mat-form-field class="full-width" appearance="fill">
-    <mat-label>Number of Bombs</mat-label>
+    <mat-label>Number of bombs</mat-label>
     <input matInput type="number" name="numberOfBombs"
       [(ngModel)]="numberOfBombs" min="0" [max]="maxNumberOfBombs()"
       (change)="onInputUpdate()">
