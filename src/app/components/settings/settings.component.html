@@ -11,8 +11,7 @@
   <mat-form-field class="full-width" appearance="fill">
     <mat-label>Board dimension</mat-label>
     <input matInput type="number" name="boardDimension"
-      [(ngModel)]="boardDimension" min="1" max="20" (change)="onInputUpdate()">
-    <mat-error *ngIf="numberOfBombs > boardDimension">Min size: 10px</mat-error>
+      [(ngModel)]="boardDimension" min="1" max="50" (change)="onInputUpdate()">
   </mat-form-field>
   <mat-form-field class="full-width" appearance="fill">
     <mat-label>Number of bombs</mat-label>
@@ -32,4 +31,5 @@
   </div>
   <button class="start-button" [disabled]="isInvalid()" mat-raised-button
     color="primary" (click)="start()">Start</button>
+  <mat-hint class="error-hint" *ngIf="isInvalid()">Invalid values</mat-hint>
 </form>

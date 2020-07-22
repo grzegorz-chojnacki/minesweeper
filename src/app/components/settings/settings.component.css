@@ -24,3 +24,8 @@ h4 {
   align-items: center;
   margin: 0 1em;
 }
+
+.error-hint {
+  margin: 1em 0 0;
+  display: block;
+}
