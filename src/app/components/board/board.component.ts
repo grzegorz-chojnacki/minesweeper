@@ -21,10 +21,6 @@ export class BoardComponent implements OnInit, OnChanges {
     );
   }
 
-  getCSSGridTemplate(): string {
-    return `repeat(${this.difficulty.boardDimension}, auto)`;
-  }
-
   constructor(private fieldSizeService: FieldSizeService) { }
 
   // Refresh the board after starting new game

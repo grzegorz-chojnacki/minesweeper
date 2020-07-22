@@ -14,12 +14,14 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SettingsComponent } from './components/settings/settings.component';
 import { BoardComponent } from './components/board/board.component';
+import { GridTemplatePipe } from './pipes/grid-template.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     SettingsComponent,
-    BoardComponent
+    BoardComponent,
+    GridTemplatePipe
   ],
   imports: [
     BrowserModule,

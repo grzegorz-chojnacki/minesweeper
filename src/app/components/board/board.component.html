@@ -1,5 +1,5 @@
 <div class="grid-container"
-  [style.grid-template-columns]="getCSSGridTemplate()">
+  [style.grid-template-columns]="difficulty.boardDimension | gridTemplate">
   <button mat-raised-button color="basic" class="field"
     *ngFor="let field of board"
     [style.height.px]="fieldSize"
