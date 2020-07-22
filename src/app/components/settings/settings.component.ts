@@ -24,7 +24,7 @@ export class SettingsComponent implements OnInit {
 
   // Update inputs based on selected preset, but prevent setting them to
   // undefined if the user chooses the 'Custom' preset
-  updateInputs(): void {
+  onSelectUpdate(): void {
     if (this.difficulty !== this.customDifficulty) {
       this.boardDimension = this.difficulty.boardDimension;
       this.numberOfBombs = this.difficulty.numberOfBombs;
@@ -32,7 +32,7 @@ export class SettingsComponent implements OnInit {
   }
 
   // Try to match current input values to existing preset, or set it to custom
-  updateSelect(): void {
+  onInputUpdate(): void {
     this.difficulty = difficulties.find(difficulty => {
       return this.boardDimension === difficulty.boardDimension &&
         this.numberOfBombs === difficulty.numberOfBombs;

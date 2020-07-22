@@ -2,7 +2,7 @@
   <mat-form-field class="full-width" appearance="fill">
     <mat-label>Choose difficulty</mat-label>
     <mat-select name="difficulty" [(ngModel)]="difficulty"
-      (ngModelChange)="updateInputs()">
+      (ngModelChange)="onSelectUpdate()">
       <mat-option *ngFor="let difficulty of difficulties" [value]="difficulty">
         {{ difficulty.name }}
       </mat-option>
@@ -11,14 +11,14 @@
   <mat-form-field class="full-width" appearance="fill">
     <mat-label>Board dimension</mat-label>
     <input matInput type="number" name="boardDimension"
-      [(ngModel)]="boardDimension" min="1" (change)="updateSelect()">
+      [(ngModel)]="boardDimension" min="1" (change)="onInputUpdate()">
     <mat-error *ngIf="numberOfBombs > boardDimension">Min size: 10px</mat-error>
   </mat-form-field>
   <mat-form-field class="full-width" appearance="fill">
     <mat-label>Number of Bombs</mat-label>
     <input matInput type="number" name="numberOfBombs"
       [(ngModel)]="numberOfBombs" min="0" [max]="maxNumberOfBombs()"
-      (change)="updateSelect()">
+      (change)="onInputUpdate()">
   </mat-form-field>
   <div class="field-width-container">
     <h4>Field width</h4>

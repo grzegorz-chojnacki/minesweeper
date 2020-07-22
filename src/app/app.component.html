@@ -6,7 +6,7 @@
 </mat-toolbar>
 <mat-sidenav-container hasBackdrop="false">
   <mat-sidenav #sidenav opened="true">
-    <app-settings (newGameEvent)="onNewGameEvent($event)"></app-settings>
+    <app-settings (newGameEvent)="onNewGameEvent($event); sidenav.close()"></app-settings>
   </mat-sidenav>
   <mat-sidenav-content (click)="sidenav.close()">
     <app-board [difficulty]="difficulty"></app-board>
