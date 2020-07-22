@@ -1,5 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Difficulty, difficulties } from '../../difficulty';
+import { FieldSizeService } from '../../services/field-size.service';
+import { MatSliderChange } from '@angular/material/slider';
 
 @Component({
   selector: 'app-settings',
@@ -37,7 +39,11 @@ export class SettingsComponent implements OnInit {
     }) || this.customDifficulty;
   }
 
-  constructor() { }
+  onFieldSizeChange(event: MatSliderChange): void {
+    this.fieldSizeService.setFieldSize(event.value);
+  }
+
+  constructor(private fieldSizeService: FieldSizeService) { }
 
   // Emit initial new game event
   ngOnInit(): void {

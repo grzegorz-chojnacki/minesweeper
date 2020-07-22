@@ -24,7 +24,8 @@
     <h4>Field width</h4>
     <div class="slider-container">
       <mat-slider #slider min="30" max="60" color="primary"
-        class="slider-longer">
+        class="slider-longer"
+        (input)="onFieldSizeChange($event)">
       </mat-slider>
       <span [innerHTML]="slider.value + 'px'"></span>
     </div>
