@@ -45,7 +45,7 @@ export class Board {
   }
 
 
-  // Apply `fn` to all the fields around the field at given x, y point
+  // Apply `fn` to all fields around `field`
   applyAround(field: Field, fn: (field: Field) => void): void {
     const getIndices = (n: number) => [n - 1, n, n + 1];
     const valid = (n: number) => (0 <= n && n < this.fields.length);
@@ -60,12 +60,12 @@ export class Board {
   }
 
   // Plant bombs on the board but avoid the first clicked field
-  // We can simply shuffle the list of fields and put bombs on the first couple
-  // of them (only the references are shuffled)
+  // We can simply shuffle the list of fields and begin putting bombs from the
+  // start (only the references are shuffled)
   plantBombs(firstClickedField: Field): void {
     const incrementValue = field => field.setValue(field.getValue() + 1);
     const fieldsFlatList = this.fields
-      .reduce((acc, row) => acc.concat(row), [])
+      .reduce((acc, row) => acc.concat(row), []) // flatten
       .filter(field => field !== firstClickedField);
 
     this.shuffle(fieldsFlatList);

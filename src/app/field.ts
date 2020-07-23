@@ -3,8 +3,8 @@ export class Field {
   private value = 0;
   private checked = false;
   private flagged = false;
-  public readonly x: number = 1;
-  public readonly y: number = 2;
+  public readonly x: number;
+  public readonly y: number;
 
   constructor(x: number, y: number) {
     this.x = x;
