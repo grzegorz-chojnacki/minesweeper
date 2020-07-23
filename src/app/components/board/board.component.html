@@ -1,4 +1,4 @@
-<div class="board-container">
+<div class="board-container" (keyup.insert)="showAll()">
   <div class="row-container"
     *ngFor="let row of board.getFields(); let y = index"
     (contextmenu)="false">
