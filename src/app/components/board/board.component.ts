@@ -11,6 +11,7 @@ import { Field } from '../../field';
 })
 export class BoardComponent implements OnInit, OnChanges {
   @Input() difficulty: Difficulty;
+  private isFirstClick: boolean;
   board: Board;
 
   // Controlls the size of each field on the board, in pixels
@@ -21,6 +22,7 @@ export class BoardComponent implements OnInit, OnChanges {
   // Refresh the board after starting new game
   ngOnChanges(changes: SimpleChanges): void {
     this.difficulty = changes.difficulty.currentValue;
+    this.isFirstClick = true;
     this.board = new Board(this.difficulty);
   }
 
@@ -34,6 +36,12 @@ export class BoardComponent implements OnInit, OnChanges {
 
   onClick(x: number, y: number): void {
     const field = this.board.getFields()[y][x];
+
+    if (this.isFirstClick) {
+      this.board.plantBombs(field);
+      this.isFirstClick = false;
+    }
+
     if (!field.isChecked()) {
       if (field.isFlagged()) {
         field.toggleFlag();
