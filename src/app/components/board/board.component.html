@@ -1,10 +1,15 @@
-<div class="grid-container"
-  [style.grid-template-columns]="difficulty.boardDimension | gridTemplate">
-  <button mat-raised-button color="basic" class="field"
-    *ngFor="let field of board"
-    [style.height.px]="fieldSize"
-    [style.width.px]="fieldSize"
-    [style.fontSize.px]="fieldSize / 2">
-    {{ field % 10 }}
-  </button>
+<div class="board-container">
+  <div class="row-container"
+    *ngFor="let row of board.getFields(); let y = index"
+    (contextmenu)="false">
+    <button mat-raised-button color="basic" class="field"
+      *ngFor="let field of row; let x = index"
+      (click)="onClick(x, y)"
+      (contextmenu)="onRigthClick(field)"
+      [style.height.px]="fieldSize"
+      [style.width.px]="fieldSize"
+      [style.fontSize.px]="fieldSize / 2">
+      {{ field | printField }}
+    </button>
+  </div>
 </div>
