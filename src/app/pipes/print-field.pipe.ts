@@ -9,7 +9,7 @@ export class PrintFieldPipe implements PipeTransform {
 
   // When the field has been checked and you can view its contents
   private asChecked(field: Field): string {
-    if (field.getValue() === field.bomb) {
+    if (field.getValue() === Field.bomb) {
       return 'B';
     } else {
       return field.getValue().toString();
