@@ -1,17 +1,25 @@
 export class Field {
+  public static bomb = 9;
   private value = 0;
   private checked = false;
   private flagged = false;
-  public readonly bomb = 9;
+  public readonly x: number = 1;
+  public readonly y: number = 2;
 
-  constructor() { }
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
 
   getValue(): number {
     return this.value;
   }
 
+  // Cap maximum value at 9
   setValue(value: number): void {
-    this.value = value;
+    if (value <= 9) {
+      this.value = value;
+    }
   }
 
   isChecked(): boolean {

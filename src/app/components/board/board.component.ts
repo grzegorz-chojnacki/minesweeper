@@ -51,6 +51,10 @@ export class BoardComponent implements OnInit, OnChanges {
     }
   }
 
+  showAll(): void {
+    this.board.showAll();
+  }
+
   // Prevent showing context menu by returning false
   onRigthClick(field: Field): boolean {
     if (!field.isChecked()) {
