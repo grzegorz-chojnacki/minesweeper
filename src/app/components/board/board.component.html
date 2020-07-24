@@ -9,8 +9,8 @@
       (contextmenu)="onRigthClick(field)"
       [style.height.px]="fieldSize"
       [style.width.px]="fieldSize"
-      [style.fontSize.px]="fieldSize / 2">
-      {{ field | printField }}
+      [style.fontSize.px]="fieldSize / 2"
+      [innerHtml]="field | printField:(fieldSize / 1.5)">
     </button>
   </div>
 </div>
