@@ -1,20 +1,30 @@
+:host {
+}
+
 .field {
   border-radius: 0;
-  min-width: 0;
+  font-size: inherit;
+  min-width: inherit;
+  min-height: inherit;
   padding: 0;
   line-height: normal;
-  display: flex; /* center bomb and flag icons */
+  display: inline-flex; /* center bomb and flag icons */
   justify-content: center;
   align-items: center;
 }
 
 .board-container {
-  margin: 2em 0;
+  padding: 2em;
+  width: fit-content;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .row-container {
+  font-size: inherit;
+  min-width: inherit;
+  min-height: inherit;
   display: flex;
 }

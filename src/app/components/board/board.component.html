@@ -1,4 +1,8 @@
-<div class="board-container">
+<!-- Every button inherits the minimal size from this element -->
+<div class="board-container"
+  [style.fontSize.px]="fieldSize / 2"
+  [style.minHeight.px]="fieldSize"
+  [style.minWidth.px]="fieldSize">
   <div class="row-container"
     *ngFor="let row of board.getFields()"
     (contextmenu)="false">
@@ -7,9 +11,6 @@
       [disabled]="field.isChecked()"
       (click)="onClick(field)"
       (contextmenu)="onRigthClick(field)"
-      [style.height.px]="fieldSize"
-      [style.width.px]="fieldSize"
-      [style.fontSize.px]="fieldSize / 2"
       [innerHtml]="field | printField">
     </button>
   </div>
