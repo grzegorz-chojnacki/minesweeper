@@ -51,6 +51,13 @@ export class BoardComponent implements OnInit, OnChanges {
     }
   }
 
+  // Debug method
+  quickRestart(): void {
+    this.isFirstClick = true;
+    this.board = new Board(this.difficulty);
+  }
+
+  // Debug method
   showAll(): void {
     this.board.showAll();
   }

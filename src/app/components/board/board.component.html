@@ -1,9 +1,10 @@
-<div class="board-container" (keyup.insert)="showAll()">
+<div class="board-container">
   <div class="row-container"
     *ngFor="let row of board.getFields(); let y = index"
     (contextmenu)="false">
-    <button mat-raised-button color="basic" class="field"
+    <button mat-raised-button class="field"
       *ngFor="let field of row; let x = index"
+      [disabled]="field.isChecked()"
       (click)="onClick(x, y)"
       (contextmenu)="onRigthClick(field)"
       [style.height.px]="fieldSize"
@@ -13,3 +14,10 @@
     </button>
   </div>
 </div>
+<!-- Debug -->
+<button mat-mini-fab color="primary"
+  style="position: fixed; top: 100px; right: 50px;"
+  (click)="quickRestart()"><mat-icon>cached</mat-icon></button>
+<button mat-mini-fab color="accent"
+  style="position: fixed; top: 150px; right: 50px;"
+  (click)="showAll()"><mat-icon>visibility</mat-icon></button>
