@@ -7,12 +7,12 @@ import { Field } from '../field';
   pure: false
 })
 export class PrintFieldPipe implements PipeTransform {
-  private static readonly bombIcon = 'gps_fixed';
-  private static readonly flagIcon = 'tour</span>';
+  private static readonly bombIcon = PrintFieldPipe.buildIcon('gps_fixed');
+  private static readonly flagIcon = PrintFieldPipe.buildIcon('tour');
 
-  private buildIcon(iconName: string, fontSize: number): string {
+  private static buildIcon(iconName: string): string {
     return `<span class="material-icons"
-              style="font-size: ${fontSize}px;">
+              style="font-size: unset;">
               ${iconName}
             </span>`;
   }
@@ -20,11 +20,10 @@ export class PrintFieldPipe implements PipeTransform {
   constructor(private domSanitizer: DomSanitizer) { }
 
   // Used when the field has been checked and you can view its contents
-  private asChecked(field: Field, fontSize: number): string | SafeHtml {
+  private asChecked(field: Field): string | SafeHtml {
     switch (field.getValue()) {
       case Field.bomb:
-        return this.domSanitizer.bypassSecurityTrustHtml(
-          this.buildIcon(PrintFieldPipe.bombIcon, fontSize));
+        return this.domSanitizer.bypassSecurityTrustHtml(PrintFieldPipe.bombIcon);
       case Field.clear:
         return '';
       default:
@@ -33,17 +32,16 @@ export class PrintFieldPipe implements PipeTransform {
   }
 
   // Used when the field hasn't been checked and you can only view if it's flagged
-  private asNotChecked(field: Field, fontSize: number): string | SafeHtml {
+  private asNotChecked(field: Field): string | SafeHtml {
     return (field.isFlagged())
-      ? this.domSanitizer.bypassSecurityTrustHtml(
-          this.buildIcon(PrintFieldPipe.flagIcon, fontSize))
+      ? this.domSanitizer.bypassSecurityTrustHtml(PrintFieldPipe.flagIcon)
       : '';
   }
 
-  transform(field: Field, fontSize: number): string | SafeHtml {
+  transform(field: Field): string | SafeHtml {
     return (field.isChecked())
-      ? this.asChecked(field, fontSize)
-      : this.asNotChecked(field, fontSize);
+      ? this.asChecked(field)
+      : this.asNotChecked(field);
   }
 
 }

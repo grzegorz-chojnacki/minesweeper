@@ -3,6 +3,9 @@
   min-width: 0;
   padding: 0;
   line-height: normal;
+  display: flex; /* center bomb and flag icons */
+  justify-content: center;
+  align-items: center;
 }
 
 .board-container {
