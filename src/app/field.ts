@@ -1,5 +1,6 @@
 export class Field {
-  public static bomb = 9;
+  public static readonly bomb = 9;
+  public static readonly clear = 0;
   private value = 0;
   private checked = false;
   private flagged = false;
