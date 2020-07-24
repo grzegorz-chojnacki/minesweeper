@@ -1,11 +1,11 @@
 <div class="board-container">
   <div class="row-container"
-    *ngFor="let row of board.getFields(); let y = index"
+    *ngFor="let row of board.getFields()"
     (contextmenu)="false">
     <button mat-raised-button class="field"
-      *ngFor="let field of row; let x = index"
+      *ngFor="let field of row"
       [disabled]="field.isChecked()"
-      (click)="onClick(x, y)"
+      (click)="onClick(field)"
       (contextmenu)="onRigthClick(field)"
       [style.height.px]="fieldSize"
       [style.width.px]="fieldSize"

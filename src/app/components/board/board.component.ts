@@ -31,23 +31,19 @@ export class BoardComponent implements OnInit, OnChanges {
       fieldSize => this.fieldSize = fieldSize
     );
     this.board = new Board(this.difficulty);
-    console.log(this.board);
   }
 
-  onClick(x: number, y: number): void {
-    const field = this.board.getFields()[y][x];
-
+  onClick(field: Field): void {
     if (this.isFirstClick) {
       this.board.plantBombs(field);
       this.isFirstClick = false;
     }
-
-    if (!field.isChecked()) {
-      if (field.isFlagged()) {
-        field.toggleFlag();
-      } else {
-        field.check();
-      }
+    if (field.isFlagged()) {
+      field.toggleFlag();
+    } else if (field.getValue() !== Field.bomb) {
+      this.board.checkNear(field);
+    } else {
+      this.showAll();
     }
   }
 

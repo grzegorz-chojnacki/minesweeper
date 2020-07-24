@@ -44,9 +44,8 @@ export class Board {
     }
   }
 
-
   // Apply `fn` to all fields around `field`
-  applyAround(field: Field, fn: (field: Field) => void): void {
+  private applyAround(field: Field, fn: (field: Field) => void): void {
     const getIndices = (n: number) => [n - 1, n, n + 1];
     const valid = (n: number) => (0 <= n && n < this.fields.length);
     const xIndices = getIndices(field.x).filter(valid);
@@ -57,6 +56,18 @@ export class Board {
         fn(this.fields[y][x]);
       }
     }));
+  }
+
+  // Check `field` and if it has zero bombs around, then check every unchecked
+  // field around it
+  checkNear(field: Field): void {
+    if (field.isChecked()) {
+      return;
+    }
+    field.check();
+    if (field.getValue() === Field.clear) {
+      this.applyAround(field, this.checkNear.bind(this));
+    }
   }
 
   // Plant bombs on the board but avoid the first clicked field
