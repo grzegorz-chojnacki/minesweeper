@@ -7,6 +7,7 @@
     *ngFor="let row of board.getFields()"
     (contextmenu)="false">
     <button mat-raised-button class="field"
+      [color]="fieldColors(field)"
       *ngFor="let field of row"
       [disabled]="field.isChecked()"
       (click)="onClick(field)"

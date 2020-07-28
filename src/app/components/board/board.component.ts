@@ -3,6 +3,7 @@ import { Difficulty } from 'src/app/difficulty';
 import { FieldSizeService } from '../../services/field-size.service';
 import { Board } from '../../board';
 import { Field } from '../../field';
+import { fieldColors } from './fieldColors';
 
 @Component({
   selector: 'app-board',
@@ -12,6 +13,7 @@ import { Field } from '../../field';
 export class BoardComponent implements OnInit, OnChanges {
   @Input() difficulty: Difficulty;
   private isFirstClick: boolean;
+  fieldColors = fieldColors;
   board: Board;
 
   // Controlls the size of each field on the board, in pixels

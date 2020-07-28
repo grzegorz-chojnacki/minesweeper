@@ -1,6 +1,3 @@
-:host {
-}
-
 .field {
   border-radius: 0;
   font-size: inherit;
@@ -27,4 +24,34 @@
   min-width: inherit;
   min-height: inherit;
   display: flex;
+}
+
+/* Only the 'disabled' (already clicked) buttons will have color*/
+
+.mat-gray:disabled {
+  color: #9E9E9E;
+}
+.mat-blue:disabled {
+  color: #2196F3;
+}
+.mat-cyan:disabled {
+  color: #00BCD4;
+}
+.mat-green:disabled {
+  color: #4CAF50;
+}
+.mat-yellow:disabled {
+  color: #FFEB3B;
+}
+.mat-orange:disabled {
+  color: #FF9800;
+}
+.mat-red:disabled {
+  color: #f44336;
+}
+.mat-pink:disabled {
+  color: #E91E63;
+}
+.mat-purple:disabled {
+  color: #9C27B0;
 }
