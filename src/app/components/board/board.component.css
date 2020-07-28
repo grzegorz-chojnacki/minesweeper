@@ -31,24 +31,31 @@
 .mat-blue:disabled {
   color: #EC407A;
 }
+
 .mat-cyan:disabled {
   color: #EF526A;
 }
+
 .mat-green:disabled {
   color: #F16559;
 }
+
 .mat-yellow:disabled {
   color: #F47749;
 }
+
 .mat-orange:disabled {
   color: #F78A38;
 }
+
 .mat-red:disabled {
   color: #FA9C28;
 }
+
 .mat-pink:disabled {
   color: #FCAF17;
 }
+
 .mat-purple:disabled {
   color: #FFC107;
 }
