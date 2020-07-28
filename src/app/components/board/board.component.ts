@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Difficulty } from 'src/app/difficulty';
 import { FieldSizeService } from '../../services/field-size.service';
 import { Board } from '../../board';
@@ -13,46 +14,55 @@ import { fieldColors } from './fieldColors';
 export class BoardComponent implements OnInit, OnChanges {
   @Input() difficulty: Difficulty;
   private isFirstClick: boolean;
-  fieldColors = fieldColors;
   board: Board;
+
+  fieldColors = fieldColors;
+  gameOverSnackBarConfig = {
+    duration: 8000,
+    panelClass: ['dark-snack-bar']
+  };
 
   // Controlls the size of each field on the board, in pixels
   fieldSize: number;
 
-  constructor(private fieldSizeService: FieldSizeService) { }
+  constructor(private fieldSizeService: FieldSizeService, private snackBar: MatSnackBar) { }
 
   // Refresh the board after starting new game
   ngOnChanges(changes: SimpleChanges): void {
     this.difficulty = changes.difficulty.currentValue;
-    this.isFirstClick = true;
-    this.board = new Board(this.difficulty);
+    this.newBoard();
   }
 
   ngOnInit(): void {
     this.fieldSizeService.fieldSize.subscribe(
       fieldSize => this.fieldSize = fieldSize
     );
+    this.newBoard();
+  }
+
+  newBoard(): void {
+    this.snackBar.dismiss();
+    this.isFirstClick = true;
     this.board = new Board(this.difficulty);
   }
 
   onClick(field: Field): void {
+    // Plant bombs on the first click
     if (this.isFirstClick) {
       this.board.plantBombs(field);
       this.isFirstClick = false;
     }
+    // Handle clicking on flags, safe fields and bomb
     if (field.isFlagged()) {
       field.toggleFlag();
     } else if (field.getValue() !== Field.bomb) {
       this.board.checkNear(field);
     } else {
       this.showAll();
+      const gameOverSnackBar = this.snackBar.open('Game over', 'Restart',
+       this.gameOverSnackBarConfig);
+      gameOverSnackBar.onAction().subscribe(() => this.newBoard());
     }
-  }
-
-  // Debug method
-  quickRestart(): void {
-    this.isFirstClick = true;
-    this.board = new Board(this.difficulty);
   }
 
   // Debug method

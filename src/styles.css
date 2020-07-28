@@ -7,3 +7,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   font-size: unset;
   color: #757575;
 }
+
+.dark-snack-bar {
+  background-color: #9E9E9E;
+}
