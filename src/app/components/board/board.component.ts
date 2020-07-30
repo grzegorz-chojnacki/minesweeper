@@ -52,9 +52,9 @@ export class BoardComponent implements OnInit, OnChanges {
       this.isFirstClick = false;
     }
     // Handle clicking on flags, safe fields and bombs
-    if (field.isFlagged()) {
+    if (field.isFlagged) {
       this.board.toggleFlag(field);
-    } else if (field.getValue() !== Field.bomb) {
+    } else if (field.value !== Field.bomb) {
       this.board.checkNear(field);
     } else {
       this.showAll();
@@ -79,7 +79,7 @@ export class BoardComponent implements OnInit, OnChanges {
 
   // Prevent showing context menu by returning false
   onRigthClick(field: Field): boolean {
-    if (this.board.getFlagCounter() > 0 || field.isFlagged()) {
+    if (this.board.getFlagCounter() > 0 || field.isFlagged) {
       this.board.toggleFlag(field);
     }
     return false;

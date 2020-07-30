@@ -9,11 +9,11 @@
     (contextmenu)="false">
     <button mat-raised-button class="field"
       *ngFor="let field of row"
-      [disabled]="field.isChecked()"
+      [disabled]="field.isChecked"
       (click)="onClick(field)"
       (contextmenu)="onRigthClick(field)"
-      [innerHtml]="field.getValue() |
-        printField:field.isFlagged():field.isChecked()">
+      [innerHtml]="field.value |
+        printField:field.isFlagged:field.isChecked">
     </button>
   </div>
 </div>

@@ -1,9 +1,9 @@
 export class Field {
   public static readonly bomb = 9;
   public static readonly clear = 0;
-  private value = 0;
-  private checked = false;
-  private flagged = false;
+  private _value = 0;
+  private _checked = false;
+  private _flagged = false;
   public readonly x: number;
   public readonly y: number;
 
@@ -12,30 +12,30 @@ export class Field {
     this.y = y;
   }
 
-  getValue(): number {
-    return this.value;
-  }
-
-  // Cap maximum value at 9
-  setValue(value: number): void {
-    if (value <= 9) {
-      this.value = value;
+  // Limit value between 0 and 9
+  public set value(value: number) {
+    if (0 <= value && value <= 9) {
+      this._value = value;
     }
   }
 
-  isChecked(): boolean {
-    return this.checked;
+  public get value(): number {
+    return this._value;
   }
 
-  check(): void {
-   this.checked = true;
+  public get isChecked(): boolean {
+    return this._checked;
   }
 
-  isFlagged(): boolean {
-    return this.flagged;
+  public check(): void {
+   this._checked = true;
   }
 
-  toggleFlag(): void {
-    this.flagged = !this.flagged;
+  public get isFlagged(): boolean {
+    return this._flagged;
+  }
+
+  public toggleFlag(): void {
+    this._flagged = !this._flagged;
   }
 }

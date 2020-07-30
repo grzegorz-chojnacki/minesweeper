@@ -58,15 +58,15 @@ export class Board {
   // Check `field` and if it has zero bombs around, then check every unchecked
   // field around it
   public checkNear(field: Field): void {
-    if (field.isChecked()) {
+    if (field.isChecked) {
       return;
     }
     field.check();
-    if (field.isFlagged()) {
+    if (field.isFlagged) {
       field.toggleFlag();
       this.flagCounter++;
     }
-    if (field.getValue() === Field.clear) {
+    if (field.value === Field.clear) {
       this.applyAround(field, this.checkNear.bind(this));
     }
   }
@@ -74,7 +74,7 @@ export class Board {
   // Check win condition
   public countUncheckedFields(): number {
     return this.fields.reduce((acc, row) =>
-      row.filter(field => !field.isChecked()).length + acc, 0);
+      row.filter(field => !field.isChecked).length + acc, 0);
   }
 
   public getFlagCounter(): number {
@@ -84,14 +84,14 @@ export class Board {
   // Toggle flag on `field` and update the flag counter
   public toggleFlag(field: Field): void {
     field.toggleFlag();
-    this.flagCounter += (field.isFlagged()) ? -1 : 1;
+    this.flagCounter += (field.isFlagged) ? -1 : 1;
   }
 
   // Plant bombs on the board but avoid the first clicked field
   // Shuffle the list of fields references and plant bombs on as much
   // as `numberOfBombs` is
   public plantBombs(firstClickedField: Field): void {
-    const incrementValue = field => field.setValue(field.getValue() + 1);
+    const incrementValue = (field: Field) => field.value++;
     const fieldsFlatList = this.fields
       .reduce((acc, row) => acc.concat(row), []) // flatten
       .filter(field => field !== firstClickedField);
@@ -100,7 +100,7 @@ export class Board {
 
     fieldsFlatList.slice(0, this.numberOfBombs)
       .forEach(field => {
-        field.setValue(Field.bomb);
+        field.value = Field.bomb;
         this.applyAround(field, incrementValue);
       });
   }
