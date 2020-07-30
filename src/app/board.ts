@@ -32,6 +32,7 @@ export class Board {
 
   checkAll(): void {
     this.fields.forEach(row => row.forEach(field => field.check()));
+    this.flagCounter = 0;
   }
 
   // Shuffle array in place
