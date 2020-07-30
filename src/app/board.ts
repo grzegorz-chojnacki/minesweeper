@@ -53,7 +53,7 @@ export class Board {
     const yIndices = getIndices(field.y).filter(valid);
 
     yIndices.forEach(y => xIndices.forEach(x => {
-      if (x !== field.x || y !== field.y) {
+      if (!(x === field.x && y === field.y)) {
         fn(this.fields[y][x]);
       }
     }));
