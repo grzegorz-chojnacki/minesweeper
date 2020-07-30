@@ -8,35 +8,31 @@ export class Board {
 
   constructor(difficulty: Difficulty) {
     this.numberOfBombs = this.flagCounter = difficulty.numberOfBombs;
-    this.initBoard(difficulty.boardDimension);
+    this.fields = this.newFields(difficulty.boardDimension);
   }
 
-  getFields(): Field[][] {
+  public getFields(): Field[][] {
     return this.fields;
   }
 
-  initBoard(boardDimension: number): void {
-    this.fields = new Array<Array<Field>>();
+  private newFields(boardDimension: number): Field[][] {
+    const fields = new Array<Array<Field>>();
     for (let y = 0; y < boardDimension; y++) {
-      this.fields[y] = new Array<Field>();
+      fields[y] = new Array<Field>();
       for (let x = 0; x < boardDimension; x++) {
-        this.fields[y][x] = new Field(x, y);
+        fields[y][x] = new Field(x, y);
       }
     }
+    return fields;
   }
 
-  // Debug method
-  fieldsValues(): number[][] {
-    return this.fields.map(row => row.map(field => field.getValue()));
-  }
-
-  checkAll(): void {
+  public checkAll(): void {
     this.fields.forEach(row => row.forEach(field => field.check()));
     this.flagCounter = 0;
   }
 
   // Shuffle array in place
-  shuffle(array: any[]): void {
+  private shuffle(array: any[]): void {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       const tmp = array[i];
@@ -61,39 +57,40 @@ export class Board {
 
   // Check `field` and if it has zero bombs around, then check every unchecked
   // field around it
-  checkNear(field: Field): void {
+  public checkNear(field: Field): void {
     if (field.isChecked()) {
       return;
     }
+    field.check();
     if (field.isFlagged()) {
       field.toggleFlag();
       this.flagCounter++;
     }
-    field.check();
     if (field.getValue() === Field.clear) {
       this.applyAround(field, this.checkNear.bind(this));
     }
   }
 
-  countUncheckedFields(): number {
+  // Check win condition
+  public countUncheckedFields(): number {
     return this.fields.reduce((acc, row) =>
       row.filter(field => !field.isChecked()).length + acc, 0);
   }
 
-  getFlagCounter(): number {
+  public getFlagCounter(): number {
     return this.flagCounter;
   }
 
   // Toggle flag on `field` and update the flag counter
-  toggleFlag(field: Field): void {
+  public toggleFlag(field: Field): void {
     field.toggleFlag();
     this.flagCounter += (field.isFlagged()) ? -1 : 1;
   }
 
   // Plant bombs on the board but avoid the first clicked field
-  // We can simply shuffle the list of fields and begin putting bombs from the
-  // start (only the references are shuffled)
-  plantBombs(firstClickedField: Field): void {
+  // Shuffle the list of fields references and plant bombs on as much
+  // as `numberOfBombs` is
+  public plantBombs(firstClickedField: Field): void {
     const incrementValue = field => field.setValue(field.getValue() + 1);
     const fieldsFlatList = this.fields
       .reduce((acc, row) => acc.concat(row), []) // flatten

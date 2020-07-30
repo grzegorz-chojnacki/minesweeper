@@ -23,7 +23,8 @@ export class BoardComponent implements OnInit, OnChanges {
   // Controlls the size of each field on the board, in pixels
   fieldSize: number;
 
-  constructor(private fieldSizeService: FieldSizeService, private snackBar: MatSnackBar) { }
+  constructor(private fieldSizeService: FieldSizeService,
+              private snackBarService: MatSnackBar) { }
 
   // Refresh the board after starting new game
   ngOnChanges(changes: SimpleChanges): void {
@@ -39,7 +40,7 @@ export class BoardComponent implements OnInit, OnChanges {
   }
 
   newBoard(): void {
-    this.snackBar.dismiss();
+    this.snackBarService.dismiss();
     this.isFirstClick = true;
     this.board = new Board(this.difficulty);
   }
@@ -50,27 +51,28 @@ export class BoardComponent implements OnInit, OnChanges {
       this.board.plantBombs(field);
       this.isFirstClick = false;
     }
-    // Handle clicking on flags, safe fields and bomb
+    // Handle clicking on flags, safe fields and bombs
     if (field.isFlagged()) {
       this.board.toggleFlag(field);
     } else if (field.getValue() !== Field.bomb) {
       this.board.checkNear(field);
     } else {
       this.showAll();
-      const gameOverSnackBar = this.snackBar.open('Game over', 'Restart?',
-        this.snackBarConfig);
-      gameOverSnackBar.onAction().subscribe(() => this.newBoard());
+      this.spawnSnackBar('Game over');
     }
     // Check win condition
     if (this.board.countUncheckedFields() === this.difficulty.numberOfBombs) {
       this.showAll();
-      const gameWonSnackBar = this.snackBar.open('You won!', 'Restart?',
-        this.snackBarConfig);
-      gameWonSnackBar.onAction().subscribe(() => this.newBoard());
+      this.spawnSnackBar('You won!');
     }
   }
 
-  // Debug method
+  private spawnSnackBar(title: string): void {
+    const snackBar = this.snackBarService.open(title, 'Restart',
+      this.snackBarConfig);
+    snackBar.onAction().subscribe(() => this.newBoard());
+  }
+
   showAll(): void {
     this.board.checkAll();
   }
