@@ -2,17 +2,17 @@ import { Field } from './field';
 import { Difficulty } from './difficulty';
 
 export class Board {
-  private fields: Field[][];
+  private _fields: Field[][];
   private numberOfBombs: number;
-  private flagCounter: number;
+  private _flagCounter: number;
 
   constructor(difficulty: Difficulty) {
     this.numberOfBombs = this.flagCounter = difficulty.numberOfBombs;
-    this.fields = this.newFields(difficulty.boardDimension);
+    this._fields = this.newFields(difficulty.boardDimension);
   }
 
-  public getFields(): Field[][] {
-    return this.fields;
+  public get fields(): Field[][] {
+    return this._fields;
   }
 
   private newFields(boardDimension: number): Field[][] {
@@ -77,8 +77,12 @@ export class Board {
       row.filter(field => !field.isChecked).length + acc, 0);
   }
 
-  public getFlagCounter(): number {
-    return this.flagCounter;
+  public get flagCounter(): number {
+    return this._flagCounter;
+  }
+
+  public set flagCounter(value: number) {
+    this._flagCounter = value;
   }
 
   // Toggle flag on `field` and update the flag counter
@@ -104,5 +108,4 @@ export class Board {
         this.applyAround(field, incrementValue);
       });
   }
-
 }

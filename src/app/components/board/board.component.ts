@@ -11,41 +11,37 @@ import { Field } from '../../field';
   styleUrls: ['./board.component.css']
 })
 export class BoardComponent implements OnInit, OnChanges {
-  @Input() difficulty: Difficulty;
+  @Input() public difficulty: Difficulty;
   private isFirstClick: boolean;
-  board: Board;
-
-  snackBarConfig = {
+  public board: Board;
+  public fieldSize: number; // Size of each field on the board, in pixels
+  private snackBarConfig = {
     duration: 8000,
     panelClass: ['dark-snack-bar']
   };
-
-  // Controlls the size of each field on the board, in pixels
-  fieldSize: number;
 
   constructor(private fieldSizeService: FieldSizeService,
               private snackBarService: MatSnackBar) { }
 
   // Refresh the board after starting new game
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     this.difficulty = changes.difficulty.currentValue;
-    this.newBoard();
+    this.newBoard(this.difficulty);
   }
 
-  ngOnInit(): void {
-    this.fieldSizeService.fieldSize.subscribe(
-      fieldSize => this.fieldSize = fieldSize
-    );
-    this.newBoard();
+  public ngOnInit(): void {
+    this.fieldSizeService.fieldSize
+      .subscribe(fieldSize => this.fieldSize = fieldSize);
+    this.newBoard(this.difficulty);
   }
 
-  newBoard(): void {
+  private newBoard(difficulty: Difficulty): void {
     this.snackBarService.dismiss();
     this.isFirstClick = true;
-    this.board = new Board(this.difficulty);
+    this.board = new Board(difficulty);
   }
 
-  onClick(field: Field): void {
+  public onClick(field: Field): void {
     // Plant bombs on the first click
     if (this.isFirstClick) {
       this.board.plantBombs(field);
@@ -68,21 +64,20 @@ export class BoardComponent implements OnInit, OnChanges {
   }
 
   private spawnSnackBar(title: string): void {
-    const snackBar = this.snackBarService.open(title, 'Restart',
-      this.snackBarConfig);
-    snackBar.onAction().subscribe(() => this.newBoard());
+    const snackBar = this.snackBarService
+      .open(title, 'Restart', this.snackBarConfig);
+    snackBar.onAction().subscribe(() => this.newBoard(this.difficulty));
   }
 
-  showAll(): void {
+  private showAll(): void {
     this.board.checkAll();
   }
 
   // Prevent showing context menu by returning false
-  onRigthClick(field: Field): boolean {
-    if (this.board.getFlagCounter() > 0 || field.isFlagged) {
+  public onRigthClick(field: Field): boolean {
+    if (this.board.flagCounter > 0 || field.isFlagged) {
       this.board.toggleFlag(field);
     }
     return false;
   }
-
 }

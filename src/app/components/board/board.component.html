@@ -3,9 +3,9 @@
   [style.fontSize.px]="fieldSize / 2"
   [style.minHeight.px]="fieldSize"
   [style.minWidth.px]="fieldSize">
-  <p class="flags-counter">Flags: {{ board.getFlagCounter() }}</p>
+  <p class="flags-counter">Flags: {{ board.flagCounter }}</p>
   <div class="row-container"
-    *ngFor="let row of board.getFields()"
+    *ngFor="let row of board.fields"
     (contextmenu)="false">
     <button mat-raised-button class="field"
       *ngFor="let field of row"
