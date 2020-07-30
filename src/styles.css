@@ -11,3 +11,36 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .dark-snack-bar {
   background-color: #9E9E9E;
 }
+
+/* Material gradient palette: Pink400 -> Amber500 */
+.color-1 {
+  color: #EC407A;
+}
+
+.color-2 {
+  color: #EF526A;
+}
+
+.color-3 {
+  color: #F16559;
+}
+
+.color-4 {
+  color: #F47749;
+}
+
+.color-5 {
+  color: #F78A38;
+}
+
+.color-6 {
+  color: #FA9C28;
+}
+
+.color-7 {
+  color: #FCAF17;
+}
+
+.color-8 {
+  color: #FFC107;
+}

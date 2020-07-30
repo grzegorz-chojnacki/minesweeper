@@ -13,6 +13,10 @@ export class PrintFieldPipe implements PipeTransform {
     return `<span class="material-icons field-icon">${iconName}</span>`;
   }
 
+  private colored(value: number): string {
+    return `<span class="color-${value}">${value}</span>`;
+  }
+
   // Used when the field has been checked and you can view its contents
   private asChecked(field: Field): string {
     switch (field.getValue()) {
@@ -21,7 +25,7 @@ export class PrintFieldPipe implements PipeTransform {
       case Field.clear:
         return '';
       default:
-        return field.getValue().toString();
+        return this.colored(field.getValue());
     }
   }
 
