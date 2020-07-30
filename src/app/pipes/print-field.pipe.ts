@@ -2,14 +2,13 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Field } from '../field';
 
 @Pipe({
-  name: 'printField',
-  pure: false
+  name: 'printField'
 })
 export class PrintFieldPipe implements PipeTransform {
-  private static readonly bombIcon = PrintFieldPipe.buildIcon('gps_fixed');
-  private static readonly flagIcon = PrintFieldPipe.buildIcon('tour');
+  private readonly bombIcon = this.buildIcon('gps_fixed');
+  private readonly flagIcon = this.buildIcon('tour');
 
-  private static buildIcon(iconName: string): string {
+  private buildIcon(iconName: string): string {
     return `<span class="material-icons field-icon">${iconName}</span>`;
   }
 
@@ -18,28 +17,28 @@ export class PrintFieldPipe implements PipeTransform {
   }
 
   // Used when the field has been checked and you can view its contents
-  private asChecked(field: Field): string {
-    switch (field.getValue()) {
+  private asChecked(value: number): string {
+    switch (value) {
       case Field.bomb:
-        return PrintFieldPipe.bombIcon;
+        return this.bombIcon;
       case Field.clear:
         return '';
       default:
-        return this.colored(field.getValue());
+        return this.colored(value);
     }
   }
 
   // Used when the field hasn't been checked and you can only view if it's flagged
-  private asNotChecked(field: Field): string {
-    return (field.isFlagged())
-      ? PrintFieldPipe.flagIcon
+  private asNotChecked(isFlagged: boolean): string {
+    return (isFlagged)
+      ? this.flagIcon
       : '';
   }
 
-  transform(field: Field): string {
-    return (field.isChecked())
-      ? this.asChecked(field)
-      : this.asNotChecked(field);
+  transform(value: number, isFlagged: boolean, isChecked: boolean): string {
+    return (isChecked)
+      ? this.asChecked(value)
+      : this.asNotChecked(isFlagged);
   }
 
 }
