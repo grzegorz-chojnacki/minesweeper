@@ -7,10 +7,10 @@ import { Difficulty } from './difficulty';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'minesweeper';
-  difficulty: Difficulty;
+  public title = 'minesweeper';
+  public difficulty: Difficulty;
 
-  onNewGameEvent(difficulty: Difficulty): void {
+  public onNewGameEvent(difficulty: Difficulty): void {
     this.difficulty = difficulty;
   }
 }
