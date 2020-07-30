@@ -3,26 +3,32 @@
     <mat-label>Choose difficulty</mat-label>
     <mat-select name="difficulty" [(ngModel)]="difficulty"
       (ngModelChange)="onSelectUpdate()">
-      <mat-option *ngFor="let difficulty of difficulties" [value]="difficulty">
-        {{ difficulty.name }}
+      <mat-option *ngFor="let difficultyOption of difficultyList"
+        [value]="difficultyOption">
+        {{ difficultyOption.name }}
       </mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field class="full-width" appearance="fill">
     <mat-label>Board dimension</mat-label>
-    <input matInput type="number" name="boardDimension"
-      [(ngModel)]="boardDimension" min="1" max="50" (change)="onInputUpdate()">
+    <input matInput type="number" name="boardDimension" min="1" max="50"
+      [(ngModel)]="boardDimension"
+      (change)="onInputUpdate()">
   </mat-form-field>
   <mat-form-field class="full-width" appearance="fill">
     <mat-label>Number of bombs</mat-label>
-    <input matInput type="number" name="numberOfBombs"
-      [(ngModel)]="numberOfBombs" min="0" [max]="maxNumberOfBombs()"
+    <input matInput type="number" name="numberOfBombs" min="0"
+      [max]="maxNumberOfBombs()"
+      [(ngModel)]="numberOfBombs"
       (change)="onInputUpdate()">
   </mat-form-field>
   <div class="field-width-container">
     <h4>Field width</h4>
     <div class="slider-container">
-      <mat-slider #slider min="30" max="60" color="primary"
+      <mat-slider #slider color="primary"
+        [value]="fieldSize"
+        [min]="fieldSizeService.minFieldSize"
+        [max]="fieldSizeService.maxFieldSize"
         class="slider-longer"
         (input)="onFieldSizeChange($event)">
       </mat-slider>

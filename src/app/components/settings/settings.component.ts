@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { Difficulty, difficulties } from '../../difficulty';
+import { Difficulty, difficulties, customDifficulty } from '../../difficulty';
 import { FieldSizeService } from '../../services/field-size.service';
 import { MatSliderChange } from '@angular/material/slider';
 
@@ -9,73 +9,81 @@ import { MatSliderChange } from '@angular/material/slider';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-  @Output() newGameEvent = new EventEmitter<Difficulty>();
+  @Output() public newGameEvent = new EventEmitter<Difficulty>();
+  public fieldSize: number;
 
-  difficulties = difficulties;
-  difficultyNames = difficulties.map(difficulty => difficulty.name);
+  public difficultyList = [customDifficulty, ...difficulties];
+  public difficultyNames = difficulties.map(difficulty => difficulty.name);
+  public difficulty: Difficulty;
 
-  // Special difficulty
-  customDifficulty = difficulties[0];
-
-  // Set initial difficulty
-  difficulty: Difficulty = difficulties[1];
-  boardDimension: number = this.difficulty.boardDimension;
-  numberOfBombs: number = this.difficulty.numberOfBombs;
+  // Inputs
+  public numberOfBombs: number;
+  public boardDimension: number;
 
   // Update inputs based on selected preset, but prevent setting them to
   // undefined if the user chooses the 'Custom' preset
-  onSelectUpdate(): void {
-    if (this.difficulty !== this.customDifficulty) {
+  public onSelectUpdate(): void {
+    if (this.difficulty !== customDifficulty) {
       this.boardDimension = this.difficulty.boardDimension;
       this.numberOfBombs = this.difficulty.numberOfBombs;
     }
   }
 
-  // Try to match current input values to existing preset, or set it to custom
-  onInputUpdate(): void {
+  // Try to match current input values to existing preset, or set it as custom
+  public onInputUpdate(): void {
+    // Update values on custom difficulty setting
+    customDifficulty.boardDimension = this.boardDimension;
+    customDifficulty.numberOfBombs = this.numberOfBombs;
+
     this.difficulty = difficulties.find(difficulty => {
-      return this.boardDimension === difficulty.boardDimension &&
-        this.numberOfBombs === difficulty.numberOfBombs;
-    }) || this.customDifficulty;
+      return this.boardDimension === difficulty.boardDimension
+          && this.numberOfBombs  === difficulty.numberOfBombs;
+    }) || customDifficulty;
   }
 
-  onFieldSizeChange(event: MatSliderChange): void {
+  public onFieldSizeChange(event: MatSliderChange): void {
     this.fieldSizeService.setFieldSize(event.value);
   }
 
-  constructor(private fieldSizeService: FieldSizeService) { }
+  constructor(public fieldSizeService: FieldSizeService) { }
 
-  // Emit initial new game event
-  ngOnInit(): void {
+  // Initialize settings with saved values and emit initial new game event
+  public ngOnInit(): void {
+    this.fieldSizeService.fieldSize
+      .subscribe(fieldSize => this.fieldSize = fieldSize);
+
+    this.difficulty = JSON.parse(localStorage.getItem('difficulty'))
+      || difficulties[0];
+
+    this.boardDimension = this.difficulty.boardDimension;
+    this.numberOfBombs = this.difficulty.numberOfBombs;
+
+    this.onInputUpdate(); // Refresh select component
     this.newGameEvent.emit(this.difficulty);
   }
 
-  isBoardDimensionInvalid(): boolean {
-    return this.boardDimension < 1;
+  public isBoardDimensionInvalid(): boolean {
+    return this.difficulty.boardDimension < 1;
   }
 
   // Every field on the board can have a bomb, except the clicked one
-  maxNumberOfBombs(): number {
-    return this.boardDimension ** 2 - 1;
+  public maxNumberOfBombs(): number {
+    return this.difficulty.boardDimension ** 2 - 1;
   }
 
-  isNumberOfBombsInvalid(): boolean {
-    return this.numberOfBombs < 0 ||
-      this.numberOfBombs > this.maxNumberOfBombs();
+  public isNumberOfBombsInvalid(): boolean {
+    return this.difficulty.numberOfBombs < 0 ||
+      this.difficulty.numberOfBombs > this.maxNumberOfBombs();
   }
 
-  isInvalid(): boolean {
+  public isInvalid(): boolean {
     return this.isNumberOfBombsInvalid() ||
       this.isBoardDimensionInvalid();
   }
 
-  // TODO: Make it so that `this.difficulty` is used instead of new object
-  start(): void {
-    this.newGameEvent.emit(new Difficulty(
-      this.difficulty.name,
-      this.boardDimension,
-      this.numberOfBombs
-    ));
+  public start(): void {
+    localStorage.setItem('difficulty', JSON.stringify(this.difficulty));
+    this.newGameEvent.emit(this.difficulty);
   }
 
 }
