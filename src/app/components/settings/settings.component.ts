@@ -81,9 +81,11 @@ export class SettingsComponent implements OnInit {
       this.isBoardDimensionInvalid();
   }
 
+  // Save newest difficulty setting
+  // Emit event with cloned difficulty object to force change detection
   public start(): void {
     localStorage.setItem('difficulty', JSON.stringify(this.difficulty));
-    this.newGameEvent.emit(this.difficulty);
+    this.newGameEvent.emit(Object.create(this.difficulty));
   }
 
 }
