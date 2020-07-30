@@ -4,10 +4,10 @@ import { Difficulty } from './difficulty';
 export class Board {
   private fields: Field[][];
   private numberOfBombs: number;
-  private flags: number;
+  private flagCounter: number;
 
   constructor(difficulty: Difficulty) {
-    this.numberOfBombs = this.flags = difficulty.numberOfBombs;
+    this.numberOfBombs = this.flagCounter = difficulty.numberOfBombs;
     this.initBoard(difficulty.boardDimension);
   }
 
@@ -30,7 +30,7 @@ export class Board {
     return this.fields.map(row => row.map(field => field.getValue()));
   }
 
-  showAll(): void {
+  checkAll(): void {
     this.fields.forEach(row => row.forEach(field => field.check()));
   }
 
@@ -64,10 +64,29 @@ export class Board {
     if (field.isChecked()) {
       return;
     }
+    if (field.isFlagged()) {
+      field.toggleFlag();
+      this.flagCounter++;
+    }
     field.check();
     if (field.getValue() === Field.clear) {
       this.applyAround(field, this.checkNear.bind(this));
     }
+  }
+
+  countUncheckedFields(): number {
+    return this.fields.reduce((acc, row) =>
+      row.filter(field => !field.isChecked()).length + acc, 0);
+  }
+
+  getFlagCounter(): number {
+    return this.flagCounter;
+  }
+
+  // Toggle flag on `field` and update the flag counter
+  toggleFlag(field: Field): void {
+    field.toggleFlag();
+    this.flagCounter += (field.isFlagged()) ? -1 : 1;
   }
 
   // Plant bombs on the board but avoid the first clicked field
@@ -86,7 +105,6 @@ export class Board {
         field.setValue(Field.bomb);
         this.applyAround(field, incrementValue);
       });
-    console.log(this.fieldsValues());
   }
 
 }

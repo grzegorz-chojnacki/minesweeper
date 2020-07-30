@@ -3,6 +3,7 @@
   [style.fontSize.px]="fieldSize / 2"
   [style.minHeight.px]="fieldSize"
   [style.minWidth.px]="fieldSize">
+  <p class="flags-counter">Flags: {{ board.getFlagCounter() }}</p>
   <div class="row-container"
     *ngFor="let row of board.getFields()"
     (contextmenu)="false">
@@ -16,10 +17,3 @@
     </button>
   </div>
 </div>
-<!-- Debug -->
-<button mat-mini-fab color="primary"
-  style="position: fixed; top: 100px; right: 50px;"
-  (click)="newBoard()"><mat-icon>cached</mat-icon></button>
-<button mat-mini-fab color="accent"
-  style="position: fixed; top: 150px; right: 50px;"
-  (click)="showAll()"><mat-icon>visibility</mat-icon></button>

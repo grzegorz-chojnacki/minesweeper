@@ -1,3 +1,9 @@
+.flags-counter {
+  opacity: 0.3;
+  text-align: left;
+  width: 100%;
+}
+
 .field {
   border-radius: 0;
   font-size: inherit;

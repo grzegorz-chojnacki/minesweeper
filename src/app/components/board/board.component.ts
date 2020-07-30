@@ -17,7 +17,7 @@ export class BoardComponent implements OnInit, OnChanges {
   board: Board;
 
   fieldColors = fieldColors;
-  gameOverSnackBarConfig = {
+  snackBarConfig = {
     duration: 8000,
     panelClass: ['dark-snack-bar']
   };
@@ -54,26 +54,33 @@ export class BoardComponent implements OnInit, OnChanges {
     }
     // Handle clicking on flags, safe fields and bomb
     if (field.isFlagged()) {
-      field.toggleFlag();
+      this.board.toggleFlag(field);
     } else if (field.getValue() !== Field.bomb) {
       this.board.checkNear(field);
     } else {
       this.showAll();
-      const gameOverSnackBar = this.snackBar.open('Game over', 'Restart',
-       this.gameOverSnackBarConfig);
+      const gameOverSnackBar = this.snackBar.open('Game over', 'Restart?',
+        this.snackBarConfig);
       gameOverSnackBar.onAction().subscribe(() => this.newBoard());
+    }
+    // Check win condition
+    if (this.board.countUncheckedFields() === this.difficulty.numberOfBombs) {
+      this.showAll();
+      const gameWonSnackBar = this.snackBar.open('You won!', 'Restart?',
+        this.snackBarConfig);
+      gameWonSnackBar.onAction().subscribe(() => this.newBoard());
     }
   }
 
   // Debug method
   showAll(): void {
-    this.board.showAll();
+    this.board.checkAll();
   }
 
   // Prevent showing context menu by returning false
   onRigthClick(field: Field): boolean {
-    if (!field.isChecked()) {
-      field.toggleFlag();
+    if (this.board.getFlagCounter() > 0 || field.isFlagged()) {
+      this.board.toggleFlag(field);
     }
     return false;
   }
