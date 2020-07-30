@@ -1,7 +1,7 @@
 export class Difficulty {
-  name: string;
-  boardDimension: number;
-  numberOfBombs: number;
+  public readonly name: string;
+  public readonly boardDimension: number;
+  public numberOfBombs: number;
 
   constructor(name: string, boardDimension: number, numberOfBombs: number) {
     this.name = name;
@@ -10,12 +10,15 @@ export class Difficulty {
   }
 }
 
+// Mutable custom difficulty
+export const customDifficulty = {
+  name: 'Custom',
+  boardDimension: undefined,
+  numberOfBombs: undefined
+};
+
+// Immutable difficulty presets
 export const difficulties: Difficulty[] = [
-  {
-    name: 'Custom',
-    boardDimension: undefined,
-    numberOfBombs: undefined
-  },
   {
     name: 'Beginner',
     boardDimension: 10,
