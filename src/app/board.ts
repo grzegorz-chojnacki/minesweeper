@@ -48,11 +48,13 @@ export class Board {
     const xIndices = getIndices(field.x).filter(valid);
     const yIndices = getIndices(field.y).filter(valid);
 
-    yIndices.forEach(y => xIndices.forEach(x => {
-      if (!(x === field.x && y === field.y)) {
-        fn(this.fields[y][x]);
+    for (const y of yIndices) {
+      for (const x of xIndices) {
+        if (!(x === field.x && y === field.y)) {
+          fn(this.fields[y][x]);
+        }
       }
-    }));
+    }
   }
 
   // Check `field` and if it has zero bombs around, then check every unchecked
