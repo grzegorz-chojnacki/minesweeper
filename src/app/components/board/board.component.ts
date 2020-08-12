@@ -18,7 +18,7 @@ export class BoardComponent implements OnInit, OnChanges {
   public board: Board;
   public fieldSize: number; // Size of each field on the board, in pixels
   private snackBarConfig = {
-    duration: 8000,
+    duration: 16000,
     panelClass: ['dark-snack-bar']
   };
 

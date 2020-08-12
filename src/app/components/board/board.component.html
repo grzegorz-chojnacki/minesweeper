@@ -7,7 +7,7 @@
   <div class="row-container"
     *ngFor="let row of board.fields"
     (contextmenu)="false">
-    <button mat-raised-button class="field"
+    <button mat-button class="field"
       *ngFor="let field of row"
       [disabled]="field.isChecked"
       (click)="onClick(field)"

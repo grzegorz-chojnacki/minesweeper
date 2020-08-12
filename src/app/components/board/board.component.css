@@ -4,7 +4,13 @@
   width: 100%;
 }
 
+.field:hover {
+  background-color: #424242
+}
+
 .field {
+  background-color: #3d3d3d;
+  border: 1px solid #363636;
   border-radius: 0;
   font-size: inherit;
   min-width: inherit;
@@ -14,6 +20,10 @@
   display: inline-flex; /* center bomb and flag icons */
   justify-content: center;
   align-items: center;
+}
+
+.field:disabled {
+  background-color: #363636;
 }
 
 .board-container {
