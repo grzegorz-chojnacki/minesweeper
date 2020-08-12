@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, OnChanges,
+         ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Difficulty } from 'src/app/difficulty';
 import { FieldSizeService } from '../../services/field-size.service';
@@ -8,7 +9,8 @@ import { Field } from '../../field';
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
-  styleUrls: ['./board.component.css']
+  styleUrls: ['./board.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BoardComponent implements OnInit, OnChanges {
   @Input() public difficulty: Difficulty;
@@ -20,8 +22,10 @@ export class BoardComponent implements OnInit, OnChanges {
     panelClass: ['dark-snack-bar']
   };
 
-  constructor(private fieldSizeService: FieldSizeService,
-              private snackBarService: MatSnackBar) { }
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private fieldSizeService: FieldSizeService,
+    private snackBarService: MatSnackBar) { }
 
   // Refresh the board after starting new game
   public ngOnChanges(changes: SimpleChanges): void {
@@ -31,7 +35,10 @@ export class BoardComponent implements OnInit, OnChanges {
 
   public ngOnInit(): void {
     this.fieldSizeService.fieldSize
-      .subscribe(fieldSize => this.fieldSize = fieldSize);
+      .subscribe(fieldSize => {
+        this.fieldSize = fieldSize;
+        this.cdr.markForCheck();
+      });
     this.newBoard(this.difficulty);
   }
 
@@ -39,6 +46,7 @@ export class BoardComponent implements OnInit, OnChanges {
     this.snackBarService.dismiss();
     this.isFirstClick = true;
     this.board = new Board(difficulty);
+    this.cdr.markForCheck();
   }
 
   public onClick(field: Field): void {
@@ -61,6 +69,7 @@ export class BoardComponent implements OnInit, OnChanges {
       this.showAll();
       this.spawnSnackBar('You won!');
     }
+    this.cdr.markForCheck();
   }
 
   private spawnSnackBar(title: string): void {

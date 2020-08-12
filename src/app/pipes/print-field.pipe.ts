@@ -35,7 +35,7 @@ export class PrintFieldPipe implements PipeTransform {
       : '';
   }
 
-  transform(value: number, isFlagged: boolean, isChecked: boolean): string {
+  public transform(value: number, isFlagged: boolean, isChecked: boolean): string {
     return (isChecked)
       ? this.asChecked(value)
       : this.asNotChecked(isFlagged);
