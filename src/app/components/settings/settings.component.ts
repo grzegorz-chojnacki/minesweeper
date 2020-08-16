@@ -15,21 +15,15 @@ export class SettingsComponent implements OnInit {
 
   public difficultyList = [customDifficulty, ...difficulties];
   public difficultyNames = this.difficultyList
-    .map(difficulty => difficulty.name);
+      .map(difficulty => difficulty.name);
 
-  private initialDifficulty: Difficulty = JSON.parse(
-    localStorage.getItem('difficulty')
-  ) || difficulties[0];
-
-  public settingsForm = this.formBuilder.group({
-    name: this.initialDifficulty.name,
-    boardDimension: this.initialDifficulty.boardDimension,
-    numberOfBombs: this.initialDifficulty.numberOfBombs
-  });
+  public settingsForm = this.formBuilder.group(
+    JSON.parse(localStorage.getItem('difficulty')) || difficulties[0]
+  );
 
   constructor(
-    public formBuilder: FormBuilder,
-    public fieldSizeService: FieldSizeService) { }
+      public formBuilder: FormBuilder,
+      public fieldSizeService: FieldSizeService) { }
 
   public onFieldSizeChange(event: MatSliderChange): void {
     this.fieldSizeService.setFieldSize(event.value);
@@ -40,10 +34,10 @@ export class SettingsComponent implements OnInit {
     const boardDimension = this.settingsForm.get('boardDimension').value;
     const numberOfBombs = this.settingsForm.get('numberOfBombs').value;
 
-    const preset = this.difficultyList.find(difficulty => {
-      return boardDimension === difficulty.boardDimension
-          && numberOfBombs  === difficulty.numberOfBombs;
-    }) || customDifficulty;
+    const preset = this.difficultyList.find(difficulty =>
+      boardDimension === difficulty.boardDimension
+      && numberOfBombs  === difficulty.numberOfBombs
+    ) || customDifficulty;
 
     this.settingsForm.patchValue({ name: preset.name }, { emitEvent: false });
   }
@@ -52,7 +46,7 @@ export class SettingsComponent implements OnInit {
   private updateInputs(): void {
     const difficultyName = this.settingsForm.get('name').value;
     const preset = this.difficultyList
-      .find(difficulty => difficulty.name === difficultyName);
+        .find(difficulty => difficulty.name === difficultyName);
 
     if (preset !== customDifficulty) {
       this.settingsForm.patchValue({
@@ -78,7 +72,7 @@ export class SettingsComponent implements OnInit {
 
     // Slider
     this.fieldSizeService.fieldSize
-      .subscribe(fieldSize => this.fieldSize = fieldSize);
+        .subscribe(fieldSize => this.fieldSize = fieldSize);
 
     this.newGameEvent.emit(this.settingsForm.value);
   }
@@ -112,7 +106,6 @@ export class SettingsComponent implements OnInit {
     );
     localStorage.setItem('difficulty', JSON.stringify(difficulty));
     this.newGameEvent.emit(difficulty);
-    console.log(difficulty);
   }
 
 }
