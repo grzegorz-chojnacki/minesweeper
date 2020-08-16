@@ -2,10 +2,10 @@
 
   <mat-form-field class="full-width" appearance="fill">
     <mat-label>Choose difficulty</mat-label>
-    <mat-select name="difficulty" formControlName="difficulty">
-      <mat-option *ngFor="let difficultyOption of difficultyList"
-        [value]="difficultyOption">
-        {{ difficultyOption.name }}
+    <mat-select formControlName="name">
+      <mat-option *ngFor="let difficultyName of difficultyNames"
+        [value]="difficultyName">
+        {{ difficultyName }}
       </mat-option>
     </mat-select>
   </mat-form-field>

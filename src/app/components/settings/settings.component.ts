@@ -22,7 +22,7 @@ export class SettingsComponent implements OnInit {
   ) || difficulties[0];
 
   public settingsForm = this.formBuilder.group({
-    difficulty: this.initialDifficulty,
+    name: this.initialDifficulty.name,
     boardDimension: this.initialDifficulty.boardDimension,
     numberOfBombs: this.initialDifficulty.numberOfBombs
   });
@@ -45,12 +45,15 @@ export class SettingsComponent implements OnInit {
           && numberOfBombs  === difficulty.numberOfBombs;
     }) || customDifficulty;
 
-    this.settingsForm.patchValue({ difficulty: preset }, { emitEvent: false });
+    this.settingsForm.patchValue({ name: preset.name }, { emitEvent: false });
   }
 
   // Set boardDimension & numberOfBombs to values from selected preset
   private updateInputs(): void {
-    const preset = this.settingsForm.get('difficulty').value;
+    const difficultyName = this.settingsForm.get('name').value;
+    const preset = this.difficultyList
+      .find(difficulty => difficulty.name === difficultyName);
+
     if (preset !== customDifficulty) {
       this.settingsForm.patchValue({
         boardDimension: preset.boardDimension,
@@ -62,7 +65,7 @@ export class SettingsComponent implements OnInit {
   // Setup form and slider control and emit initial new game event
   public ngOnInit(): void {
     // Select
-    this.settingsForm.get('difficulty').valueChanges.subscribe(
+    this.settingsForm.get('name').valueChanges.subscribe(
       () => this.updateInputs()
     );
 
@@ -77,7 +80,7 @@ export class SettingsComponent implements OnInit {
     this.fieldSizeService.fieldSize
       .subscribe(fieldSize => this.fieldSize = fieldSize);
 
-    this.newGameEvent.emit(this.settingsForm.get('difficulty').value);
+    this.newGameEvent.emit(this.settingsForm.value);
   }
 
   // public isBoardDimensionInvalid(): boolean {
@@ -103,7 +106,7 @@ export class SettingsComponent implements OnInit {
   // Emit event with cloned difficulty object to force change detection
   public onSubmit(): void {
     const difficulty: Difficulty = new Difficulty(
-      this.settingsForm.get('difficulty').value.name,
+      this.settingsForm.get('name').value,
       this.settingsForm.get('boardDimension').value,
       this.settingsForm.get('numberOfBombs').value
     );
