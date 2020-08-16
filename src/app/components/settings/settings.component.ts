@@ -69,8 +69,6 @@ export class SettingsComponent implements OnInit {
       Validators.max(this.maxNumberOfBombs)
     ]);
 
-    this.settingsForm.get('boardDimension').invalid
-
     this.settingsForm.get('boardDimension')
       .updateValueAndValidity({ emitEvent: false });
     this.settingsForm.get('numberOfBombs')
