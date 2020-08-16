@@ -10,14 +10,14 @@ export class Difficulty {
   }
 }
 
-// Mutable custom difficulty
-export const customDifficulty = {
+// Special custom difficulty
+export const customDifficulty: Difficulty = {
   name: 'Custom',
   boardDimension: undefined,
   numberOfBombs: undefined
 };
 
-// Immutable difficulty presets
+// Difficulty presets
 export const difficulties: Difficulty[] = [
   {
     name: 'Beginner',

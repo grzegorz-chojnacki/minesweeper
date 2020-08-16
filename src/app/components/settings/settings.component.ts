@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { Difficulty, difficulties, customDifficulty } from '../../difficulty';
 import { FieldSizeService } from '../../services/field-size.service';
 import { MatSliderChange } from '@angular/material/slider';
@@ -13,79 +14,102 @@ export class SettingsComponent implements OnInit {
   public fieldSize: number;
 
   public difficultyList = [customDifficulty, ...difficulties];
-  public difficultyNames = difficulties.map(difficulty => difficulty.name);
-  public difficulty: Difficulty;
+  public difficultyNames = this.difficultyList
+    .map(difficulty => difficulty.name);
 
-  // Inputs
-  public numberOfBombs: number;
-  public boardDimension: number;
+  private initialDifficulty: Difficulty = JSON.parse(
+    localStorage.getItem('difficulty')
+  ) || difficulties[0];
 
-  // Update inputs based on selected preset, but prevent setting them to
-  // undefined if the user chooses the 'Custom' preset
-  public onSelectUpdate(): void {
-    if (this.difficulty !== customDifficulty) {
-      this.boardDimension = this.difficulty.boardDimension;
-      this.numberOfBombs = this.difficulty.numberOfBombs;
-    }
-  }
+  public settingsForm = this.formBuilder.group({
+    difficulty: this.initialDifficulty,
+    boardDimension: this.initialDifficulty.boardDimension,
+    numberOfBombs: this.initialDifficulty.numberOfBombs
+  });
 
-  // Try to match current input values to existing preset, or set it as custom
-  public onInputUpdate(): void {
-    // Update values on custom difficulty setting
-    customDifficulty.boardDimension = this.boardDimension;
-    customDifficulty.numberOfBombs = this.numberOfBombs;
-
-    this.difficulty = difficulties.find(difficulty => {
-      return this.boardDimension === difficulty.boardDimension
-          && this.numberOfBombs  === difficulty.numberOfBombs;
-    }) || customDifficulty;
-  }
+  constructor(
+    public formBuilder: FormBuilder,
+    public fieldSizeService: FieldSizeService) { }
 
   public onFieldSizeChange(event: MatSliderChange): void {
     this.fieldSizeService.setFieldSize(event.value);
   }
 
-  constructor(public fieldSizeService: FieldSizeService) { }
+  // Try to match difficulty preset with boardDimension & numberOfBombs values
+  private updateSelect(): void {
+    const boardDimension = this.settingsForm.get('boardDimension').value;
+    const numberOfBombs = this.settingsForm.get('numberOfBombs').value;
 
-  // Initialize settings with saved values and emit initial new game event
+    const preset = this.difficultyList.find(difficulty => {
+      return boardDimension === difficulty.boardDimension
+          && numberOfBombs  === difficulty.numberOfBombs;
+    }) || customDifficulty;
+
+    this.settingsForm.patchValue({ difficulty: preset }, { emitEvent: false });
+  }
+
+  // Set boardDimension & numberOfBombs to values from selected preset
+  private updateInputs(): void {
+    const preset = this.settingsForm.get('difficulty').value;
+    if (preset !== customDifficulty) {
+      this.settingsForm.patchValue({
+        boardDimension: preset.boardDimension,
+        numberOfBombs: preset.numberOfBombs
+      }, { emitEvent: false });
+    }
+  }
+
+  // Setup form and slider control and emit initial new game event
   public ngOnInit(): void {
+    // Select
+    this.settingsForm.get('difficulty').valueChanges.subscribe(
+      () => this.updateInputs()
+    );
+
+    // Inputs
+    [
+      this.settingsForm.get('numberOfBombs'),
+      this.settingsForm.get('boardDimension')
+    ].map(input => input.valueChanges
+     .subscribe(() => this.updateSelect()));
+
+    // Slider
     this.fieldSizeService.fieldSize
       .subscribe(fieldSize => this.fieldSize = fieldSize);
 
-    this.difficulty = JSON.parse(localStorage.getItem('difficulty'))
-      || difficulties[0];
-
-    this.boardDimension = this.difficulty.boardDimension;
-    this.numberOfBombs = this.difficulty.numberOfBombs;
-
-    this.onInputUpdate(); // Refresh select component
-    this.newGameEvent.emit(this.difficulty);
+    this.newGameEvent.emit(this.settingsForm.get('difficulty').value);
   }
 
-  public isBoardDimensionInvalid(): boolean {
-    return this.difficulty.boardDimension < 1;
-  }
+  // public isBoardDimensionInvalid(): boolean {
+  //   return this.difficulty.boardDimension < 1;
+  // }
 
-  // Every field on the board can have a bomb, except the clicked one
-  public maxNumberOfBombs(): number {
-    return this.difficulty.boardDimension ** 2 - 1;
-  }
+  // // Every field on the board can have a bomb, except the clicked one
+  // public maxNumberOfBombs(): number {
+  //   return this.difficulty.boardDimension ** 2 - 1;
+  // }
 
-  public isNumberOfBombsInvalid(): boolean {
-    return this.difficulty.numberOfBombs < 0 ||
-      this.difficulty.numberOfBombs > this.maxNumberOfBombs();
-  }
+  // public isNumberOfBombsInvalid(): boolean {
+  //   return this.difficulty.numberOfBombs < 0 ||
+  //     this.difficulty.numberOfBombs > this.maxNumberOfBombs();
+  // }
 
-  public isInvalid(): boolean {
-    return this.isNumberOfBombsInvalid() ||
-      this.isBoardDimensionInvalid();
-  }
+  // public isInvalid(): boolean {
+  //   return this.isNumberOfBombsInvalid() ||
+  //     this.isBoardDimensionInvalid();
+  // }
 
   // Save newest difficulty setting
   // Emit event with cloned difficulty object to force change detection
-  public start(): void {
-    localStorage.setItem('difficulty', JSON.stringify(this.difficulty));
-    this.newGameEvent.emit(Object.create(this.difficulty));
+  public onSubmit(): void {
+    const difficulty: Difficulty = new Difficulty(
+      this.settingsForm.get('difficulty').value.name,
+      this.settingsForm.get('boardDimension').value,
+      this.settingsForm.get('numberOfBombs').value
+    );
+    localStorage.setItem('difficulty', JSON.stringify(difficulty));
+    this.newGameEvent.emit(difficulty);
+    console.log(difficulty);
   }
 
 }

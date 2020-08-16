@@ -12,8 +12,7 @@
       [disabled]="field.isChecked"
       (click)="onClick(field)"
       (contextmenu)="onRigthClick(field)"
-      [innerHtml]="field.value |
-        printField:field.isFlagged:field.isChecked">
+      [innerHtml]="field.value | printField:field.isFlagged:field.isChecked">
     </button>
   </div>
 </div>

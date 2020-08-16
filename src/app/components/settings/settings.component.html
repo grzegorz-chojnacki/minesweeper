@@ -1,27 +1,25 @@
-<form>
+<form [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
+
   <mat-form-field class="full-width" appearance="fill">
     <mat-label>Choose difficulty</mat-label>
-    <mat-select name="difficulty" [(ngModel)]="difficulty"
-      (ngModelChange)="onSelectUpdate()">
+    <mat-select name="difficulty" formControlName="difficulty">
       <mat-option *ngFor="let difficultyOption of difficultyList"
         [value]="difficultyOption">
         {{ difficultyOption.name }}
       </mat-option>
     </mat-select>
   </mat-form-field>
+
   <mat-form-field class="full-width" appearance="fill">
     <mat-label>Board dimension</mat-label>
-    <input matInput type="number" name="boardDimension" min="1" max="50"
-      [(ngModel)]="boardDimension"
-      (change)="onInputUpdate()">
+    <input matInput type="number" formControlName="boardDimension">
   </mat-form-field>
+
   <mat-form-field class="full-width" appearance="fill">
     <mat-label>Number of bombs</mat-label>
-    <input matInput type="number" name="numberOfBombs" min="0"
-      [max]="maxNumberOfBombs()"
-      [(ngModel)]="numberOfBombs"
-      (change)="onInputUpdate()">
+    <input matInput type="number" formControlName="numberOfBombs">
   </mat-form-field>
+
   <div class="field-width-container">
     <h4>Field width</h4>
     <div class="slider-container">
@@ -35,7 +33,7 @@
       <span [innerHTML]="slider.value + 'px'"></span>
     </div>
   </div>
-  <button class="start-button" [disabled]="isInvalid()" mat-raised-button
-    color="primary" (click)="start()">Start</button>
-  <mat-hint class="error-hint" *ngIf="isInvalid()">Invalid values</mat-hint>
+
+  <button class="start-button" [disabled]="!settingsForm.valid" mat-raised-button
+    color="primary" type="submit">Start</button>
 </form>
