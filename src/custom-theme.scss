@@ -16,7 +16,7 @@ $minesweeper-primary: mat-palette($mat-pink, 500);
 $minesweeper-accent: mat-palette($mat-amber, 600);
 
 // The warn palette is optional (defaults to red).
-$minesweeper-warn: mat-palette($mat-red);
+$minesweeper-warn: mat-palette($mat-amber, 600);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
