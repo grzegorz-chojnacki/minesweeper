@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Difficulty, difficulties, customDifficulty } from '../../difficulty';
 import { FieldSizeService } from '../../services/field-size.service';
 import { MatSliderChange } from '@angular/material/slider';
@@ -15,15 +15,16 @@ export class SettingsComponent implements OnInit {
 
   public difficultyList = [customDifficulty, ...difficulties];
   public difficultyNames = this.difficultyList
-      .map(difficulty => difficulty.name);
+    .map(difficulty => difficulty.name);
 
   public settingsForm = this.formBuilder.group(
     JSON.parse(localStorage.getItem('difficulty')) || difficulties[0]
   );
+  public maxNumberOfBombs = this.getMaxNumberOfBombs();
 
   constructor(
-      public formBuilder: FormBuilder,
-      public fieldSizeService: FieldSizeService) { }
+    public formBuilder: FormBuilder,
+    public fieldSizeService: FieldSizeService) { }
 
   public onFieldSizeChange(event: MatSliderChange): void {
     this.fieldSizeService.setFieldSize(event.value);
@@ -36,7 +37,7 @@ export class SettingsComponent implements OnInit {
 
     const preset = this.difficultyList.find(difficulty =>
       boardDimension === difficulty.boardDimension
-      && numberOfBombs  === difficulty.numberOfBombs
+      && numberOfBombs === difficulty.numberOfBombs
     ) || customDifficulty;
 
     this.settingsForm.patchValue({ name: preset.name }, { emitEvent: false });
@@ -46,7 +47,7 @@ export class SettingsComponent implements OnInit {
   private updateInputs(): void {
     const difficultyName = this.settingsForm.get('name').value;
     const preset = this.difficultyList
-        .find(difficulty => difficulty.name === difficultyName);
+      .find(difficulty => difficulty.name === difficultyName);
 
     if (preset !== customDifficulty) {
       this.settingsForm.patchValue({
@@ -56,23 +57,50 @@ export class SettingsComponent implements OnInit {
     }
   }
 
+  private getMaxNumberOfBombs(): number {
+    return this.settingsForm.get('boardDimension').value ** 2 - 1;
+  }
+
+  private inputValidation(): void {
+    this.maxNumberOfBombs = this.getMaxNumberOfBombs();
+
+    this.settingsForm.get('numberOfBombs').setValidators([
+      Validators.required, Validators.min(0),
+      Validators.max(this.maxNumberOfBombs)
+    ]);
+
+    this.settingsForm.get('boardDimension').invalid
+
+    this.settingsForm.get('boardDimension')
+      .updateValueAndValidity({ emitEvent: false });
+    this.settingsForm.get('numberOfBombs')
+      .updateValueAndValidity({ emitEvent: false });
+  }
+
   // Setup form and slider control and emit initial new game event
   public ngOnInit(): void {
     // Select
-    this.settingsForm.get('name').valueChanges.subscribe(
-      () => this.updateInputs()
-    );
+    this.settingsForm.get('name').valueChanges
+      .subscribe(() => this.updateInputs());
 
     // Inputs
     [
-      this.settingsForm.get('numberOfBombs'),
-      this.settingsForm.get('boardDimension')
+      this.settingsForm.get('boardDimension'),
+      this.settingsForm.get('numberOfBombs')
     ].map(input => input.valueChanges
-     .subscribe(() => this.updateSelect()));
+      .subscribe(() => {
+        this.updateSelect();
+        this.inputValidation();
+      })
+    );
+
+    this.settingsForm.get('boardDimension').setValidators([
+      Validators.required, Validators.min(1), Validators.max(50)
+    ]);
 
     // Slider
     this.fieldSizeService.fieldSize
-        .subscribe(fieldSize => this.fieldSize = fieldSize);
+      .subscribe(fieldSize => this.fieldSize = fieldSize);
 
     this.newGameEvent.emit(this.settingsForm.value);
   }
@@ -105,6 +133,7 @@ export class SettingsComponent implements OnInit {
       this.settingsForm.get('numberOfBombs').value
     );
     localStorage.setItem('difficulty', JSON.stringify(difficulty));
+    console.log(difficulty);
     this.newGameEvent.emit(difficulty);
   }
 
