@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, ValidationErrors } from '@angular/forms';
 import { Difficulty, difficulties, customDifficulty } from '../../difficulty';
 import { FieldSizeService } from '../../services/field-size.service';
 import { MatSliderChange } from '@angular/material/slider';
@@ -24,7 +24,8 @@ export class SettingsComponent implements OnInit {
     .map(difficulty => difficulty.name);
 
   public settingsForm = this.formBuilder.group(
-    JSON.parse(localStorage.getItem('difficulty')) || difficulties[0]
+    JSON.parse(localStorage.getItem('difficulty')) || difficulties[0],
+    { validator: this.settingsFormValidator }
   );
   public maxNumberOfBombs = this.getMaxNumberOfBombs();
 
@@ -67,7 +68,29 @@ export class SettingsComponent implements OnInit {
     return this.settingsForm.get('boardDimension').value ** 2 - 1;
   }
 
-  private inputValidation(): void {
+  // Indicate error on both inputs, when boarDimension is invalid
+  private settingsFormValidator(fg: FormGroup): ValidationErrors {
+    if (fg.get('boardDimension').invalid) {
+      fg.get('numberOfBombs').setErrors({ undefinedDimension: true });
+    } else {
+      return null;
+    }
+  }
+
+  // Dynamic error messages
+  public getNumberOfBombsError(): string {
+    if (this.settingsForm.get('boardDimension').invalid) {
+      return 'Board dimension must be valid';
+    } else if (this.settingsForm.get('boardDimension').value === 1) {
+      return 'Must be 0';
+    } else if (this.settingsForm.get('numberOfBombs').value > 0) {
+      return `Must be between 0 and ${this.maxNumberOfBombs}`;
+    } else {
+      return 'Cannot be negative';
+    }
+  }
+
+  private refreshValidators(): void {
     this.maxNumberOfBombs = this.getMaxNumberOfBombs();
 
     this.settingsForm.get('numberOfBombs').setValidators([
@@ -85,7 +108,10 @@ export class SettingsComponent implements OnInit {
   public ngOnInit(): void {
     // Select
     this.settingsForm.get('name').valueChanges
-      .subscribe(() => this.updateInputs());
+      .subscribe(() => {
+        this.updateInputs();
+        this.refreshValidators();
+      });
 
     // Inputs
     [
@@ -94,13 +120,17 @@ export class SettingsComponent implements OnInit {
     ].map(input => input.valueChanges
       .subscribe(() => {
         this.updateSelect();
-        this.inputValidation();
+        this.refreshValidators();
       })
     );
 
+    // boardDimension validators (numberOfBombs validators are based
+    // on boardDimension, so they are added/updated in `this.refreshValidators`)
     this.settingsForm.get('boardDimension').setValidators([
       Validators.required, Validators.min(1), Validators.max(50)
     ]);
+    // Untouched inputs doesn't show if they are invalid
+    this.settingsForm.markAllAsTouched();
 
     // Slider
     this.fieldSizeService.fieldSize
