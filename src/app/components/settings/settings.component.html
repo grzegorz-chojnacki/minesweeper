@@ -44,6 +44,6 @@
     </div>
   </div>
 
-  <button class="start-button" [disabled]="!settingsForm.valid" mat-raised-button
-    color="primary" type="submit">Start</button>
+  <button class="start-button" mat-raised-button color="primary" type="submit"
+    [disabled]="settingsForm.invalid">Start</button>
 </form>

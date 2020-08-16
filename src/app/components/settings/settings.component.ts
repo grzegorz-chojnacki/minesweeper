@@ -10,6 +10,7 @@ import { MatSliderChange } from '@angular/material/slider';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
+  @Output() public closeSidenav = new EventEmitter<void>();
   @Output() public newGameEvent = new EventEmitter<Difficulty>();
   public fieldSize: number;
 
@@ -133,6 +134,7 @@ export class SettingsComponent implements OnInit {
     localStorage.setItem('difficulty', JSON.stringify(difficulty));
     console.log(difficulty);
     this.newGameEvent.emit(difficulty);
+    this.closeSidenav.emit();
   }
 
 }
