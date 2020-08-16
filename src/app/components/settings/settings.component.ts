@@ -14,7 +14,10 @@ export class SettingsComponent implements OnInit {
   @Output() public newGameEvent = new EventEmitter<Difficulty>();
   public fieldSize: number;
   public shouldCloseSidenav =
-    localStorage.getItem('shouldCloseSidenav') === 'true';
+    (localStorage.getItem('shouldCloseSidenav') !== null)
+    ? localStorage.getItem('shouldCloseSidenav') === 'true'
+    : true; // Initialize to true if this item is undefined
+
 
   public difficultyList = [customDifficulty, ...difficulties];
   public difficultyNames = this.difficultyList
@@ -106,7 +109,7 @@ export class SettingsComponent implements OnInit {
     this.newGameEvent.emit(this.settingsForm.value);
   }
 
-  public onCheckboxAction(): void {
+  public onCheckboxChange(): void {
     const state = this.shouldCloseSidenav.toString();
     localStorage.setItem('shouldCloseSidenav', state);
   }
