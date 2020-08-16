@@ -104,27 +104,7 @@ export class SettingsComponent implements OnInit {
     this.newGameEvent.emit(this.settingsForm.value);
   }
 
-  // public isBoardDimensionInvalid(): boolean {
-  //   return this.difficulty.boardDimension < 1;
-  // }
-
-  // // Every field on the board can have a bomb, except the clicked one
-  // public maxNumberOfBombs(): number {
-  //   return this.difficulty.boardDimension ** 2 - 1;
-  // }
-
-  // public isNumberOfBombsInvalid(): boolean {
-  //   return this.difficulty.numberOfBombs < 0 ||
-  //     this.difficulty.numberOfBombs > this.maxNumberOfBombs();
-  // }
-
-  // public isInvalid(): boolean {
-  //   return this.isNumberOfBombsInvalid() ||
-  //     this.isBoardDimensionInvalid();
-  // }
-
-  // Save newest difficulty setting
-  // Emit event with cloned difficulty object to force change detection
+  // Save newest difficulty setting and emit events
   public onSubmit(): void {
     const difficulty: Difficulty = new Difficulty(
       this.settingsForm.get('name').value,
