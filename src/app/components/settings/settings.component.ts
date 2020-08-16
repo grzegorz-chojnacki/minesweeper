@@ -18,7 +18,6 @@ export class SettingsComponent implements OnInit {
     ? localStorage.getItem('shouldCloseSidenav') === 'true'
     : true; // Initialize to true if this item is undefined
 
-
   public difficultyList = [customDifficulty, ...difficulties];
   public difficultyNames = this.difficultyList
     .map(difficulty => difficulty.name);
@@ -104,8 +103,7 @@ export class SettingsComponent implements OnInit {
       .updateValueAndValidity({ emitEvent: false });
   }
 
-  // Setup form and slider control and emit initial new game event
-  public ngOnInit(): void {
+  private setupSubscriptions(): void {
     // Select
     this.settingsForm.get('name').valueChanges
       .subscribe(() => {
@@ -114,16 +112,22 @@ export class SettingsComponent implements OnInit {
       });
 
     // Inputs
-    [
-      this.settingsForm.get('boardDimension'),
-      this.settingsForm.get('numberOfBombs')
-    ].map(input => input.valueChanges
+    [this.settingsForm.get('boardDimension'),
+     this.settingsForm.get('numberOfBombs')]
+    .map(input => input.valueChanges
       .subscribe(() => {
         this.updateSelect();
         this.refreshValidators();
-      })
-    );
+    }));
 
+    // Slider
+    this.fieldSizeService.fieldSize
+      .subscribe(fieldSize => this.fieldSize = fieldSize);
+  }
+
+  // Setup form and slider control and emit initial new game event
+  public ngOnInit(): void {
+    this.setupSubscriptions();
     // boardDimension validators (numberOfBombs validators are based
     // on boardDimension, so they are added/updated in `this.refreshValidators`)
     this.settingsForm.get('boardDimension').setValidators([
@@ -131,11 +135,6 @@ export class SettingsComponent implements OnInit {
     ]);
     // Untouched inputs doesn't show if they are invalid
     this.settingsForm.markAllAsTouched();
-
-    // Slider
-    this.fieldSizeService.fieldSize
-      .subscribe(fieldSize => this.fieldSize = fieldSize);
-
     this.newGameEvent.emit(this.settingsForm.value);
   }
 
@@ -146,14 +145,9 @@ export class SettingsComponent implements OnInit {
 
   // Save newest difficulty setting and emit events
   public onSubmit(): void {
-    const difficulty: Difficulty = new Difficulty(
-      this.settingsForm.get('name').value,
-      this.settingsForm.get('boardDimension').value,
-      this.settingsForm.get('numberOfBombs').value
-    );
-    localStorage.setItem('difficulty', JSON.stringify(difficulty));
+    localStorage.setItem('difficulty', JSON.stringify(this.settingsForm.value));
 
-    this.newGameEvent.emit(difficulty);
+    this.newGameEvent.emit(this.settingsForm.value);
     if (this.shouldCloseSidenav) {
       this.closeSidenav.emit();
     }
