@@ -17,13 +17,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SettingsComponent } from './components/settings/settings.component';
 import { BoardComponent } from './components/board/board.component';
 import { PrintFieldPipe } from './pipes/print-field.pipe';
+import { BombPercentagePipe } from './pipes/bomb-percentage.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     SettingsComponent,
     BoardComponent,
-    PrintFieldPipe
+    PrintFieldPipe,
+    BombPercentagePipe
   ],
   imports: [
     BrowserModule,
