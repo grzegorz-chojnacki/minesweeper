@@ -13,6 +13,8 @@ export class SettingsComponent implements OnInit {
   @Output() public closeSidenav = new EventEmitter<void>();
   @Output() public newGameEvent = new EventEmitter<Difficulty>();
   public fieldSize: number;
+  public shouldCloseSidenav =
+    localStorage.getItem('shouldCloseSidenav') === 'true';
 
   public difficultyList = [customDifficulty, ...difficulties];
   public difficultyNames = this.difficultyList
@@ -104,6 +106,11 @@ export class SettingsComponent implements OnInit {
     this.newGameEvent.emit(this.settingsForm.value);
   }
 
+  public onCheckboxAction(): void {
+    const state = this.shouldCloseSidenav.toString();
+    localStorage.setItem('shouldCloseSidenav', state);
+  }
+
   // Save newest difficulty setting and emit events
   public onSubmit(): void {
     const difficulty: Difficulty = new Difficulty(
@@ -112,9 +119,11 @@ export class SettingsComponent implements OnInit {
       this.settingsForm.get('numberOfBombs').value
     );
     localStorage.setItem('difficulty', JSON.stringify(difficulty));
-    console.log(difficulty);
+
     this.newGameEvent.emit(difficulty);
-    this.closeSidenav.emit();
+    if (this.shouldCloseSidenav) {
+      this.closeSidenav.emit();
+    }
   }
 
 }

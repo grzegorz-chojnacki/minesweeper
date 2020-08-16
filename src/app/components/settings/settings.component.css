@@ -3,14 +3,15 @@
 }
 
 .field-width-container {
-  margin: 1em 0 2em;
+  margin: 1em 0;
 }
 
 .input {
   width: 100%;
-  padding-bottom: 0.5em;
+  margin-bottom: 0.5em;
 }
 
+/* Make slider grow and fix clipping with pixel width label*/
 .slider-longer {
   flex-grow: 1;
   margin-right: 0.5em;
@@ -24,4 +25,13 @@ h4 {
   display: flex;
   align-items: center;
   margin: 0 1em;
+}
+
+.divider {
+  margin: 2em 0;
+}
+
+.checkbox-container {
+  margin: 0 1em;
+  text-align: left;
 }

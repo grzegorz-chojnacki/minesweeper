@@ -47,3 +47,7 @@
   <button class="start-button" mat-raised-button color="primary" type="submit"
     [disabled]="settingsForm.invalid">Start</button>
 </form>
+<mat-divider class="divider"></mat-divider>
+<div class="checkbox-container">
+  <mat-checkbox color="primary" [(ngModel)]="shouldCloseSidenav" (click)="onCheckboxAction()">Auto hide Sidenav</mat-checkbox>
+</div>
