@@ -25,7 +25,7 @@
             ],
             "styles": [
               "src/custom-theme.scss",
-              "src/styles.css"
+              "src/styles.scss"
             ],
             "scripts": []
           },
@@ -126,5 +126,10 @@
       }
     }
   },
-  "defaultProject": "minesweeper"
+  "defaultProject": "minesweeper",
+  "schematics": {
+    "@schematics/angular:component": {
+      "styleext": "scss"
+    }
+  }
 }
