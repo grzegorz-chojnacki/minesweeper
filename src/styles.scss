@@ -1,3 +1,5 @@
+@import './custom-theme.scss';
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
@@ -10,35 +12,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background-color: #9E9E9E;
 }
 
-/* Material gradient palette: Pink400 -> Amber500 */
-.color-1 {
-  color: #EC407A;
+@mixin two-tone-palette($colorA, $colorB, $colorsCount) {
+  @for $i from 0 to $colorsCount {
+    .color-#{$i + 1} {
+      color: mix($colorB, $colorA, 100% * $i / ($colorsCount - 1));
+    }
+  }
 }
 
-.color-2 {
-  color: #EF526A;
-}
+$primary: mat-color(map-get($theme, primary));
+$accent: mat-color(map-get($theme, accent));
 
-.color-3 {
-  color: #F16559;
-}
-
-.color-4 {
-  color: #F47749;
-}
-
-.color-5 {
-  color: #F78A38;
-}
-
-.color-6 {
-  color: #FA9C28;
-}
-
-.color-7 {
-  color: #FCAF17;
-}
-
-.color-8 {
-  color: #FFC107;
-}
+// Gradient palette used for bomb hints
+@include two-tone-palette($primary, $accent, 8);

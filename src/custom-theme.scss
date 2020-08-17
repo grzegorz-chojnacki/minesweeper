@@ -12,23 +12,23 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$minesweeper-primary: mat-palette($mat-pink, 500);
-$minesweeper-accent: mat-palette($mat-amber, 600);
+$primary: mat-palette($mat-pink, 500);
+$accent: mat-palette($mat-amber, 600);
 
 // The warn palette is optional (defaults to red).
-$minesweeper-warn: mat-palette($mat-amber, 600);
+$warn: mat-palette($mat-amber, 600);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$minesweeper-theme: mat-dark-theme((
+$theme: mat-dark-theme((
   color: (
-    primary: $minesweeper-primary,
-    accent: $minesweeper-accent,
-    warn: $minesweeper-warn,
+    primary: $primary,
+    accent: $accent,
+    warn: $warn,
   )
 ));
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include angular-material-theme($minesweeper-theme);
+@include angular-material-theme($theme);
