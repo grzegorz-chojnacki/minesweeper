@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, ValidationErrors } from '@angular/forms';
 import { Difficulty, difficulties, customDifficulty } from '../../difficulty';
 import { FieldSizeService } from '../../services/field-size.service';
+import { DifficultyService } from '../../services/difficulty.service';
 import { MatSliderChange } from '@angular/material/slider';
 
 @Component({
@@ -11,7 +12,6 @@ import { MatSliderChange } from '@angular/material/slider';
 })
 export class SettingsComponent implements OnInit {
   @Output() public closeSidenav = new EventEmitter<void>();
-  @Output() public newGameEvent = new EventEmitter<Difficulty>();
   public fieldSize: number;
   public shouldCloseSidenav =
     (localStorage.getItem('shouldCloseSidenav') !== null)
@@ -23,14 +23,15 @@ export class SettingsComponent implements OnInit {
     .map(difficulty => difficulty.name);
 
   public settingsForm = this.formBuilder.group(
-    JSON.parse(localStorage.getItem('difficulty')) || difficulties[0],
+    this.difficultyService.initialDifficulty,
     { validator: this.settingsFormValidator }
   );
   public maxNumberOfBombs = this.getMaxNumberOfBombs();
 
   constructor(
     public formBuilder: FormBuilder,
-    public fieldSizeService: FieldSizeService) { }
+    public fieldSizeService: FieldSizeService,
+    private difficultyService: DifficultyService) { }
 
   public onFieldSizeChange(event: MatSliderChange): void {
     this.fieldSizeService.setFieldSize(event.value);
@@ -125,7 +126,7 @@ export class SettingsComponent implements OnInit {
       .subscribe(fieldSize => this.fieldSize = fieldSize);
   }
 
-  // Setup form and slider control and emit initial new game event
+  // Setup form and slider control
   public ngOnInit(): void {
     this.setupSubscriptions();
     // boardDimension validators (numberOfBombs validators are based
@@ -135,7 +136,6 @@ export class SettingsComponent implements OnInit {
     ]);
     // Untouched inputs doesn't show if they are invalid
     this.settingsForm.markAllAsTouched();
-    this.newGameEvent.emit(this.settingsForm.value);
   }
 
   public onCheckboxChange(): void {
@@ -143,11 +143,10 @@ export class SettingsComponent implements OnInit {
     localStorage.setItem('shouldCloseSidenav', state);
   }
 
-  // Save newest difficulty setting and emit events
+  // Start new game (restart) and close sidenav if specified
   public onSubmit(): void {
-    localStorage.setItem('difficulty', JSON.stringify(this.settingsForm.value));
+    this.difficultyService.newDifficulty(this.settingsForm.value);
 
-    this.newGameEvent.emit(this.settingsForm.value);
     if (this.shouldCloseSidenav) {
       this.closeSidenav.emit();
     }

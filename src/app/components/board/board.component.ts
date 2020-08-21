@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, SimpleChanges, OnChanges,
-         ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy,
+         ChangeDetectorRef } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Difficulty } from 'src/app/difficulty';
 import { FieldSizeService } from '../../services/field-size.service';
+import { DifficultyService } from '../../services/difficulty.service';
 import { Board } from '../../board';
 import { Field } from '../../field';
 
@@ -12,7 +13,7 @@ import { Field } from '../../field';
   styleUrls: ['./board.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BoardComponent implements OnInit, OnChanges {
+export class BoardComponent implements OnInit {
   @Input() public difficulty: Difficulty;
   private isFirstClick: boolean;
   public board: Board;
@@ -29,13 +30,8 @@ export class BoardComponent implements OnInit, OnChanges {
   constructor(
     private cdr: ChangeDetectorRef,
     private fieldSizeService: FieldSizeService,
+    private difficultyService: DifficultyService,
     private snackBarService: MatSnackBar) { }
-
-  // Refresh the board after starting new game
-  public ngOnChanges(changes: SimpleChanges): void {
-    this.difficulty = changes.difficulty.currentValue;
-    this.newBoard(this.difficulty);
-  }
 
   public ngOnInit(): void {
     this.fieldSizeService.fieldSize
@@ -43,7 +39,12 @@ export class BoardComponent implements OnInit, OnChanges {
         this.fieldSize = fieldSize;
         this.cdr.markForCheck();
       });
-    this.newBoard(this.difficulty);
+
+    this.difficultyService.difficulty
+      .subscribe(difficulty => {
+        this.difficulty = difficulty;
+        this.newBoard(this.difficulty);
+      });
   }
 
   private newBoard(difficulty: Difficulty): void {
