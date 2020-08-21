@@ -18,13 +18,10 @@ export class BoardComponent implements OnInit {
   private isFirstClick: boolean;
   public board: Board;
   public fieldSize: number; // Size of each field on the board, in pixels
-  private gameWon: MatSnackBarConfig = {
-    duration: 16000,
-    panelClass: ['game-won-snack-bar']
-  };
-  private gameOver: MatSnackBarConfig = {
-    duration: 16000,
-    panelClass: ['game-over-snack-bar']
+
+  private readonly snackBarConfig: { [state: string]: MatSnackBarConfig } = {
+    gameWon:  { duration: 16000, panelClass: ['game-won-snack-bar'] },
+    gameOver: { duration: 16000, panelClass: ['game-over-snack-bar'] }
   };
 
   constructor(
@@ -67,12 +64,12 @@ export class BoardComponent implements OnInit {
       this.board.checkNear(field);
     } else {
       this.showAll();
-      this.spawnSnackBar('Game over', this.gameOver);
+      this.spawnSnackBar('Game over', this.snackBarConfig.gameOver);
     }
     // Check win condition
     if (this.board.countUncheckedFields() === this.difficulty.numberOfBombs) {
       this.showAll();
-      this.spawnSnackBar('You won!', this.gameWon);
+      this.spawnSnackBar('You won!', this.snackBarConfig.gameWon);
     }
     this.cdr.markForCheck();
   }

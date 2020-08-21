@@ -6,7 +6,7 @@ import { Difficulty, difficulties } from '../difficulty';
   providedIn: 'root'
 })
 export class DifficultyService {
-  public initialDifficulty: Difficulty =
+  public readonly initialDifficulty: Difficulty =
     JSON.parse(localStorage.getItem('difficulty')) || difficulties[0];
 
   private difficultySource = new BehaviorSubject(this.initialDifficulty);
