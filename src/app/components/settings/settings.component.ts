@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, ValidationErrors } from '@angular/forms';
-import { Difficulty, difficulties, customDifficulty } from '../../difficulty';
+import { difficulties, customDifficulty } from '../../difficulty';
 import { FieldSizeService } from '../../services/field-size.service';
 import { DifficultyService } from '../../services/difficulty.service';
 import { MatSliderChange } from '@angular/material/slider';
