@@ -5,11 +5,17 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .field-icon {
   font-size: unset;
-  color: #757575;
+  color: mat-color(map-get($theme, "foreground"), "disabled-button");
 }
 
-.dark-snack-bar {
-  background-color: #9E9E9E;
+.game-won-snack-bar {
+  background-color: mat-color(map-get($theme, "primary"), 300);
+  color: mat-color(map-get($theme, "primary"), "300-contrast");
+}
+
+.game-over-snack-bar {
+  background-color: mat-color(map-get($theme, "accent"), 600);
+  color: mat-color(map-get($theme, "accent"), "600-contrast");
 }
 
 @mixin two-tone-palette($colorA, $colorB, $colorsCount) {

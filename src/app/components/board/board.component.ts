@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, SimpleChanges, OnChanges,
          ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Difficulty } from 'src/app/difficulty';
 import { FieldSizeService } from '../../services/field-size.service';
 import { Board } from '../../board';
@@ -17,9 +17,13 @@ export class BoardComponent implements OnInit, OnChanges {
   private isFirstClick: boolean;
   public board: Board;
   public fieldSize: number; // Size of each field on the board, in pixels
-  private snackBarConfig = {
+  private gameWon: MatSnackBarConfig = {
     duration: 16000,
-    panelClass: ['dark-snack-bar']
+    panelClass: ['game-won-snack-bar']
+  };
+  private gameOver: MatSnackBarConfig = {
+    duration: 16000,
+    panelClass: ['game-over-snack-bar']
   };
 
   constructor(
@@ -62,19 +66,19 @@ export class BoardComponent implements OnInit, OnChanges {
       this.board.checkNear(field);
     } else {
       this.showAll();
-      this.spawnSnackBar('Game over');
+      this.spawnSnackBar('Game over', this.gameOver);
     }
     // Check win condition
     if (this.board.countUncheckedFields() === this.difficulty.numberOfBombs) {
       this.showAll();
-      this.spawnSnackBar('You won!');
+      this.spawnSnackBar('You won!', this.gameWon);
     }
     this.cdr.markForCheck();
   }
 
-  private spawnSnackBar(title: string): void {
+  private spawnSnackBar(title: string, config: MatSnackBarConfig): void {
     const snackBar = this.snackBarService
-      .open(title, 'Restart', this.snackBarConfig);
+      .open(title, 'Restart', config);
     snackBar.onAction().subscribe(() => this.newBoard(this.difficulty));
   }
 

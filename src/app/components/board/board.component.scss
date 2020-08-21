@@ -1,17 +1,33 @@
+@use "sass:color";
+@import '../../../custom-theme.scss';
+
+$background-map: map-get($theme, "background");
+$foreground-map: map-get($theme, "foreground");
+
+$field-normal: color.scale(
+  mat-color($background-map, "background"),
+  $lightness: 6%
+);
+$field-checked: color.scale(
+  mat-color($background-map, "background"),
+  $lightness: 2%
+);
+
 .flags-counter {
-  opacity: 0.3;
+  color: mat-color($foreground-map, "hint-text");
   text-align: left;
   width: 100%;
 }
 
 .field:hover {
-  background-color: #424242
+  background-color: mat-color($background-map, "hover");
 }
 
 .field {
-  background-color: #3d3d3d;
-  border: 1px solid #363636;
+  // background-color: mat-color($background-map, "raised-button");
+  background-color: $field-normal;
   border-radius: 0;
+  border: 1px solid $field-checked;
   font-size: inherit;
   min-width: inherit;
   min-height: inherit;
@@ -23,7 +39,7 @@
 }
 
 .field:disabled {
-  background-color: #363636;
+  background-color: $field-checked;
 }
 
 .board-container {
