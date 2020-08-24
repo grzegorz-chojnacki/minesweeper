@@ -2,31 +2,57 @@ import { BombPercentagePipe } from './bomb-percentage.pipe';
 import { Difficulty } from '../difficulty';
 
 describe('BombPercentagePipe', () => {
-  const pipe = new BombPercentagePipe();
+  it('should create an instance', () => {
+    const pipe = new BombPercentagePipe();
 
-  it('create an instance', () => {
     expect(pipe).toBeTruthy();
   });
 
-  it('should output correct messages for nice numbers', () => {
-    const difficulties = [
-      { name: 'Test', boardDimension: 1, numberOfBombs: 1, result: 100 },
-      { name: 'Test', boardDimension: 2, numberOfBombs: 0, result: 0 },
-      { name: 'Test', boardDimension: 10, numberOfBombs: 10, result: 10 },
-    ];
+  it('should output correct message for passed difficulty', () => {
+    const pipe = new BombPercentagePipe();
+    const difficulty: Difficulty =
+      { name: '', boardDimension: 10, numberOfBombs: 10 };
 
-    difficulties.forEach(d => {
-      expect(pipe.transform(d)).toBe(`About ${d.result}% of fields`);
-    });
+    expect(pipe.transform(difficulty)).toContain('10%');
   });
 
   it('should output correct message for both bounds', () => {
+    const pipe = new BombPercentagePipe();
     const bounds: Difficulty[] = [
-      { name: 'Zero', boardDimension: 10, numberOfBombs: 0 },
-      { name: 'Full', boardDimension: 10, numberOfBombs: 100 }
+      { name: '', boardDimension: 10, numberOfBombs:   0 },
+      { name: '', boardDimension: 10, numberOfBombs: 100 }
     ];
 
-    expect(pipe.transform(bounds[0])).toBe('About 0% of fields');
-    expect(pipe.transform(bounds[1])).toBe('About 100% of fields');
+    expect(pipe.transform(bounds[0])).toContain('0%');
+    expect(pipe.transform(bounds[1])).toContain('100%');
+  });
+
+  it('should handle division by zero', () => {
+    const pipe = new BombPercentagePipe();
+    const difficulty: Difficulty =
+      { name: '', boardDimension: 0, numberOfBombs: 100 };
+
+    expect(pipe.transform(difficulty)).toBe('');
+  });
+
+  it('should handle negative numbers', () => {
+    const pipe = new BombPercentagePipe();
+    const negatives: Difficulty[] = [
+      { name: '', boardDimension: -10, numberOfBombs:  10 },
+      { name: '', boardDimension:  10, numberOfBombs: -10 },
+      { name: '', boardDimension: -10, numberOfBombs: -10 }
+    ];
+
+    expect(pipe.transform(negatives[0])).toBe('');
+    expect(pipe.transform(negatives[1])).toBe('');
+    expect(pipe.transform(negatives[2])).toBe('');
+  });
+
+  it('should output message with rounded percentage', () => {
+    const pipe = new BombPercentagePipe();
+    const difficulty: Difficulty =
+      { name: '', boardDimension: 7, numberOfBombs: 7 };
+
+    expect(pipe.transform(difficulty)).toContain('14%');
   });
 });
