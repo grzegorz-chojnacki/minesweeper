@@ -32,25 +32,25 @@
     </mat-error>
   </mat-form-field>
 
-  <div class="field-width-container">
-    <h4>Field width</h4>
-    <div class="slider-container">
-      <mat-slider #slider color="primary"
-        [value]="fieldSize"
-        [min]="settingsService.minFieldSize"
-        [max]="settingsService.maxFieldSize"
-        class="slider-longer"
-        (input)="onFieldSizeChange($event)">
-      </mat-slider>
-      <span [innerHTML]="slider.value + 'px'"></span>
-    </div>
-  </div>
-
   <button class="start-button" mat-raised-button color="primary" type="submit"
     [disabled]="settingsForm.invalid">Start</button>
 </form>
 
 <mat-divider class="divider"></mat-divider>
+
+<div class="field-width-container">
+  <h4>Field width</h4>
+  <div class="slider-container">
+    <mat-slider #slider color="primary"
+      [value]="fieldSize"
+      [min]="settingsService.minFieldSize"
+      [max]="settingsService.maxFieldSize"
+      class="slider-longer"
+      (input)="onFieldSizeChange($event)">
+    </mat-slider>
+    <span [innerHTML]="slider.value + 'px'"></span>
+  </div>
+</div>
 
 <div class="checkbox-container">
   <mat-checkbox color="primary"
