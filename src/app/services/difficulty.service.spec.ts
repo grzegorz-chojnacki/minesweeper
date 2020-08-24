@@ -18,7 +18,8 @@ describe('DifficultyService', () => {
     const service = TestBed.inject(DifficultyService);
 
     let result: Difficulty;
-    service.difficulty.subscribe(difficulty => result = difficulty);
+    service.difficulty.subscribe(difficulty => result = difficulty)
+      .unsubscribe();
 
     expect(result).toBe(difficulties[0]);
   });
@@ -30,7 +31,8 @@ describe('DifficultyService', () => {
     const service = TestBed.inject(DifficultyService);
 
     let result: Difficulty;
-    service.difficulty.subscribe(difficulty => result = difficulty);
+    service.difficulty.subscribe(difficulty => result = difficulty)
+      .unsubscribe();
 
     // Compare only members, not object type
     // (which for some reason is different)
@@ -44,7 +46,8 @@ describe('DifficultyService', () => {
     service.newDifficulty(newDifficulty);
 
     let result: Difficulty;
-    service.difficulty.subscribe(difficulty => result = difficulty);
+    service.difficulty.subscribe(difficulty => result = difficulty)
+      .unsubscribe();
 
     expect(result).toEqual(newDifficulty);
   });
