@@ -24,8 +24,10 @@ export class SettingsService {
   }
 
   public setFieldSize(newFieldSize: number): void {
-    this.fieldSizeSource.next(newFieldSize);
-    localStorage.setItem('fieldSize', newFieldSize.toString());
+    if (this.minFieldSize <= newFieldSize && newFieldSize <= this.maxFieldSize) {
+      this.fieldSizeSource.next(newFieldSize);
+      localStorage.setItem('fieldSize', newFieldSize.toString());
+    }
   }
 
   public setSidenavAutoHide(newOption: boolean): void {
