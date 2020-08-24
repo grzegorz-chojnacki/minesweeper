@@ -47,6 +47,19 @@ describe('SettingsService', () => {
     expect(fieldSize).toBe(newFieldSize);
   });
 
+  it('should not allow for fieldSize to be set out of its bounds', () => {
+    const service = TestBed.inject(SettingsService);
+    const invalid = [service.minFieldSize - 1, service.maxFieldSize + 1];
+
+    invalid.forEach(value => {
+      let fieldSize: number;
+      service.setFieldSize(value);
+      service.fieldSize.subscribe(fs => fieldSize = fs).unsubscribe();
+
+      expect(fieldSize).not.toBe(value);
+    });
+  });
+
   // Sidenav auto hide
 
   it('should initialize sidenavAutoHide when local storage is empty', () => {
