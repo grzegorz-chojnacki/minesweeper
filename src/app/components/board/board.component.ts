@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ChangeDetectionStrategy,
          ChangeDetectorRef } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Difficulty } from 'src/app/difficulty';
-import { FieldSizeService } from '../../services/field-size.service';
+import { SettingsService } from '../../services/settings.service';
 import { DifficultyService } from '../../services/difficulty.service';
 import { Board } from '../../board';
 import { Field } from '../../field';
@@ -26,12 +26,12 @@ export class BoardComponent implements OnInit {
 
   constructor(
     private cdr: ChangeDetectorRef,
-    private fieldSizeService: FieldSizeService,
+    private settingsService: SettingsService,
     private difficultyService: DifficultyService,
     private snackBarService: MatSnackBar) { }
 
   public ngOnInit(): void {
-    this.fieldSizeService.fieldSize
+    this.settingsService.fieldSize
       .subscribe(fieldSize => {
         this.fieldSize = fieldSize;
         this.cdr.markForCheck();

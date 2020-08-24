@@ -37,8 +37,8 @@
     <div class="slider-container">
       <mat-slider #slider color="primary"
         [value]="fieldSize"
-        [min]="fieldSizeService.minFieldSize"
-        [max]="fieldSizeService.maxFieldSize"
+        [min]="settingsService.minFieldSize"
+        [max]="settingsService.maxFieldSize"
         class="slider-longer"
         (input)="onFieldSizeChange($event)">
       </mat-slider>

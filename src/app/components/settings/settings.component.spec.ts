@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SettingsComponent } from './settings.component';
 import { FormBuilder } from '@angular/forms';
-import { FieldSizeService } from './../../services/field-size.service';
+import { SettingsService } from './../../services/settings.service';
 import { DifficultyService } from 'src/app/services/difficulty.service';
 import { BombPercentagePipe } from 'src/app/pipes/bomb-percentage.pipe';
 
@@ -31,7 +31,7 @@ describe('SettingsComponent', () => {
       ],
       providers: [
         { provide: FormBuilder },
-        { provide: FieldSizeService },
+        { provide: SettingsService },
         { provide: DifficultyService }
       ]
     }).compileComponents();

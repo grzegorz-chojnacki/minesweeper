@@ -4,13 +4,12 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class FieldSizeService {
+export class SettingsService {
   public readonly minFieldSize = 30;
   public readonly maxFieldSize = 60;
 
   private fieldSizeSource = new BehaviorSubject(
-    Number(localStorage.getItem('fieldSize')) || this.minFieldSize
-  );
+    Number(localStorage.getItem('fieldSize')) || this.minFieldSize);
   public fieldSize = this.fieldSizeSource.asObservable();
 
   public setFieldSize(newFieldSize: number): void {

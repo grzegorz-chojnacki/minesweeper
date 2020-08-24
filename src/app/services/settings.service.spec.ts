@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { FieldSizeService } from './field-size.service';
+import { SettingsService } from './settings.service';
 
-describe('FieldSizeService', () => {
-  let service: FieldSizeService;
+describe('SettingsService', () => {
+  let service: SettingsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(FieldSizeService);
+    service = TestBed.inject(SettingsService);
   });
 
   it('should be created', () => {

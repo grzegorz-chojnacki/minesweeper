@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BoardComponent } from './board.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarHarness } from '@angular/material/snack-bar/testing';
-import { FieldSizeService } from 'src/app/services/field-size.service';
+import { SettingsService } from 'src/app/services/settings.service';
 import { DifficultyService } from 'src/app/services/difficulty.service';
 import { ChangeDetectorRef } from '@angular/core';
 
@@ -16,7 +16,7 @@ describe('BoardComponent', () => {
       declarations: [BoardComponent],
       providers: [
         { provide: MatSnackBar, useValue: MatSnackBarHarness },
-        { provide: FieldSizeService },
+        { provide: SettingsService },
         { provide: DifficultyService },
         { provide: ChangeDetectorRef }
       ]

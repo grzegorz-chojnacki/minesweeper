@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, ValidationErrors } from '@angular/forms';
 import { difficulties, customDifficulty } from '../../difficulty';
-import { FieldSizeService } from '../../services/field-size.service';
+import { SettingsService } from '../../services/settings.service';
 import { DifficultyService } from '../../services/difficulty.service';
 import { MatSliderChange } from '@angular/material/slider';
 
@@ -30,11 +30,11 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     public formBuilder: FormBuilder,
-    public fieldSizeService: FieldSizeService,
+    public settingsService: SettingsService,
     private difficultyService: DifficultyService) { }
 
   public onFieldSizeChange(event: MatSliderChange): void {
-    this.fieldSizeService.setFieldSize(event.value);
+    this.settingsService.setFieldSize(event.value);
   }
 
   // Try to match difficulty preset with boardDimension & numberOfBombs values
@@ -122,7 +122,7 @@ export class SettingsComponent implements OnInit {
     }));
 
     // Slider
-    this.fieldSizeService.fieldSize
+    this.settingsService.fieldSize
       .subscribe(fieldSize => this.fieldSize = fieldSize);
   }
 
