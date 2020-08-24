@@ -8,11 +8,15 @@ export class Board {
 
   constructor(difficulty: Difficulty) {
     this.numberOfBombs = this.flagCounter = difficulty.numberOfBombs;
-    this._fields = this.newFields(difficulty.boardDimension);
+    this.fields = this.newFields(difficulty.boardDimension);
   }
 
   public get fields(): Field[][] {
     return this._fields;
+  }
+
+  public set fields(fields: Field[][]) {
+    this._fields = fields;
   }
 
   private newFields(boardDimension: number): Field[][] {
@@ -60,7 +64,7 @@ export class Board {
   // Check `field` and if it has zero bombs around, then check every unchecked
   // field around it
   public checkNear(field: Field): void {
-    if (field.isChecked()) {
+    if (field.isChecked) {
       return;
     }
     field.check();
@@ -76,7 +80,7 @@ export class Board {
   // Check win condition
   public countUncheckedFields(): number {
     return this.fields.reduce((acc, row) =>
-      row.filter(field => !field.isChecked()).length + acc, 0);
+      row.filter(field => !field.isChecked).length + acc, 0);
   }
 
   public get flagCounter(): number {

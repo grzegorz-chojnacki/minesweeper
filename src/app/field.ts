@@ -23,7 +23,7 @@ export class Field {
     return this._value;
   }
 
-  public isChecked(): boolean {
+  public get isChecked(): boolean {
     return this._checked;
   }
 
