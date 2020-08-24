@@ -20,7 +20,7 @@ describe('BoardComponent', () => {
         { provide: DifficultyService },
         { provide: ChangeDetectorRef }
       ]
-    });
+    }).compileComponents();
   }));
 
   beforeEach(() => {

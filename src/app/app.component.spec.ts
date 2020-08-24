@@ -31,7 +31,7 @@ describe('AppComponent', () => {
         MatToolbarModule,
         MatIconModule
       ]
-    });
+    }).compileComponents();
   }));
 
   beforeEach(() => {

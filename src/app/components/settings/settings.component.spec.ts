@@ -34,7 +34,7 @@ describe('SettingsComponent', () => {
         { provide: FieldSizeService },
         { provide: DifficultyService }
       ]
-    });
+    }).compileComponents();
   }));
 
   beforeEach(() => {
