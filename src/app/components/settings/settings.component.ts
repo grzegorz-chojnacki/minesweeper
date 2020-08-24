@@ -13,10 +13,7 @@ import { MatSliderChange } from '@angular/material/slider';
 export class SettingsComponent implements OnInit {
   @Output() public closeSidenav = new EventEmitter<void>();
   public fieldSize: number;
-  public shouldCloseSidenav =
-    (localStorage.getItem('shouldCloseSidenav') !== null)
-    ? localStorage.getItem('shouldCloseSidenav') === 'true'
-    : true; // Initialize to true if this item is undefined
+  public sidenavAutoHide: boolean;
 
   public difficultyList = [customDifficulty, ...difficulties];
   public difficultyNames = this.difficultyList
@@ -121,9 +118,12 @@ export class SettingsComponent implements OnInit {
         this.refreshValidators();
     }));
 
-    // Slider
+    // Settings
     this.settingsService.fieldSize
       .subscribe(fieldSize => this.fieldSize = fieldSize);
+
+    this.settingsService.sidenavAutoHide
+      .subscribe(sidenavAutoHide => this.sidenavAutoHide = sidenavAutoHide);
   }
 
   // Setup form and slider control
@@ -139,15 +139,14 @@ export class SettingsComponent implements OnInit {
   }
 
   public onCheckboxChange(): void {
-    const state = this.shouldCloseSidenav.toString();
-    localStorage.setItem('shouldCloseSidenav', state);
+    this.settingsService.setSidenavAutoHide(this.sidenavAutoHide);
   }
 
   // Start new game (restart) and close sidenav if specified
   public onSubmit(): void {
     this.difficultyService.newDifficulty(this.settingsForm.value);
 
-    if (this.shouldCloseSidenav) {
+    if (this.sidenavAutoHide) {
       this.closeSidenav.emit();
     }
   }
