@@ -1,3 +1,7 @@
+@import '../custom-theme.scss';
+
+$foreground-map: map-get($theme, "foreground");
+
 :host {
   height: 100vh;
   display: flex;
@@ -12,4 +16,10 @@ mat-sidenav-container {
 mat-sidenav {
   width: 304px;
   padding: 1em;
+}
+
+.flag-counter {
+  font-weight: normal;
+  color: mat-color($foreground-map, "hint-text");
+  margin-left: 0.5ch;
 }

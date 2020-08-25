@@ -13,12 +13,6 @@ $field-checked: color.scale(
   $lightness: 2%
 );
 
-.flags-counter {
-  color: mat-color($foreground-map, "hint-text");
-  text-align: left;
-  width: 100%;
-}
-
 .field:hover {
   background-color: mat-color($background-map, "hover");
 }

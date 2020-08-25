@@ -3,7 +3,6 @@
   [style.fontSize.px]="fieldSize / 2"
   [style.minHeight.px]="fieldSize"
   [style.minWidth.px]="fieldSize">
-  <p class="flags-counter">Flags: {{ board.flagCounter }}</p>
   <div class="row-container"
     *ngFor="let row of board.fields"
     (contextmenu)="false">

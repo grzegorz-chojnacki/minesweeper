@@ -4,6 +4,7 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Difficulty } from 'src/app/difficulty';
 import { SettingsService } from '../../services/settings.service';
 import { DifficultyService } from '../../services/difficulty.service';
+import { FlagService } from '../../services/flag.service';
 import { Board } from '../../board';
 import { Field } from '../../field';
 
@@ -28,7 +29,8 @@ export class BoardComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private settingsService: SettingsService,
     private difficultyService: DifficultyService,
-    private snackBarService: MatSnackBar) { }
+    private snackBarService: MatSnackBar,
+    private flagService: FlagService) { }
 
   public ngOnInit(): void {
     this.settingsService.fieldSize
@@ -49,6 +51,7 @@ export class BoardComponent implements OnInit {
     this.isFirstClick = true;
     this.board = new Board(difficulty);
     this.cdr.markForCheck();
+    this.flagService.setFlags(this.board.flagCounter);
   }
 
   public onClick(field: Field): void {
@@ -62,13 +65,14 @@ export class BoardComponent implements OnInit {
       this.board.toggleFlag(field);
     } else if (field.value !== Field.bomb) {
       this.board.checkNear(field);
+      this.flagService.setFlags(this.board.flagCounter); // Update flag counter
     } else {
-      this.showAll();
+      this.endGame();
       this.spawnSnackBar('Game over', this.snackBarConfig.gameOver);
     }
     // Check win condition
     if (this.board.countUncheckedFields() === this.difficulty.numberOfBombs) {
-      this.showAll();
+      this.endGame();
       this.spawnSnackBar('You won!', this.snackBarConfig.gameWon);
     }
     this.cdr.markForCheck();
@@ -80,7 +84,8 @@ export class BoardComponent implements OnInit {
     snackBar.onAction().subscribe(() => this.newBoard(this.difficulty));
   }
 
-  private showAll(): void {
+  private endGame(): void {
+    this.flagService.setFlags(undefined);
     this.board.checkAll();
   }
 
@@ -88,6 +93,7 @@ export class BoardComponent implements OnInit {
   public onRigthClick(field: Field): boolean {
     if (this.board.flagCounter > 0 || field.isFlagged) {
       this.board.toggleFlag(field);
+      this.flagService.setFlags(this.board.flagCounter);
     }
     return false;
   }
