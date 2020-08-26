@@ -4,8 +4,8 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Difficulty } from 'src/app/difficulty';
 import { SettingsService } from '../../services/settings.service';
 import { DifficultyService } from '../../services/difficulty.service';
-import { FlagService } from '../../services/flag.service';
-import { Board } from '../../board';
+import { FlagService } from 'src/app/services/flag.service';
+import { Board, GameState } from '../../board';
 import { Field } from '../../field';
 
 @Component({
@@ -16,7 +16,6 @@ import { Field } from '../../field';
 })
 export class BoardComponent implements OnInit {
   @Input() public difficulty: Difficulty;
-  private isFirstClick: boolean;
   public board: Board;
   public fieldSize: number; // Size of each field on the board, in pixels
 
@@ -48,34 +47,24 @@ export class BoardComponent implements OnInit {
 
   private newBoard(difficulty: Difficulty): void {
     this.snackBarService.dismiss();
-    this.isFirstClick = true;
     this.board = new Board(difficulty);
-    this.cdr.markForCheck();
     this.flagService.setFlags(this.board.flagCounter);
+    this.cdr.markForCheck();
   }
 
   public onClick(field: Field): void {
-    // Plant bombs on the first click
-    if (this.isFirstClick) {
-      this.board.plantBombs(field);
-      this.isFirstClick = false;
-    }
-    // Handle clicking on flags, safe fields and bombs
-    if (field.isFlagged) {
-      this.board.toggleFlag(field);
-    } else if (field.value !== Field.bomb) {
-      this.board.checkNear(field);
-      this.flagService.setFlags(this.board.flagCounter); // Update flag counter
-    } else {
-      this.endGame();
-      this.spawnSnackBar('Game over', this.snackBarConfig.gameOver);
-    }
-    // Check win condition
-    if (this.board.countUncheckedFields() === this.difficulty.numberOfBombs) {
-      this.endGame();
-      this.spawnSnackBar('You won!', this.snackBarConfig.gameWon);
-    }
+    const gameState = this.board.check(field);
+    this.reactTo(gameState);
+    this.flagService.setFlags(this.board.flagCounter);
     this.cdr.markForCheck();
+  }
+
+  // Prevent showing context menu by returning false
+  public onRigthClick(field: Field): boolean {
+    this.board.toggleFlag(field);
+    this.flagService.setFlags(this.board.flagCounter);
+    this.cdr.markForCheck();
+    return false;
   }
 
   private spawnSnackBar(title: string, config: MatSnackBarConfig): void {
@@ -84,17 +73,16 @@ export class BoardComponent implements OnInit {
     snackBar.onAction().subscribe(() => this.newBoard(this.difficulty));
   }
 
-  private endGame(): void {
-    this.flagService.setFlags(undefined);
-    this.board.checkAll();
-  }
-
-  // Prevent showing context menu by returning false
-  public onRigthClick(field: Field): boolean {
-    if (this.board.flagCounter > 0 || field.isFlagged) {
-      this.board.toggleFlag(field);
-      this.flagService.setFlags(this.board.flagCounter);
+  private reactTo(gameState: GameState): void {
+    switch (gameState) {
+      case GameState.Won:
+        this.spawnSnackBar('You won!', this.snackBarConfig.gameWon);
+        break;
+      case GameState.Lost:
+        this.spawnSnackBar('Game over', this.snackBarConfig.gameOver);
+        break;
+      case GameState.Continues:
+        break;
     }
-    return false;
   }
 }

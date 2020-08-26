@@ -1,22 +1,23 @@
 import { Field } from './field';
 import { Difficulty } from './difficulty';
 
+export enum GameState { Won, Lost, Continues }
+
 export class Board {
-  private _fields: Field[][];
-  private numberOfBombs: number;
+  private readonly numberOfBombs: number;
+  private readonly _fields: Field[][];
+  private isFirstClick = true;
   private _flagCounter: number;
+  private _uncheckedFieldCounter: number;
 
   constructor(difficulty: Difficulty) {
     this.numberOfBombs = this.flagCounter = difficulty.numberOfBombs;
-    this.fields = this.newFields(difficulty.boardDimension);
+    this._uncheckedFieldCounter = difficulty.boardDimension ** 2;
+    this._fields = this.newFields(difficulty.boardDimension);
   }
 
   public get fields(): Field[][] {
     return this._fields;
-  }
-
-  public set fields(fields: Field[][]) {
-    this._fields = fields;
   }
 
   private newFields(boardDimension: number): Field[][] {
@@ -30,9 +31,9 @@ export class Board {
     return fields;
   }
 
-  public checkAll(): void {
+  private checkAll(): void {
     this.fields.forEach(row => row.forEach(field => field.check()));
-    this.flagCounter = 0;
+    this.flagCounter = undefined;
   }
 
   // Shuffle array in place
@@ -63,11 +64,12 @@ export class Board {
 
   // Check `field` and if it has zero bombs around, then check every unchecked
   // field around it
-  public checkNear(field: Field): void {
+  private checkNear(field: Field): void {
     if (field.isChecked) {
       return;
     }
     field.check();
+    this.uncheckedFieldCounter--;
     if (field.isFlagged) {
       field.toggleFlag();
       this.flagCounter++;
@@ -77,10 +79,28 @@ export class Board {
     }
   }
 
-  // Check win condition
-  public countUncheckedFields(): number {
-    return this.fields.reduce((acc, row) =>
-      row.filter(field => !field.isChecked).length + acc, 0);
+  public check(field: Field): GameState {
+    if (this.isFirstClick) {
+      this.plantBombs(field);
+      this.isFirstClick = false;
+    }
+
+    if (field.isFlagged) {
+      this.toggleFlag(field);
+      return GameState.Continues;
+    } else if (field.value === Field.bomb) {
+      this.checkAll();
+      return GameState.Lost;
+    } else {
+      this.checkNear(field);
+    }
+    // Win condition
+    if (this._uncheckedFieldCounter === this.numberOfBombs) {
+      this.checkAll();
+      return GameState.Won;
+    } else {
+      return GameState.Continues;
+    }
   }
 
   public get flagCounter(): number {
@@ -91,16 +111,26 @@ export class Board {
     this._flagCounter = value;
   }
 
+  public get uncheckedFieldCounter(): number {
+    return this._uncheckedFieldCounter;
+  }
+
+  public set uncheckedFieldCounter(value: number) {
+    this._uncheckedFieldCounter = value;
+  }
+
   // Toggle flag on `field` and update the flag counter
   public toggleFlag(field: Field): void {
-    field.toggleFlag();
-    this.flagCounter += (field.isFlagged) ? -1 : 1;
+    if (this.flagCounter > 0 || field.isFlagged) {
+      field.toggleFlag();
+      this.flagCounter += (field.isFlagged) ? -1 : 1;
+    }
   }
 
   // Plant bombs on the board but avoid the first clicked field
   // Shuffle the list of fields references and plant bombs on as much
   // as `numberOfBombs` is
-  public plantBombs(firstClickedField: Field): void {
+  private plantBombs(firstClickedField: Field): void {
     const incrementValue = (field: Field) => field.value++;
     const fieldsFlatList = this.fields
       .reduce((acc, row) => acc.concat(row), []) // flatten
