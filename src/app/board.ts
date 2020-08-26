@@ -4,8 +4,8 @@ import { Field } from 'src/app/field';
 export enum GameState { Won, Lost, Continues }
 
 export class Board {
+  public readonly fields: Field[][];
   private readonly numberOfBombs: number;
-  private readonly _fields: Field[][];
   private isFirstClick = true;
   private _flagCounter: number;
   private _uncheckedFieldCounter: number;
@@ -13,11 +13,7 @@ export class Board {
   constructor(difficulty: Difficulty) {
     this.numberOfBombs = this.flagCounter = difficulty.numberOfBombs;
     this._uncheckedFieldCounter = difficulty.boardDimension ** 2;
-    this._fields = this.newFields(difficulty.boardDimension);
-  }
-
-  public get fields(): Field[][] {
-    return this._fields;
+    this.fields = this.newFields(difficulty.boardDimension);
   }
 
   private newFields(boardDimension: number): Field[][] {
@@ -119,7 +115,6 @@ export class Board {
     this._uncheckedFieldCounter = value;
   }
 
-  // Toggle flag on `field` and update the flag counter
   public toggleFlag(field: Field): void {
     if (this.flagCounter > 0 || field.isFlagged) {
       field.toggleFlag();
@@ -127,9 +122,6 @@ export class Board {
     }
   }
 
-  // Plant bombs on the board but avoid the first clicked field
-  // Shuffle the list of fields references and plant bombs on as much
-  // as `numberOfBombs` is
   private plantBombs(firstClickedField: Field): void {
     const incrementValue = (field: Field) => field.value++;
     const fieldsFlatList = this.fields
