@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Field } from '../field';
+import { Field } from 'src/app/field';
 
 @Pipe({
   name: 'printField'

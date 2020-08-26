@@ -1,5 +1,5 @@
 import { BombPercentagePipe } from './bomb-percentage.pipe';
-import { Difficulty } from '../difficulty';
+import { Difficulty } from 'src/app/difficulty';
 
 describe('BombPercentagePipe', () => {
   it('should create an instance', () => {

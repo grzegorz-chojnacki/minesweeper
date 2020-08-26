@@ -1,5 +1,5 @@
-import { Field } from './field';
-import { Difficulty } from './difficulty';
+import { Difficulty } from 'src/app/difficulty';
+import { Field } from 'src/app/field';
 
 export enum GameState { Won, Lost, Continues }
 

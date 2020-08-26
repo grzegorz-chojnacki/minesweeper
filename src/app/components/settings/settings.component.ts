@@ -1,9 +1,10 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, ValidationErrors } from '@angular/forms';
-import { difficulties, customDifficulty } from '../../difficulty';
-import { SettingsService } from '../../services/settings.service';
-import { DifficultyService } from '../../services/difficulty.service';
 import { MatSliderChange } from '@angular/material/slider';
+
+import { difficulties, customDifficulty } from 'src/app/difficulty';
+import { DifficultyService } from 'src/app/services/difficulty.service';
+import { SettingsService } from 'src/app/services/settings.service';
 
 @Component({
   selector: 'app-settings',

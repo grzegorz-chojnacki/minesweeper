@@ -1,6 +1,7 @@
 import { Component, ViewChild, OnInit,
          ChangeDetectionStrategy } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
+
 import { FlagService } from './services/flag.service';
 
 @Component({
