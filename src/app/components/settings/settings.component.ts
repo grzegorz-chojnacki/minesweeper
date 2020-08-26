@@ -12,7 +12,7 @@ import { SettingsService } from 'src/app/services/settings.service';
   styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent implements OnInit {
-  @Output() public closeSidenav = new EventEmitter<void>();
+  @Output() public formSubmitEvent = new EventEmitter<void>();
   public fieldSize: number;
   public sidenavAutoHide: boolean;
 
@@ -79,12 +79,12 @@ export class SettingsComponent implements OnInit {
   public getNumberOfBombsError(): string {
     if (this.settingsForm.get('boardDimension').invalid) {
       return 'Board dimension must be valid';
+    } else if (this.settingsForm.get('numberOfBombs').value === null) {
+      return 'Must be set';
     } else if (this.settingsForm.get('boardDimension').value === 1) {
       return 'Must be 0';
-    } else if (this.settingsForm.get('numberOfBombs').value > 0) {
-      return `Must be between 0 and ${this.maxNumberOfBombs}`;
     } else {
-      return 'Cannot be negative';
+      return `Must be between 0 and ${this.maxNumberOfBombs}`;
     }
   }
 
@@ -127,7 +127,6 @@ export class SettingsComponent implements OnInit {
       .subscribe(sidenavAutoHide => this.sidenavAutoHide = sidenavAutoHide);
   }
 
-  // Setup form and slider control
   public ngOnInit(): void {
     this.setupSubscriptions();
     // boardDimension validators (numberOfBombs validators are based
@@ -146,10 +145,7 @@ export class SettingsComponent implements OnInit {
   // Start new game (restart) and close sidenav if specified
   public onSubmit(): void {
     this.difficultyService.newDifficulty(this.settingsForm.value);
-
-    if (this.sidenavAutoHide) {
-      this.closeSidenav.emit();
-    }
+    this.formSubmitEvent.emit();
   }
 
 }

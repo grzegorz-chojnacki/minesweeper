@@ -3,6 +3,7 @@ import { Component, ViewChild, OnInit,
 import { MatSidenav } from '@angular/material/sidenav';
 
 import { FlagService } from './services/flag.service';
+import { SettingsService } from './services/settings.service';
 
 @Component({
   selector: 'app-root',
@@ -15,8 +16,10 @@ export class AppComponent implements OnInit {
   @ViewChild('sidenav') public sidenav: MatSidenav;
   public title = 'minesweeper';
   public flagCounter: string;
+  public sidenavAutoHide: boolean;
 
-  constructor(private flagService: FlagService) { }
+  constructor(private flagService: FlagService,
+              private settingsService: SettingsService) { }
 
   private buildFlagCounter(count: number): string {
     return (count !== undefined) ? `// Flags: ${count}` : '';
@@ -26,9 +29,15 @@ export class AppComponent implements OnInit {
     this.flagService.counter.subscribe(count => {
       this.flagCounter = this.buildFlagCounter(count);
     });
+
+    this.settingsService.sidenavAutoHide.subscribe(option => {
+      this.sidenavAutoHide = option;
+    });
   }
 
-  public onCloseSidenavEvent(): void {
-    this.sidenav.close();
+  public sidenavClose(): void {
+    if (this.sidenavAutoHide) {
+      this.sidenav.close();
+    }
   }
 }

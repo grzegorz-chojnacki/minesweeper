@@ -8,9 +8,9 @@
 <mat-sidenav-container hasBackdrop="false">
   <mat-sidenav #sidenav opened="true">
     <app-settings
-      (closeSidenav)="onCloseSidenavEvent()"></app-settings>
+      (formSubmitEvent)="sidenavClose()"></app-settings>
   </mat-sidenav>
-  <mat-sidenav-content>
+  <mat-sidenav-content (click)="sidenavClose()">
     <app-board></app-board>
   </mat-sidenav-content>
 </mat-sidenav-container>
