@@ -1,5 +1,5 @@
 @use "sass:color";
-@import '../../../custom-theme.scss';
+@import '../../../theme';
 
 $background-map: map-get($theme, "background");
 $foreground-map: map-get($theme, "foreground");
