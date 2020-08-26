@@ -61,7 +61,7 @@ export class BoardComponent implements OnInit {
   }
 
   // Prevent showing context menu by returning false
-  public onRigthClick(field: Field): boolean {
+  public onRightClick(field: Field): boolean {
     this.board.toggleFlag(field);
     this.flagService.setFlags(this.board.flagCounter);
     this.cdr.markForCheck();

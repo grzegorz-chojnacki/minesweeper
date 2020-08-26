@@ -10,7 +10,7 @@
       *ngFor="let field of row"
       [disabled]="field.isChecked"
       (click)="onClick(field)"
-      (contextmenu)="onRigthClick(field)"
+      (contextmenu)="onRightClick(field)"
       [innerHtml]="field.value | printField:field.isFlagged:field.isChecked">
     </button>
   </div>
