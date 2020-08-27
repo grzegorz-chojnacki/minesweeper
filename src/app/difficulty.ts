@@ -8,6 +8,8 @@ export class Difficulty {
       throw new Error('Board dimension smaller than 1');
     } else if (numberOfBombs < 0) {
       throw new Error('Number of bombs smaller than 0');
+    } else if (numberOfBombs > boardDimension ** 2 - 1) {
+      throw new Error('Number of bombs is greater than number of available fields');
     }
     this.name = name;
     this.boardDimension = boardDimension;
