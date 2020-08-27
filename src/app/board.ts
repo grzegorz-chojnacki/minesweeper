@@ -7,12 +7,14 @@ export class Board {
   public readonly fields: Field[][];
   private readonly numberOfBombs: number;
   private isFirstClick = true;
-  private _flagCounter: number;
-  private _uncheckedFieldCounter: number;
+  private uncheckedFieldCounter: number;
+  private flagCounter: number;
+
+  public getFlagCounter(): number { return this.flagCounter; }
 
   constructor(difficulty: Difficulty) {
     this.numberOfBombs = this.flagCounter = difficulty.numberOfBombs;
-    this._uncheckedFieldCounter = difficulty.boardDimension ** 2;
+    this.uncheckedFieldCounter = difficulty.boardDimension ** 2;
     this.fields = this.newFields(difficulty.boardDimension);
   }
 
@@ -91,28 +93,12 @@ export class Board {
       this.checkNear(field);
     }
     // Win condition
-    if (this._uncheckedFieldCounter === this.numberOfBombs) {
+    if (this.uncheckedFieldCounter === this.numberOfBombs) {
       this.checkAll();
       return GameState.Won;
     } else {
       return GameState.Continues;
     }
-  }
-
-  public get flagCounter(): number {
-    return this._flagCounter;
-  }
-
-  public set flagCounter(value: number) {
-    this._flagCounter = value;
-  }
-
-  public get uncheckedFieldCounter(): number {
-    return this._uncheckedFieldCounter;
-  }
-
-  public set uncheckedFieldCounter(value: number) {
-    this._uncheckedFieldCounter = value;
   }
 
   public toggleFlag(field: Field): void {
