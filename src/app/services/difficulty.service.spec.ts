@@ -25,7 +25,7 @@ describe('DifficultyService', () => {
   });
 
   it('should load data when local storage is not empty', () => {
-    const newDifficulty = new Difficulty('', 5, 5);
+    const newDifficulty = new Difficulty(5, 5);
     window.localStorage.setItem('difficulty', JSON.stringify(newDifficulty));
 
     const service = TestBed.inject(DifficultyService);
@@ -41,7 +41,7 @@ describe('DifficultyService', () => {
 
   it('should set and update new difficulty value', () => {
     const service = TestBed.inject(DifficultyService);
-    const newDifficulty = new Difficulty('', 5, 5);
+    const newDifficulty = new Difficulty(5, 5);
 
     service.newDifficulty(newDifficulty);
 

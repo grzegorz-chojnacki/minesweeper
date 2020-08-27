@@ -3,7 +3,7 @@ export class Difficulty {
   public readonly boardDimension: number;
   public numberOfBombs: number;
 
-  constructor(name: string, boardDimension: number, numberOfBombs: number) {
+  constructor(boardDimension: number, numberOfBombs: number, name = '') {
     if (boardDimension < 1) {
       throw new Error('Board dimension smaller than 1');
     } else if (numberOfBombs < 0) {
