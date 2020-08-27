@@ -4,6 +4,11 @@ export class Difficulty {
   public numberOfBombs: number;
 
   constructor(name: string, boardDimension: number, numberOfBombs: number) {
+    if (boardDimension < 1) {
+      throw new Error('Board dimension smaller than 1');
+    } else if (numberOfBombs < 0) {
+      throw new Error('Number of bombs smaller than 0');
+    }
     this.name = name;
     this.boardDimension = boardDimension;
     this.numberOfBombs = numberOfBombs;
