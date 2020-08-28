@@ -2,30 +2,22 @@ import { Board } from './board';
 import { Difficulty } from './difficulty';
 import { Field } from './field';
 
-interface ApplyBuilder<T> {
-  on: (t: T[][]) => {
-    times: (n: number) => void;
-  };
+interface UsingTemplate {
+  usingTemplate(template: string[][]): void;
 }
 
-// Do action on 'n' items from 2d array (from bottom right corner)
-function apply<T>(action: (t: T) => void): ApplyBuilder<T> {
-  let arr: T[][];
+function flag(board: Board): UsingTemplate {
   return {
-    on: (ts: T[][]) => {
-      arr = ts;
-      return {
-        times: (n: number): void => {
-        for (let y = arr.length - 1; y >= 0; y--) {
-          for (let x = arr.length - 1; x >= 0; x--) {
-            if (n > 0) {
-              action(arr[y][x]);
-              n--;
-            } else { return; }
+    usingTemplate: (template: string[][]) => {
+      for (let y = 0; y < template.length; y++) {
+        for (let x = 0; x < template.length; x++) {
+          if (template[y][x].includes('F')) {
+            board.toggleFlag(board.fields[y][x]);
           }
         }
-      }};
-  }};
+      }
+    }
+  };
 }
 
 describe('Board', () => {
@@ -117,14 +109,18 @@ describe('Board', () => {
   });
 
   it('should not let flag another field if there are no flags left', () => {
-    const boardDimension = 10;
-    const numberOfBombs = 10;
+    const boardDimension = 5;
+    const numberOfBombs = 5;
     const board = new Board(new Difficulty(boardDimension, numberOfBombs));
+    const flagTemplate = [
+      [' ', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' '],
+      ['F', 'F', 'F', 'F', 'F']
+    ];
 
-    const flagging = (field: Field) => board.toggleFlag(field);
-    apply(flagging)
-      .on(board.fields)
-      .times(numberOfBombs);
+    flag(board).usingTemplate(flagTemplate);
 
     expect(board.getFlagCounter()).toBe(0);
     board.toggleFlag(board.fields[0][0]);
@@ -138,10 +134,23 @@ describe('Board', () => {
   });
 
   it('should remove flags from fields if they were checked', () => {
-    const boardDimension = 10;
-    const numberOfBombs = 0;
+    const boardDimension = 5;
+    const numberOfBombs = 7;
     const board = new Board(new Difficulty(boardDimension, numberOfBombs));
-    // spyOn(board, 'toggleFlag')
+    const template = [
+      [' ', ' ', ' ', 'B ', 'B'],
+      [' ', ' ', ' ', 'B ', 'B'],
+      [' ', ' ', ' ', 'B ', ' '],
+      ['F', 'F', ' ', 'B ', ' '],
+      ['F', 'F', 'F', 'BF', 'F'],
+    ];
+
+    board.fromTemplate(template);
+    flag(board).usingTemplate(template);
+    const clicked = board.fields[0][0];
+    board.check(clicked);
+
+    expect(board.getFlagCounter()).toBe(5);
   });
   // it('should check all fields around clear field', () => {});
   // it('should check only one field if it has at least one bomb around', () => {});
