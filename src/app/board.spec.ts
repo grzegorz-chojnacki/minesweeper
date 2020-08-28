@@ -3,30 +3,29 @@ import { Difficulty } from './difficulty';
 import { Field } from './field';
 
 interface ApplyBuilder<T> {
-  on: (t: T[][]) => ApplyBuilder<T>;
-  times: (n: number) => void;
+  on: (t: T[][]) => {
+    times: (n: number) => void;
+  };
 }
 
 // Do action on 'n' items from 2d array (from bottom right corner)
 function apply<T>(action: (t: T) => void): ApplyBuilder<T> {
   let arr: T[][];
-  const builder: ApplyBuilder<T> = {
+  return {
     on: (ts: T[][]) => {
       arr = ts;
-      return builder;
-    },
-    times: (n: number): void => {
-      for (let y = arr.length - 1; y >= 0; y--) {
-        for (let x = arr.length - 1; x >= 0; x--) {
-          if (n > 0) {
-            action(arr[y][x]);
-            n--;
-          } else { return; }
+      return {
+        times: (n: number): void => {
+        for (let y = arr.length - 1; y >= 0; y--) {
+          for (let x = arr.length - 1; x >= 0; x--) {
+            if (n > 0) {
+              action(arr[y][x]);
+              n--;
+            } else { return; }
+          }
         }
-      }
-    }
-  };
-  return builder;
+      }};
+  }};
 }
 
 describe('Board', () => {
@@ -48,15 +47,19 @@ describe('Board', () => {
   });
 
   it('should not generate bomb on the first clicked field', () => {
-    const randomIndex = (length: number) =>
-      Math.floor(Math.random() * length);
     const boardDimension = 10;
     const numberOfBombs = 10;
+    const clickCases = [
+      [0, 0],
+      [0, boardDimension - 1],
+      [boardDimension - 1, 0],
+      [boardDimension - 1, boardDimension - 1],
+      [Math.floor(boardDimension / 2), Math.floor(boardDimension / 2)]
+    ];
 
-    // Try random couple of fields
-    for (let i = 0; i < numberOfBombs; i++) {
+    for (const clickCase of clickCases) {
       const board = new Board(new Difficulty(boardDimension, numberOfBombs));
-      const [x, y] = [randomIndex(boardDimension), randomIndex(boardDimension)];
+      const [x, y] = clickCase;
 
       const clicked = board.fields[y][x];
       board.check(clicked); // Plant bombs
