@@ -126,16 +126,22 @@ export class Board {
   }
 
   public fromTemplate(template: string[][]): void {
-    const bombedFields = [];
-    for (let y = 0; y < template.length; y++) {
-      for (let x = 0; x < template.length; x++) {
-        if (template[y][x].includes('B')) {
-          this.fields[y][x].value = Field.bomb;
-          bombedFields.push(this.fields[y][x]);
+    const templateBombsNumber = template
+      .reduce((acc, row) => acc.concat(row), [])
+      .filter(field => field.includes('B')).length;
+    if (templateBombsNumber !== this.numberOfBombs ||
+        template.every(row => row.length === this.fields.length)) {
+      const bombedFields = [];
+      for (let y = 0; y < template.length; y++) {
+        for (let x = 0; x < template.length; x++) {
+          if (template[y][x].includes('B')) {
+            this.fields[y][x].value = Field.bomb;
+            bombedFields.push(this.fields[y][x]);
+          }
         }
       }
-    }
-    this.addHints(bombedFields);
-    this.isFirstClick = false; // Bombs already generated
+      this.addHints(bombedFields);
+      this.isFirstClick = false; // Bombs already generated
+    } else { throw new Error('Template did not match difficulty'); }
   }
 }
