@@ -34,16 +34,6 @@ export class Board {
     this.flagCounter = undefined;
   }
 
-  // Shuffle array in place
-  private shuffle(array: any[]): void {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const tmp = array[i];
-      array[i] = array[j];
-      array[j] = tmp;
-    }
-  }
-
   // Apply `fn` to all fields around `field`
   private applyAround(field: Field, fn: (field: Field) => void): void {
     const getIndices = (n: number) => [n - 1, n, n + 1];
@@ -108,18 +98,44 @@ export class Board {
     }
   }
 
-  private plantBombs(firstClickedField: Field): void {
+  // Shuffle array in place
+  private shuffle(array: any[]): void {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = array[i];
+      array[i] = array[j];
+      array[j] = tmp;
+    }
+  }
+
+  private addHints(bombedFields: Field[]): void {
     const incrementValue = (field: Field) => field.value++;
+    bombedFields.forEach(field => this.applyAround(field, incrementValue));
+  }
+
+  private plantBombs(firstClicked: Field): void {
     const fieldsFlatList = this.fields
       .reduce((acc, row) => acc.concat(row), []) // flatten
-      .filter(field => field !== firstClickedField);
+      .filter(field => field !== firstClicked);
 
     this.shuffle(fieldsFlatList);
 
-    fieldsFlatList.slice(0, this.numberOfBombs)
-      .forEach(field => {
-        field.value = Field.bomb;
-        this.applyAround(field, incrementValue);
-      });
+    const bombedFields = fieldsFlatList.slice(0, this.numberOfBombs);
+    bombedFields.forEach(field => { field.value = Field.bomb; });
+    this.addHints(bombedFields);
+  }
+
+  public fromTemplate(template: string[][]): void {
+    const bombedFields = [];
+    for (let y = 0; y < template.length; y++) {
+      for (let x = 0; x < template.length; x++) {
+        if (template[y][x].includes('B')) {
+          this.fields[y][x].value = Field.bomb;
+          bombedFields.push(this.fields[y][x]);
+        }
+      }
+    }
+    this.addHints(bombedFields);
+    this.isFirstClick = false; // Bombs already generated
   }
 }
