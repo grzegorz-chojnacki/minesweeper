@@ -1,4 +1,4 @@
-import { Board } from './board';
+import { Board, GameState } from './board';
 import { Difficulty } from './difficulty';
 import { Field } from './field';
 
@@ -142,7 +142,7 @@ describe('Board', () => {
       [' ', ' ', ' ', 'B ', 'B'],
       [' ', ' ', ' ', 'B ', ' '],
       ['F', 'F', ' ', 'B ', ' '],
-      ['F', 'F', 'F', 'BF', 'F'],
+      ['F', 'F', 'F', 'BF', 'F']
     ];
 
     board.fromTemplate(template);
@@ -152,11 +152,124 @@ describe('Board', () => {
 
     expect(board.getFlagCounter()).toBe(5);
   });
-  // it('should check all fields around clear field', () => {});
-  // it('should check only one field if it has at least one bomb around', () => {});
-  // it('should check all fields if the game was lost', () => {});
-  // it('should return GameState.Continues after checking not-bomb field', () => {});
-  // it('should return GameState.Won after checking all not-bomb fields', () => {});
-  // it('should return GameState.Lost after checking bomb field', () => {});
+
+  it('should check all fields around clear field', () => {
+    const boardDimension = 5;
+    const numberOfBombs = 6;
+    const board = new Board(new Difficulty(boardDimension, numberOfBombs));
+    const template = [
+      [' ', ' ', ' ', 'B', ' '],
+      [' ', ' ', ' ', 'B', ' '],
+      [' ', ' ', ' ', 'B', ' '],
+      ['B', 'B', 'B', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' ']
+    ];
+
+    board.fromTemplate(template);
+    const clicked = board.fields[1][1];
+    board.check(clicked);
+
+    const checkedFields = board.fields
+      .reduce((acc, row) => acc.concat(row))
+      .filter(field => field.isChecked)
+      .length;
+
+    expect(checkedFields).toBe(9);
+  });
+
+  it('should check only one field if it has at least one bomb around', () => {
+    const boardDimension = 3;
+    const numberOfBombs = 1;
+    const board = new Board(new Difficulty(boardDimension, numberOfBombs));
+    const template = [
+      [' ', ' ', ' '],
+      [' ', 'B', ' '],
+      [' ', ' ', ' ']
+    ];
+
+    board.fromTemplate(template);
+    const clicked = board.fields[0][0];
+    board.check(clicked);
+
+    const checkedFields = board.fields
+      .reduce((acc, row) => acc.concat(row))
+      .filter(field => field.isChecked)
+      .length;
+
+    expect(checkedFields).toBe(1);
+  });
+
+  it('should check all fields if the game was lost', () => {
+    const boardDimension = 3;
+    const numberOfBombs = 1;
+    const board = new Board(new Difficulty(boardDimension, numberOfBombs));
+    const template = [
+      [' ', ' ', ' '],
+      [' ', 'B', ' '],
+      [' ', ' ', ' ']
+    ];
+
+    board.fromTemplate(template);
+    const clicked = board.fields[1][1];
+    board.check(clicked);
+
+    const checkedFields = board.fields
+      .reduce((acc, row) => acc.concat(row))
+      .filter(field => field.isChecked)
+      .length;
+
+    expect(checkedFields).toBe(boardDimension ** 2);
+  });
+
+  it('should return GameState.Continues after checking not-bomb field', () => {
+    const boardDimension = 3;
+    const numberOfBombs = 1;
+    const board = new Board(new Difficulty(boardDimension, numberOfBombs));
+    const template = [
+      [' ', 'B', ' '],
+      ['B', 'B', ' '],
+      [' ', ' ', ' ']
+    ];
+
+    board.fromTemplate(template);
+    const clicked = board.fields[0][0];
+    const gameState = board.check(clicked);
+
+    expect(gameState).toBe(GameState.Continues);
+  });
+
+  it('should return GameState.Won after checking all not-bomb fields', () => {
+    const boardDimension = 3;
+    const numberOfBombs = 1;
+    const board = new Board(new Difficulty(boardDimension, numberOfBombs));
+    const template = [
+      [' ', ' ', ' '],
+      [' ', ' ', ' '],
+      [' ', ' ', 'B']
+    ];
+
+    board.fromTemplate(template);
+    const clicked = board.fields[0][0];
+    const gameState = board.check(clicked);
+
+    expect(gameState).toBe(GameState.Won);
+  });
+
+  it('should return GameState.Lost after checking bomb field', () => {
+    const boardDimension = 3;
+    const numberOfBombs = 1;
+    const board = new Board(new Difficulty(boardDimension, numberOfBombs));
+    const template = [
+      ['B', ' ', ' '],
+      [' ', ' ', ' '],
+      [' ', ' ', ' ']
+    ];
+
+    board.fromTemplate(template);
+    const clicked = board.fields[0][0];
+    const gameState = board.check(clicked);
+
+    expect(gameState).toBe(GameState.Lost);
+  });
 
 });
