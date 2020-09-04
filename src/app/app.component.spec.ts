@@ -9,7 +9,6 @@ import { Component } from '@angular/core';
 import { AppComponent } from './app.component';
 import { FlagService } from './services/flag.service';
 import { SettingsService } from './services/settings.service';
-import { of } from 'rxjs';
 
 @Component({ selector: 'app-board' })
 export class MockBoardComponent { }
