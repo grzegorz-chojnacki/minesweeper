@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SettingsService {
   public readonly minFieldSize = 30;
@@ -11,12 +11,19 @@ export class SettingsService {
 
   private fieldSizeSource = new BehaviorSubject(
     Number(localStorage.getItem('fieldSize')) || this.minFieldSize);
-  public fieldSize = this.fieldSizeSource.asObservable();
+
+  get fieldSize(): Observable<number> {
+    return this.fieldSizeSource.asObservable();
+  }
 
   private sidenavAutoHideSource = new BehaviorSubject(
-    this.localStorageGetBoolean(localStorage.getItem('sidenavAutoHide'),
+    this.localStorageGetBoolean(
+      localStorage.getItem('sidenavAutoHide'),
       this.defaultSidenavAutoHide));
-  public sidenavAutoHide = this.sidenavAutoHideSource.asObservable();
+
+  get sidenavAutoHide(): Observable<boolean> {
+    return this.sidenavAutoHideSource.asObservable();
+  }
 
   // Parse boolean from local storage or return some initial value if not found
   private localStorageGetBoolean(item: string, initValue = false): boolean {

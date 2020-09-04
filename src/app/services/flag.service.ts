@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FlagService {
   private flagSource = new BehaviorSubject<number>(undefined);
-  public counter = this.flagSource.asObservable();
+  get counter(): Observable<number> {
+    return this.flagSource.asObservable();
+  }
 
   public setFlags(newCount: number): void {
     this.flagSource.next(newCount);
