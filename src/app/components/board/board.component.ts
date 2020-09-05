@@ -19,8 +19,9 @@ import { SettingsService } from 'src/app/services/settings.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BoardComponent implements OnInit {
-  @Input() public difficulty: Difficulty;
-  public board: Board;
+  private difficulty: Difficulty;
+  private _board: Board;
+  public get board(): Board { return this._board; }
   public fieldSize: number; // Size of each field on the board, in pixels
 
   private readonly snackBarConfig: { [state: string]: MatSnackBarConfig } = {
@@ -52,7 +53,7 @@ export class BoardComponent implements OnInit {
   private newBoard(difficulty: Difficulty): void {
     this.snackBarService.dismiss();
     const bombPlanter = new BombPlanter(difficulty);
-    this.board = new Board(bombPlanter);
+    this._board = new Board(bombPlanter);
     this.flagService.setCounter(this.board.flagCounter);
     this.cdr.markForCheck();
   }
