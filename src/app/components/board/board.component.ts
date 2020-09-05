@@ -49,21 +49,21 @@ export class BoardComponent implements OnInit {
   private newBoard(difficulty: Difficulty): void {
     this.snackBarService.dismiss();
     this.board = new Board(difficulty);
-    this.flagService.setFlags(this.board.getFlagCounter());
+    this.flagService.setCounter(this.board.getFlagCounter());
     this.cdr.markForCheck();
   }
 
   public onClick(field: Field): void {
     const gameState = this.board.check(field);
     this.reactTo(gameState);
-    this.flagService.setFlags(this.board.getFlagCounter());
+    this.flagService.setCounter(this.board.getFlagCounter());
     this.cdr.markForCheck();
   }
 
   // Prevent showing context menu by returning false
   public onRightClick(field: Field): boolean {
     this.board.toggleFlag(field);
-    this.flagService.setFlags(this.board.getFlagCounter());
+    this.flagService.setCounter(this.board.getFlagCounter());
     this.cdr.markForCheck();
     return false;
   }

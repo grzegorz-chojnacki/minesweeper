@@ -5,13 +5,13 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class FlagService {
-  private flagSource = new BehaviorSubject<number>(undefined);
+  private counterSource = new BehaviorSubject<number>(undefined);
   get counter(): Observable<number> {
-    return this.flagSource.asObservable();
+    return this.counterSource.asObservable();
   }
 
-  public setFlags(newCount: number): void {
-    this.flagSource.next(newCount);
+  public setCounter(newCount: number): void {
+    this.counterSource.next(newCount);
   }
 
 }

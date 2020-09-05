@@ -52,7 +52,7 @@ describe('AppComponent', () => {
   it('should display correct number of flags if set', () => {
     const newFlagCount = 7;
     const flagService = TestBed.inject(FlagService);
-    flagService.setFlags(newFlagCount);
+    flagService.setCounter(newFlagCount);
 
     component.ngOnInit();
     fixture.detectChanges();
@@ -64,7 +64,7 @@ describe('AppComponent', () => {
 
   it('should not display number of flags if undefined', () => {
     const flagService = TestBed.inject(FlagService);
-    flagService.setFlags(undefined);
+    flagService.setCounter(undefined);
 
     component.ngOnInit();
     fixture.detectChanges();

@@ -17,7 +17,7 @@ describe('FlagsService', () => {
     const newFlagCount = 7;
 
     let result: number;
-    service.setFlags(newFlagCount);
+    service.setCounter(newFlagCount);
     service.counter.subscribe(count => result = count).unsubscribe();
 
     expect(result).toBe(newFlagCount);
