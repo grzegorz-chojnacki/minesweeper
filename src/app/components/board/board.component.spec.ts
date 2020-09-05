@@ -1,14 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { ChangeDetectorRef } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 import { BoardComponent } from './board.component';
 import { SettingsService } from 'src/app/services/settings.service';
 import { DifficultyService } from 'src/app/services/difficulty.service';
-import { ChangeDetectorRef } from '@angular/core';
 import { FlagService } from 'src/app/services/flag.service';
-import { By } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
-import { Difficulty } from 'src/app/difficulty';
+import { Difficulty } from 'src/app/classes/difficulty';
 import { PrintFieldPipe } from 'src/app/pipes/print-field.pipe';
 
 class SettingsServiceStub implements Partial<SettingsService> {

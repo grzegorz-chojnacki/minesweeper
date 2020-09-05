@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { DifficultyService } from './difficulty.service';
-import { Difficulty, difficulties } from 'src/app/difficulty';
+import { Difficulty, difficulties } from 'src/app/classes/difficulty';
 
 describe('DifficultyService', () => {
   beforeEach(() => {

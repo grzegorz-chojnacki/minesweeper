@@ -1,7 +1,7 @@
 import { Board, GameState } from './board';
-import { BombPlanter, FakeBombPlanter } from './bombPlanter';
-import { Difficulty } from './difficulty';
-import { Field } from './field';
+import { BombPlanter, FakeBombPlanter } from 'src/app/classes/bombPlanter';
+import { Difficulty } from 'src/app/classes/difficulty';
+import { Field } from 'src/app/classes/field';
 
 interface UsingTemplate {
   usingTemplate(template: string[][]): void;

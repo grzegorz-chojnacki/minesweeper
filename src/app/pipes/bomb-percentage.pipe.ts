@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Difficulty } from 'src/app/difficulty';
+import { Difficulty } from 'src/app/classes/difficulty';
 
 @Pipe({
   name: 'bombPercentage'

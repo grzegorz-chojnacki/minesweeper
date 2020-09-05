@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, ValidationErrors } from '@angular/forms';
 import { MatSliderChange } from '@angular/material/slider';
 
-import { difficulties, customDifficulty } from 'src/app/difficulty';
+import { difficulties, customDifficulty } from 'src/app/classes/difficulty';
 import { DifficultyService } from 'src/app/services/difficulty.service';
 import { SettingsService } from 'src/app/services/settings.service';
 

@@ -1,5 +1,5 @@
-import { Field } from './field';
-import { Difficulty } from './difficulty';
+import { Field } from 'src/app/classes/field';
+import { Difficulty } from 'src/app/classes/difficulty';
 
 export class BombPlanter {
   get difficulty(): Difficulty { return this._difficulty; }

@@ -1,6 +1,6 @@
-import { BombPlanter } from 'src/app/bombPlanter';
-import { Difficulty } from 'src/app/difficulty';
-import { Field } from 'src/app/field';
+import { BombPlanter } from 'src/app/classes/bombPlanter';
+import { Difficulty } from 'src/app/classes/difficulty';
+import { Field } from 'src/app/classes/field';
 
 export enum GameState { Won, Lost, Continues }
 
