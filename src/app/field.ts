@@ -28,7 +28,7 @@ export class Field {
   }
 
   public check(): void {
-   this._checked = true;
+    this._checked = true;
   }
 
   public get isFlagged(): boolean {
@@ -37,5 +37,21 @@ export class Field {
 
   public toggleFlag(): void {
     this._flagged = !this._flagged;
+  }
+
+  // Apply `fn` to all fields around `field` in `fields` matrix
+  public applyAround(fields: Field[][], fn: (field: Field) => void): void {
+    const getIndices = (n: number) => [n - 1, n, n + 1];
+    const valid = (n: number) => (0 <= n && n < fields.length);
+    const xIndices = getIndices(this.x).filter(valid);
+    const yIndices = getIndices(this.y).filter(valid);
+
+    for (const y of yIndices) {
+      for (const x of xIndices) {
+        if (!(x === this.x && y === this.y)) {
+          fn(fields[y][x]);
+        }
+      }
+    }
   }
 }

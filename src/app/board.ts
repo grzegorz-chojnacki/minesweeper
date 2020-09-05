@@ -4,25 +4,6 @@ import { Field } from 'src/app/field';
 
 export enum GameState { Won, Lost, Continues }
 
-// Apply `fn` to all fields around `field` in `fields` matrix
-export function applyAround(
-    field: Field,
-    fields: Field[][],
-    fn: (field: Field) => void): void {
-  const getIndices = (n: number) => [n - 1, n, n + 1];
-  const valid = (n: number) => (0 <= n && n < fields.length);
-  const xIndices = getIndices(field.x).filter(valid);
-  const yIndices = getIndices(field.y).filter(valid);
-
-  for (const y of yIndices) {
-    for (const x of xIndices) {
-      if (!(x === field.x && y === field.y)) {
-        fn(fields[y][x]);
-      }
-    }
-  }
-}
-
 export class Board {
   private _fields: Field[][];
   private _flagCounter: number;
@@ -70,7 +51,7 @@ export class Board {
       this._flagCounter++;
     }
     if (field.value === Field.clear) {
-      applyAround(field, this._fields, this.checkNear.bind(this));
+      field.applyAround(this._fields, this.checkNear.bind(this));
     }
   }
 

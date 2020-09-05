@@ -1,6 +1,5 @@
 import { Field } from './field';
 import { Difficulty } from './difficulty';
-import { applyAround } from './board';
 
 export class BombPlanter {
   get difficulty(): Difficulty { return this._difficulty; }
@@ -20,7 +19,7 @@ export class BombPlanter {
   protected addHints(bombedFields: Field[], fields: Field[][]): void {
     const incrementValue = (field: Field) => field.value++;
     bombedFields
-      .forEach(field => applyAround(field, fields, incrementValue));
+      .forEach(field => field.applyAround(fields, incrementValue));
   }
 
   public plantBombs(firstClicked: Field, fields: Field[][]): void {
