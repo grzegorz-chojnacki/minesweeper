@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 import { BoardComponent } from './board.component';
 import { SettingsService } from 'src/app/services/settings.service';
@@ -35,7 +35,11 @@ describe('BoardComponent', () => {
         PrintFieldPipe
       ],
       providers: [
-        { provide: MatSnackBar, useValue: { dismiss: () => {} }},
+        { provide: MatSnackBar, useValue: {
+          open: (message: string,
+                 action: string,
+                 config: MatSnackBarConfig) => { } ,
+          dismiss: () => {} }},
         { provide: SettingsService, useValue: settingsServiceStub },
         { provide: DifficultyService, difficultyServiceStub },
         { provide: FlagService },
@@ -90,18 +94,66 @@ describe('BoardComponent', () => {
 
     component.ngOnInit();
     fixture.detectChanges();
-    const boardContainer = fixture.debugElement.query(By.css('.board-container'));
+    const boardContainer = fixture.debugElement.query(
+      By.css('.board-container')
+    );
+
     const rowContainers = boardContainer.children;
 
     expect(rowContainers.length).toBe(expectedDimension);
 
     rowContainers.forEach(rowContainer => expect(rowContainer.children.length)
-      .toBe(expectedDimension));
+      .toBe(expectedDimension)
+    );
   });
 
-  // it('should handle click events', () => {});
-  // it('should handle rigth click events', () => {});
-  // it('should handle every game state', () => {});
-  // it('should spawn snack bars', () => {});
+  it('should handle click events', async(() => {
+    component.ngOnInit();
+    const clicked = component.board.fields[0][0];
+    component.onClick(clicked);
+    expect(clicked.isChecked).toBe(true);
+  }));
+
+  it('should set flagService counter on new game', () => {
+    const flagService = TestBed.inject(FlagService);
+    const difficultyService = TestBed.inject(DifficultyService);
+
+    difficultyService.newDifficulty(new Difficulty(5, 5));
+    component.ngOnInit();
+
+    flagService.counter.subscribe(counter => expect(counter).toBe(5))
+      .unsubscribe();
+  });
+
+  it('should handle right click events', () => {
+    const flagService = TestBed.inject(FlagService);
+    const difficultyService = TestBed.inject(DifficultyService);
+
+    difficultyService.newDifficulty(new Difficulty(3, 3));
+    component.ngOnInit();
+    const flagged = component.board.fields[0][0];
+    component.onRightClick(flagged);
+
+    expect(flagged.isFlagged).toBe(true);
+  });
+
+  // it('should show hints on checked buttons', () => {});
+
+  it('should update flagService counter', () => {
+    const flagService = TestBed.inject(FlagService);
+    const difficultyService = TestBed.inject(DifficultyService);
+
+    difficultyService.newDifficulty(new Difficulty(4, 4));
+    component.ngOnInit();
+    const flagged = component.board.fields[0][0];
+    component.onRightClick(flagged);
+
+    flagService.counter.subscribe(counter => expect(counter).toBe(3))
+      .unsubscribe();
+  });
+
+  // it('should spawn game won snack bar', () => { });
+  // it('should spawn game lost snack bar', () => {});
+  // it('should not spawn snack bar when game continues', () => {});
   // it('should dismiss snack bars', () => {});
 });
