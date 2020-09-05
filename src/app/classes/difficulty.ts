@@ -1,7 +1,7 @@
 export class Difficulty {
   public readonly name: string;
   public readonly boardDimension: number;
-  public numberOfBombs: number;
+  public readonly numberOfBombs: number;
 
   constructor(boardDimension: number, numberOfBombs: number, name = '') {
     if (boardDimension < 1) {
