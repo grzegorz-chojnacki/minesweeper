@@ -17,7 +17,9 @@ export class BombPlanter {
   }
 
   protected addHints(bombedFields: Field[], fields: Field[][]): void {
-    const incrementValue = (field: Field) => field.value++;
+    const incrementValue = (field: Field) =>
+      (field.value !== Field.bomb) && field.value++;
+
     bombedFields
       .forEach(field => field.applyAround(fields, incrementValue));
   }

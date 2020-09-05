@@ -1,7 +1,7 @@
 export class Field {
   public static readonly bomb = 9;
   public static readonly clear = 0;
-  private _value = 0;
+  public value = 0;
   private _checked = false;
   private _flagged = false;
   public readonly x: number;
@@ -10,17 +10,6 @@ export class Field {
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
-  }
-
-  // Limit value between 0 and 9
-  public set value(value: number) {
-    if (0 <= value && value <= 9) {
-      this._value = value;
-    }
-  }
-
-  public get value(): number {
-    return this._value;
   }
 
   public get isChecked(): boolean {
