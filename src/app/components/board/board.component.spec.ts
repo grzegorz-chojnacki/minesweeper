@@ -82,7 +82,7 @@ describe('BoardComponent', () => {
       difficultyService.initialDifficulty.boardDimension;
     expect(generatedFieldsDimension).toBe(expectedFieldDimension);
 
-    const generatedNumberOfBombs = component.board.getFlagCounter();
+    const generatedNumberOfBombs = component.board.flagCounter;
     const expectedNumberOfBombs =
       difficultyService.initialDifficulty.numberOfBombs;
     expect(generatedNumberOfBombs).toBe(expectedNumberOfBombs);

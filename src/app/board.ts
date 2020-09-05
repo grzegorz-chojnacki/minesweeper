@@ -1,21 +1,44 @@
+import { BombPlanter } from 'src/app/bombPlanter';
 import { Difficulty } from 'src/app/difficulty';
 import { Field } from 'src/app/field';
 
 export enum GameState { Won, Lost, Continues }
 
+// Apply `fn` to all fields around `field` in `fields` matrix
+export function applyAround(
+    field: Field,
+    fields: Field[][],
+    fn: (field: Field) => void): void {
+  const getIndices = (n: number) => [n - 1, n, n + 1];
+  const valid = (n: number) => (0 <= n && n < fields.length);
+  const xIndices = getIndices(field.x).filter(valid);
+  const yIndices = getIndices(field.y).filter(valid);
+
+  for (const y of yIndices) {
+    for (const x of xIndices) {
+      if (!(x === field.x && y === field.y)) {
+        fn(fields[y][x]);
+      }
+    }
+  }
+}
+
 export class Board {
-  public readonly fields: Field[][];
-  private readonly numberOfBombs: number;
+  private _fields: Field[][];
+  private _flagCounter: number;
+  private difficulty: Difficulty;
   private isFirstClick = true;
   private uncheckedFieldCounter: number;
-  private flagCounter: number;
 
-  public getFlagCounter(): number { return this.flagCounter; }
+  get flagCounter(): number { return this._flagCounter; }
 
-  constructor(difficulty: Difficulty) {
-    this.numberOfBombs = this.flagCounter = difficulty.numberOfBombs;
-    this.uncheckedFieldCounter = difficulty.boardDimension ** 2;
-    this.fields = this.newFields(difficulty.boardDimension);
+  get fields(): Field[][] { return this._fields; }
+
+  constructor(private bombPlanter: BombPlanter) {
+    this.difficulty = bombPlanter.difficulty;
+    this.uncheckedFieldCounter = this.difficulty.boardDimension ** 2;
+    this._flagCounter = this.difficulty.numberOfBombs;
+    this._fields = this.newFields(this.difficulty.boardDimension);
   }
 
   private newFields(boardDimension: number): Field[][] {
@@ -30,24 +53,8 @@ export class Board {
   }
 
   private checkAll(): void {
-    this.fields.forEach(row => row.forEach(field => field.check()));
-    this.flagCounter = undefined;
-  }
-
-  // Apply `fn` to all fields around `field`
-  private applyAround(field: Field, fn: (field: Field) => void): void {
-    const getIndices = (n: number) => [n - 1, n, n + 1];
-    const valid = (n: number) => (0 <= n && n < this.fields.length);
-    const xIndices = getIndices(field.x).filter(valid);
-    const yIndices = getIndices(field.y).filter(valid);
-
-    for (const y of yIndices) {
-      for (const x of xIndices) {
-        if (!(x === field.x && y === field.y)) {
-          fn(this.fields[y][x]);
-        }
-      }
-    }
+    this._fields.forEach(row => row.forEach(field => field.check()));
+    this._flagCounter = undefined;
   }
 
   // Check `field` and if it has zero bombs around, then check every unchecked
@@ -60,16 +67,16 @@ export class Board {
     this.uncheckedFieldCounter--;
     if (field.isFlagged) {
       field.toggleFlag();
-      this.flagCounter++;
+      this._flagCounter++;
     }
     if (field.value === Field.clear) {
-      this.applyAround(field, this.checkNear.bind(this));
+      applyAround(field, this._fields, this.checkNear.bind(this));
     }
   }
 
   public check(field: Field): GameState {
     if (this.isFirstClick) {
-      this.plantBombs(field);
+      this.bombPlanter.plantBombs(field, this.fields);
       this.isFirstClick = false;
     }
 
@@ -83,7 +90,7 @@ export class Board {
       this.checkNear(field);
     }
     // Win condition
-    if (this.uncheckedFieldCounter === this.numberOfBombs) {
+    if (this.uncheckedFieldCounter === this.difficulty.numberOfBombs) {
       this.checkAll();
       return GameState.Won;
     } else {
@@ -94,54 +101,7 @@ export class Board {
   public toggleFlag(field: Field): void {
     if (this.flagCounter > 0 || field.isFlagged) {
       field.toggleFlag();
-      this.flagCounter += (field.isFlagged) ? -1 : 1;
+      this._flagCounter += (field.isFlagged) ? -1 : 1;
     }
-  }
-
-  // Shuffle array in place
-  private shuffle(array: any[]): void {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const tmp = array[i];
-      array[i] = array[j];
-      array[j] = tmp;
-    }
-  }
-
-  private addHints(bombedFields: Field[]): void {
-    const incrementValue = (field: Field) => field.value++;
-    bombedFields.forEach(field => this.applyAround(field, incrementValue));
-  }
-
-  private plantBombs(firstClicked: Field): void {
-    const fieldsFlatList = this.fields
-      .reduce((acc, row) => acc.concat(row), []) // flatten
-      .filter(field => field !== firstClicked);
-
-    this.shuffle(fieldsFlatList);
-
-    const bombedFields = fieldsFlatList.slice(0, this.numberOfBombs);
-    bombedFields.forEach(field => { field.value = Field.bomb; });
-    this.addHints(bombedFields);
-  }
-
-  public fromTemplate(template: string[][]): void {
-    const templateBombsNumber = template
-      .reduce((acc, row) => acc.concat(row), [])
-      .filter(field => field.includes('B')).length;
-    if (templateBombsNumber !== this.numberOfBombs ||
-        template.every(row => row.length === this.fields.length)) {
-      const bombedFields = [];
-      for (let y = 0; y < template.length; y++) {
-        for (let x = 0; x < template.length; x++) {
-          if (template[y][x].includes('B')) {
-            this.fields[y][x].value = Field.bomb;
-            bombedFields.push(this.fields[y][x]);
-          }
-        }
-      }
-      this.addHints(bombedFields);
-      this.isFirstClick = false; // Bombs already generated
-    } else { throw new Error('Template did not match difficulty'); }
   }
 }

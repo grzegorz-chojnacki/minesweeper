@@ -4,6 +4,7 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 import { Difficulty } from 'src/app/difficulty';
 import { Board, GameState } from 'src/app/board';
+import { BombPlanter } from 'src/app/bombPlanter';
 import { Field } from 'src/app/field';
 import { DifficultyService } from 'src/app/services/difficulty.service';
 import { FlagService } from 'src/app/services/flag.service';
@@ -48,22 +49,23 @@ export class BoardComponent implements OnInit {
 
   private newBoard(difficulty: Difficulty): void {
     this.snackBarService.dismiss();
-    this.board = new Board(difficulty);
-    this.flagService.setCounter(this.board.getFlagCounter());
+    const bombPlanter = new BombPlanter(difficulty);
+    this.board = new Board(bombPlanter);
+    this.flagService.setCounter(this.board.flagCounter);
     this.cdr.markForCheck();
   }
 
   public onClick(field: Field): void {
     const gameState = this.board.check(field);
     this.reactTo(gameState);
-    this.flagService.setCounter(this.board.getFlagCounter());
+    this.flagService.setCounter(this.board.flagCounter);
     this.cdr.markForCheck();
   }
 
   // Prevent showing context menu by returning false
   public onRightClick(field: Field): boolean {
     this.board.toggleFlag(field);
-    this.flagService.setCounter(this.board.getFlagCounter());
+    this.flagService.setCounter(this.board.flagCounter);
     this.cdr.markForCheck();
     return false;
   }
