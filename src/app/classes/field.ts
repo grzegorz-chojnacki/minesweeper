@@ -39,15 +39,15 @@ export class Field {
     this._flagged = !this._flagged;
   }
 
-  // Apply `fn` to all fields around `field` in `fields` matrix
+  // Apply `fn` to all fields around this field in `fields` matrix
   public applyAround(fields: Field[][], fn: (field: Field) => void): void {
-    const getIndices = (n: number) => [n - 1, n, n + 1];
+    const getNeighbours = (n: number) => [n - 1, n, n + 1];
     const valid = (n: number) => (0 <= n && n < fields.length);
-    const xIndices = getIndices(this.x).filter(valid);
-    const yIndices = getIndices(this.y).filter(valid);
+    const xNeighbours = getNeighbours(this.x).filter(valid);
+    const yNeighbours = getNeighbours(this.y).filter(valid);
 
-    for (const y of yIndices) {
-      for (const x of xIndices) {
+    for (const y of yNeighbours) {
+      for (const x of xNeighbours) {
         if (!(x === this.x && y === this.y)) {
           fn(fields[y][x]);
         }
