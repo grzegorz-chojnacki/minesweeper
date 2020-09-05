@@ -1,5 +1,7 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy,
-         ChangeDetectorRef } from '@angular/core';
+import {
+  Component, OnInit, Input, ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 import { Difficulty } from 'src/app/classes/difficulty';
