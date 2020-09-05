@@ -38,8 +38,6 @@ export class BombPlanter {
 }
 
 export class FakeBombPlanter extends BombPlanter {
-  get difficulty(): Difficulty { return this._difficulty; }
-
   private static parseTemplate(template: string[][]): Difficulty {
     if (template.length === 0) {
       throw new Error('Template is empty');
