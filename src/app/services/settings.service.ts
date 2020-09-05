@@ -12,22 +12,18 @@ export class SettingsService {
   private fieldSizeSource = new BehaviorSubject(
     Number(localStorage.getItem('fieldSize')) || this.minFieldSize);
 
-  get fieldSize(): Observable<number> {
-    return this.fieldSizeSource.asObservable();
-  }
-
   private sidenavAutoHideSource = new BehaviorSubject(
     this.localStorageGetBoolean(
       localStorage.getItem('sidenavAutoHide'),
       this.defaultSidenavAutoHide));
 
-  get sidenavAutoHide(): Observable<boolean> {
-    return this.sidenavAutoHideSource.asObservable();
-  }
-
   // Parse boolean from local storage or return some initial value if not found
   private localStorageGetBoolean(item: string, initValue = false): boolean {
     return (item !== null) ? item === 'true' : initValue;
+  }
+
+  get fieldSize(): Observable<number> {
+    return this.fieldSizeSource.asObservable();
   }
 
   public setFieldSize(newFieldSize: number): void {
@@ -35,6 +31,10 @@ export class SettingsService {
       this.fieldSizeSource.next(newFieldSize);
       localStorage.setItem('fieldSize', newFieldSize.toString());
     }
+  }
+
+  get sidenavAutoHide(): Observable<boolean> {
+    return this.sidenavAutoHideSource.asObservable();
   }
 
   public setSidenavAutoHide(newOption: boolean): void {
