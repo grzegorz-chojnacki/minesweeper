@@ -5,10 +5,10 @@ import { Field } from 'src/app/classes/field';
   name: 'printField'
 })
 export class PrintFieldPipe implements PipeTransform {
-  private readonly bombIcon = this.buildIcon('gps_fixed');
-  private readonly flagIcon = this.buildIcon('tour');
+  private static readonly bombIcon = PrintFieldPipe.buildIcon('gps_fixed');
+  private static readonly flagIcon = PrintFieldPipe.buildIcon('tour');
 
-  private buildIcon(iconName: string): string {
+  private static buildIcon(iconName: string): string {
     return `<span class="material-icons field-icon">${iconName}</span>`;
   }
 
@@ -20,7 +20,7 @@ export class PrintFieldPipe implements PipeTransform {
   private asChecked(value: number): string {
     switch (value) {
       case Field.bomb:
-        return this.bombIcon;
+        return PrintFieldPipe.bombIcon;
       case Field.clear:
         return '';
       default:
@@ -31,7 +31,7 @@ export class PrintFieldPipe implements PipeTransform {
   // Used when the field hasn't been checked and you can only view if it's flagged
   private asNotChecked(isFlagged: boolean): string {
     return (isFlagged)
-      ? this.flagIcon
+      ? PrintFieldPipe.flagIcon
       : '';
   }
 
@@ -40,5 +40,4 @@ export class PrintFieldPipe implements PipeTransform {
       ? this.asChecked(value)
       : this.asNotChecked(isFlagged);
   }
-
 }

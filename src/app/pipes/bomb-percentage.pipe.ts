@@ -13,5 +13,4 @@ export class BombPercentagePipe implements PipeTransform {
     const fraction = difficulty.numberOfBombs / difficulty.boardDimension ** 2;
     return `About ${(fraction * 100).toFixed(0)}% of fields`;
   }
-
 }
