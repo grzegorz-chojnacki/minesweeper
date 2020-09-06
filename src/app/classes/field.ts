@@ -12,6 +12,17 @@ export class Field {
     this.y = y;
   }
 
+  public static makeMatrix(boardDimension: number): Field[][] {
+    const fields = new Array<Array<Field>>();
+    for (let y = 0; y < boardDimension; y++) {
+      fields[y] = new Array<Field>();
+      for (let x = 0; x < boardDimension; x++) {
+        fields[y][x] = new Field(x, y);
+      }
+    }
+    return fields;
+  }
+
   public get isChecked(): boolean { return this._checked; }
   public check(): void { this._checked = true; }
 

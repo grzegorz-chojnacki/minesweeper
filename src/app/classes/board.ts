@@ -19,18 +19,7 @@ export class Board {
     this.difficulty = bombPlanter.difficulty;
     this.uncheckedFieldCounter = this.difficulty.boardDimension ** 2;
     this._flagCounter = this.difficulty.numberOfBombs;
-    this._fields = this.newFields(this.difficulty.boardDimension);
-  }
-
-  private newFields(boardDimension: number): Field[][] {
-    const fields = new Array<Array<Field>>();
-    for (let y = 0; y < boardDimension; y++) {
-      fields[y] = new Array<Field>();
-      for (let x = 0; x < boardDimension; x++) {
-        fields[y][x] = new Field(x, y);
-      }
-    }
-    return fields;
+    this._fields = Field.makeMatrix(this.difficulty.boardDimension);
   }
 
   private checkAll(): void {
