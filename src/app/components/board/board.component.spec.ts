@@ -10,6 +10,8 @@ import { FlagService } from 'src/app/services/flag.service';
 import { BehaviorSubject, of } from 'rxjs';
 import { Difficulty } from 'src/app/classes/difficulty';
 import { PrintFieldPipe } from 'src/app/pipes/print-field.pipe';
+import { Board } from 'src/app/classes/board';
+import { FakeBombPlanter } from 'src/app/classes/bombPlanter';
 
 class SettingsServiceStub implements Partial<SettingsService> {
   public fieldSize = new BehaviorSubject<number>(30);
@@ -53,6 +55,7 @@ describe('BoardComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BoardComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -95,10 +98,8 @@ describe('BoardComponent', () => {
     const expectedDimension = difficultyService.initialDifficulty.boardDimension;
 
     component.ngOnInit();
-    fixture.detectChanges();
-    const boardContainer = fixture.debugElement.query(
-      By.css('.board-container')
-    );
+    const boardContainer = fixture.debugElement
+      .query(By.css('.board-container'));
 
     const rowContainers = boardContainer.children;
 
@@ -122,7 +123,6 @@ describe('BoardComponent', () => {
     component.ngOnInit();
     const difficultyService = TestBed.inject(DifficultyService);
     difficultyService.newDifficulty(new Difficulty(5, 24));
-    fixture.detectChanges();
 
     const clicked = component.board.fields[0][0];
     component.onClick(clicked);
@@ -150,7 +150,6 @@ describe('BoardComponent', () => {
     const difficultyService = TestBed.inject(DifficultyService);
     difficultyService.newDifficulty(new Difficulty(3, 3));
     component.ngOnInit();
-    fixture.detectChanges();
 
     const flagged = component.board.fields[0][0];
     component.onRightClick(flagged);
@@ -178,8 +177,72 @@ describe('BoardComponent', () => {
       .unsubscribe();
   });
 
-  // it('should spawn game won snack bar', () => {});
-  // it('should spawn game lost snack bar', () => {});
-  // it('should not spawn snack bar when game continues', () => {});
-  // it('should dismiss snack bars', () => {});
+  it('should spawn game won snack bar', () => {
+    const difficultyService = TestBed.inject(DifficultyService);
+    difficultyService.newDifficulty(new Difficulty(1, 0));
+    const fakeMatSnackBar = TestBed.inject(MatSnackBar);
+    spyOn(fakeMatSnackBar, 'open').and.callThrough();
+    fixture.detectChanges();
+
+    const clicked = component.board.fields[0][0];
+    component.onClick(clicked);
+
+    fixture.detectChanges();
+
+    expect(fakeMatSnackBar.open)
+      .toHaveBeenCalledWith('You won!', jasmine.anything(), jasmine.anything());
+  });
+
+  it('should spawn game lost snack bar', () => {
+    const fakeMatSnackBar = TestBed.inject(MatSnackBar);
+    spyOn(fakeMatSnackBar, 'open').and.callThrough();
+
+    const template = [
+      [' ', ' ', ' '],
+      [' ', 'B', ' '],
+      [' ', ' ', ' ']
+    ];
+    const bombPlanter = new FakeBombPlanter(template);
+    const board = new Board(bombPlanter);
+
+    component.useBoard(board);
+    fixture.detectChanges();
+
+    const clicked = component.board.fields[1][1];
+    component.onClick(clicked);
+
+    fixture.detectChanges();
+
+    expect(fakeMatSnackBar.open)
+      .toHaveBeenCalledWith('Game over', jasmine.anything(), jasmine.anything());
+  });
+
+  it('should not spawn snack bar when game continues', () => {
+    const difficultyService = TestBed.inject(DifficultyService);
+    difficultyService.newDifficulty(new Difficulty(2, 2));
+    const fakeMatSnackBar = TestBed.inject(MatSnackBar);
+    spyOn(fakeMatSnackBar, 'open').and.callThrough();
+    fixture.detectChanges();
+
+    const clicked = component.board.fields[0][0];
+    component.onClick(clicked);
+
+    fixture.detectChanges();
+
+    expect(fakeMatSnackBar.open).not.toHaveBeenCalled();
+  });
+
+  it('should dismiss snack bars', () => {
+    const difficultyService = TestBed.inject(DifficultyService);
+    const fakeMatSnackBar = TestBed.inject(MatSnackBar);
+    spyOn(fakeMatSnackBar, 'dismiss').and.callThrough();
+    fixture.detectChanges();
+
+    // Start new game, dismiss snackbars
+    difficultyService.newDifficulty(new Difficulty(7, 7));
+
+    fixture.detectChanges();
+
+    expect(fakeMatSnackBar.dismiss).toHaveBeenCalled();
+  });
 });
