@@ -7,7 +7,7 @@ import { BoardComponent } from './board.component';
 import { SettingsService } from 'src/app/services/settings.service';
 import { DifficultyService } from 'src/app/services/difficulty.service';
 import { FlagService } from 'src/app/services/flag.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { Difficulty } from 'src/app/classes/difficulty';
 import { PrintFieldPipe } from 'src/app/pipes/print-field.pipe';
 
@@ -38,7 +38,9 @@ describe('BoardComponent', () => {
         { provide: MatSnackBar, useValue: {
           open: (message: string,
                  action: string,
-                 config: MatSnackBarConfig) => { } ,
+                 config: MatSnackBarConfig) => {
+            return { onAction: () => of() };
+          },
           dismiss: () => {} }},
         { provide: SettingsService, useValue: settingsServiceStub },
         { provide: DifficultyService, difficultyServiceStub },
@@ -107,12 +109,31 @@ describe('BoardComponent', () => {
     );
   });
 
-  it('should handle click events', async(() => {
+  it('should handle click events', () => {
     component.ngOnInit();
+
     const clicked = component.board.fields[0][0];
     component.onClick(clicked);
+
     expect(clicked.isChecked).toBe(true);
-  }));
+  });
+
+  it('should show hints on checked buttons', () => {
+    component.ngOnInit();
+    const difficultyService = TestBed.inject(DifficultyService);
+    difficultyService.newDifficulty(new Difficulty(5, 24));
+    fixture.detectChanges();
+
+    const clicked = component.board.fields[0][0];
+    component.onClick(clicked);
+    expect(clicked.value).toBe(3);
+
+    fixture.detectChanges();
+
+    const clickedButton = fixture.debugElement
+      .query(By.css('.field')).nativeElement as HTMLButtonElement;
+    expect(clickedButton.innerHTML).toContain('3');
+  });
 
   it('should set flagService counter on new game', () => {
     const flagService = TestBed.inject(FlagService);
@@ -126,18 +147,23 @@ describe('BoardComponent', () => {
   });
 
   it('should handle right click events', () => {
-    const flagService = TestBed.inject(FlagService);
     const difficultyService = TestBed.inject(DifficultyService);
-
     difficultyService.newDifficulty(new Difficulty(3, 3));
     component.ngOnInit();
+    fixture.detectChanges();
+
     const flagged = component.board.fields[0][0];
     component.onRightClick(flagged);
-
     expect(flagged.isFlagged).toBe(true);
-  });
 
-  // it('should show hints on checked buttons', () => {});
+    fixture.detectChanges();
+
+    const flaggedButton = fixture.debugElement
+      .query(By.css('.field')).nativeElement as HTMLButtonElement;
+    const buttonContent = flaggedButton.firstChild as HTMLElement;
+
+    expect(buttonContent.classList).toContain('material-icons');
+  });
 
   it('should update flagService counter', () => {
     const flagService = TestBed.inject(FlagService);
@@ -152,7 +178,7 @@ describe('BoardComponent', () => {
       .unsubscribe();
   });
 
-  // it('should spawn game won snack bar', () => { });
+  // it('should spawn game won snack bar', () => {});
   // it('should spawn game lost snack bar', () => {});
   // it('should not spawn snack bar when game continues', () => {});
   // it('should dismiss snack bars', () => {});
