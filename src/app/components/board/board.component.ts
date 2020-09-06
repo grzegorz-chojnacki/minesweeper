@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, Input, ChangeDetectionStrategy,
+  Component, OnInit, ChangeDetectionStrategy,
   ChangeDetectorRef
 } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
@@ -19,7 +19,6 @@ import { SettingsService } from 'src/app/services/settings.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BoardComponent implements OnInit {
-  private difficulty: Difficulty;
   private _board: Board;
   public get board(): Board { return this._board; }
   public fieldSize: number; // Size of each field on the board, in pixels
@@ -44,16 +43,20 @@ export class BoardComponent implements OnInit {
       });
 
     this.difficultyService.difficulty
-      .subscribe(difficulty => {
-        this.difficulty = difficulty;
-        this.newBoard(this.difficulty);
-      });
+      .subscribe(difficulty => this.newBoard(difficulty));
   }
 
   private newBoard(difficulty: Difficulty): void {
     this.snackBarService.dismiss();
     const bombPlanter = new BombPlanter(difficulty);
     this._board = new Board(bombPlanter);
+    this.flagService.setCounter(this.board.flagCounter);
+    this.cdr.markForCheck();
+  }
+
+  public useBoard(board: Board): void {
+    this.snackBarService.dismiss();
+    this._board = board;
     this.flagService.setCounter(this.board.flagCounter);
     this.cdr.markForCheck();
   }
@@ -76,7 +79,7 @@ export class BoardComponent implements OnInit {
   private spawnSnackBar(title: string, config: MatSnackBarConfig): void {
     const snackBar = this.snackBarService
       .open(title, 'Restart', config);
-    snackBar.onAction().subscribe(() => this.newBoard(this.difficulty));
+    snackBar.onAction().subscribe(() => this.newBoard(this.board.difficulty));
   }
 
   private reactTo(gameState: GameState): void {
