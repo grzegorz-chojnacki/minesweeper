@@ -12,21 +12,11 @@ export class Field {
     this.y = y;
   }
 
-  public get isChecked(): boolean {
-    return this._checked;
-  }
+  public get isChecked(): boolean { return this._checked; }
+  public check(): void { this._checked = true; }
 
-  public check(): void {
-    this._checked = true;
-  }
-
-  public get isFlagged(): boolean {
-    return this._flagged;
-  }
-
-  public toggleFlag(): void {
-    this._flagged = !this._flagged;
-  }
+  public get isFlagged(): boolean { return this._flagged; }
+  public toggleFlag(): void { this._flagged = !this._flagged; }
 
   // Apply `fn` to all fields around this field in `fields` matrix
   public applyAround(fields: Field[][], fn: (field: Field) => void): void {
