@@ -5,9 +5,9 @@ import { Field } from 'src/app/classes/field';
 export enum GameState { Won, Lost, Continues }
 
 export class Board {
+  public readonly difficulty: Difficulty;
   private _fields: Field[][];
   private _flagCounter: number;
-  private difficulty: Difficulty;
   private isFirstClick = true;
   private uncheckedFieldCounter: number;
 
