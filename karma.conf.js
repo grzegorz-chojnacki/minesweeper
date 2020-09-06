@@ -23,6 +23,7 @@ module.exports = function (config) {
     reporters: ['progress', 'kjhtml'],
     port: 9876,
     colors: true,
+    retryLimit: 1,
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: ['Chrome'],
