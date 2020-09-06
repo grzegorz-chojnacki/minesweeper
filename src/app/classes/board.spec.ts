@@ -49,46 +49,6 @@ describe('Board', () => {
     expect(board.fields[0].length).toBe(boardDimension);
   });
 
-  // TODO: Doesn't belong anymore
-
-  // it('should not generate bomb on the first clicked field', () => {
-  //   const boardDimension = 10;
-  //   const numberOfBombs = 10;
-  //   const clickCases = [
-  //     [0, 0],
-  //     [0, boardDimension - 1],
-  //     [boardDimension - 1, 0],
-  //     [boardDimension - 1, boardDimension - 1],
-  //     [Math.floor(boardDimension / 2), Math.floor(boardDimension / 2)]
-  //   ];
-
-  //   for (const clickCase of clickCases) {
-  //     const board = getRandomBoard(boardDimension, numberOfBombs);
-  //     const [x, y] = clickCase;
-
-  //     const clicked = board.fields[y][x];
-  //     board.check(clicked); // Plant bombs
-  //     expect(clicked.value).not.toBe(Field.bomb);
-  //   }
-  // });
-
-  // TODO: Doesn't belong anymore
-
-  // it('should have proper number of bombs generated', () => {
-  //   const isBomb = (field: Field) => field.value === Field.bomb;
-  //   const boardDimension = 10;
-  //   const numberOfBombs = 10;
-  //   const board = getRandomBoard(boardDimension, numberOfBombs);
-  //   const clicked = board.fields[0][0];
-
-  //   board.check(clicked); // Plant bombs
-  //   const bombsGenerated = board.fields
-  //     .map(row => row.filter(isBomb))
-  //     .reduce((acc, arr) => acc.concat(arr), []);
-
-  //   expect(bombsGenerated.length).toBe(numberOfBombs);
-  // });
-
   it('should have proper number of flags set', () => {
     const boardDimension = 10;
     const numberOfBombs = 10;
