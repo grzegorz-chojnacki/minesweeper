@@ -79,8 +79,6 @@ export class SettingsComponent implements OnInit {
   public getNumberOfBombsError(): string {
     if (this.settingsForm.get('boardDimension').invalid) {
       return 'Board dimension must be valid';
-    } else if (this.settingsForm.get('numberOfBombs').value === null) {
-      return 'Must be set';
     } else if (this.settingsForm.get('boardDimension').value === 1) {
       return 'Must be 0';
     } else {
