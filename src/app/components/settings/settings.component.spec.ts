@@ -3,7 +3,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatSliderModule, MatSlider } from '@angular/material/slider';
+import { MatSliderModule } from '@angular/material/slider';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -278,16 +278,71 @@ describe('SettingsComponent', () => {
 
   it('should init inputs with initialDifficulty', () => {
     const difficultyService = TestBed.inject(DifficultyService);
+    component.ngOnInit();
     const difficulty: Difficulty = component.settingsForm.value;
     expect(difficulty).toEqual({ ...difficultyService.initialDifficulty });
   });
 
-  // it('should prevent form submition if it is invalid', () => {});
-  // it('should set new difficulty on form submit', () => {});
-  // it('should set new difficulty, even if it did not change', () => {});
-  // it('should emit event on form submit', () => {});
-  // it('should init sidenav auto hide setting', () => {});
-  // it('should init sidenav auto hide checkbox', () => {});
-  // it('should update sidenav auto hide setting', () => {});
-  // it('should ', () => {});
+  it('should prevent form submition if it is invalid', () => {
+    const difficultyService = TestBed.inject(DifficultyService);
+    spyOn(difficultyService, 'newDifficulty').and.callThrough();
+    component.ngOnInit();
+
+    component.settingsForm.patchValue({
+      boardDimension: 10,
+      numberOfBombs: 100
+    });
+
+    component.onSubmit();
+
+    expect(difficultyService.newDifficulty).not.toHaveBeenCalled();
+  });
+
+  it('should set new difficulty on form submit', () => {
+    const difficultyService = TestBed.inject(DifficultyService);
+    const expected = new Difficulty(13, 37, 'Custom');
+    component.ngOnInit();
+
+    component.settingsForm.patchValue({
+      boardDimension: expected.boardDimension,
+      numberOfBombs: expected.numberOfBombs
+    });
+
+    component.onSubmit();
+    difficultyService.difficulty.subscribe(difficulty =>
+      expect(difficulty).toEqual({ ...expected })
+    ).unsubscribe();
+  });
+
+  it('should emit event on form submit', () => {
+    spyOn(component.formSubmitEvent, 'emit');
+    component.ngOnInit();
+
+    component.settingsForm.patchValue({
+      boardDimension: 1,
+      numberOfBombs: 0
+    });
+    component.onSubmit();
+
+    expect(component.formSubmitEvent.emit).toHaveBeenCalled();
+  });
+
+  it('should init sidenav auto hide setting', () => {
+    const settingsService = TestBed.inject(SettingsService);
+    settingsService.setSidenavAutoHide(false);
+
+    component.ngOnInit();
+
+    expect(component.sidenavAutoHide).toBe(false);
+  });
+
+  it('should update sidenav auto hide setting', () => {
+    const settingsService = TestBed.inject(SettingsService);
+    spyOn(settingsService, 'setSidenavAutoHide');
+
+    component.ngOnInit();
+    component.onCheckboxChange();
+
+    expect(settingsService.setSidenavAutoHide).toHaveBeenCalled();
+  });
 });
