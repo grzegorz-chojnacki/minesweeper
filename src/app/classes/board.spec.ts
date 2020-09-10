@@ -20,13 +20,13 @@ function flag(board: Board): UsingTemplate {
   };
 }
 
-function getRandomBoard(boardDimension: number, numberOfBombs: number): Board {
+function newRandomBoard(boardDimension: number, numberOfBombs: number): Board {
   const difficulty = new Difficulty(boardDimension, numberOfBombs);
   const bombPlanter = new BombPlanter(difficulty);
   return new Board(bombPlanter);
 }
 
-function getMockedBoard(template: string[][]): Board {
+function newMockedBoard(template: string[][]): Board {
   const bombPlanter = new FakeBombPlanter(template);
   return new Board(bombPlanter);
 }
@@ -35,15 +35,34 @@ describe('Board', () => {
   it('should be created', () => {
     const boardDimension = 10;
     const numberOfBombs = 10;
-    const board = getRandomBoard(boardDimension, numberOfBombs);
+    const board = newRandomBoard(boardDimension, numberOfBombs);
 
     expect(board).toBeTruthy();
+  });
+
+  it('should plant bombs only on the first click', () => {
+    const template = [
+      [' ', ' ', 'B'],
+      [' ', 'B', 'B'],
+      [' ', ' ', ' ']
+    ];
+    const bombPlanter = new FakeBombPlanter(template);
+    spyOn(bombPlanter, 'plantBombs').and.callThrough();
+    const board = new Board(bombPlanter);
+
+    let clicked = board.fields[0][0];
+    board.check(clicked);
+    expect(bombPlanter.plantBombs).toHaveBeenCalledTimes(1);
+
+    clicked = board.fields[0][1];
+    board.check(clicked);
+    expect(bombPlanter.plantBombs).toHaveBeenCalledTimes(1);
   });
 
   it('should create proper fields array', () => {
     const boardDimension = 10;
     const numberOfBombs = 10;
-    const board = getRandomBoard(boardDimension, numberOfBombs);
+    const board = newRandomBoard(boardDimension, numberOfBombs);
 
     expect(board.fields.length).toBe(boardDimension);
     expect(board.fields[0].length).toBe(boardDimension);
@@ -52,7 +71,7 @@ describe('Board', () => {
   it('should have proper number of flags set', () => {
     const boardDimension = 10;
     const numberOfBombs = 10;
-    const board = getRandomBoard(boardDimension, numberOfBombs);
+    const board = newRandomBoard(boardDimension, numberOfBombs);
 
     expect(board.flagCounter).toBe(numberOfBombs);
   });
@@ -60,7 +79,7 @@ describe('Board', () => {
   it('should toggle flag on a field', () => {
     const boardDimension = 10;
     const numberOfBombs = 10;
-    const board = getRandomBoard(boardDimension, numberOfBombs);
+    const board = newRandomBoard(boardDimension, numberOfBombs);
     const clicked = board.fields[0][0];
 
     expect(clicked.isFlagged).toBe(false);
@@ -73,7 +92,7 @@ describe('Board', () => {
   it('should update flag counter', () => {
     const boardDimension = 10;
     const numberOfBombs = 10;
-    const board = getRandomBoard(boardDimension, numberOfBombs);
+    const board = newRandomBoard(boardDimension, numberOfBombs);
     const clicked = board.fields[0][0];
 
     expect(board.flagCounter).toBe(numberOfBombs);
@@ -86,7 +105,7 @@ describe('Board', () => {
   it('should not let flag another field if there are no flags left', () => {
     const boardDimension = 5;
     const numberOfBombs = 5;
-    const board = getRandomBoard(boardDimension, numberOfBombs);
+    const board = newRandomBoard(boardDimension, numberOfBombs);
     const flagTemplate = [
       [' ', ' ', ' ', ' ', ' '],
       [' ', ' ', ' ', ' ', ' '],
@@ -116,7 +135,7 @@ describe('Board', () => {
       ['F', 'F', ' ', 'B ', ' '],
       ['F', 'F', 'F', 'BF', 'F']
     ];
-    const board = getMockedBoard(template);
+    const board = newMockedBoard(template);
 
     flag(board).usingTemplate(template);
     const clicked = board.fields[0][0];
@@ -133,7 +152,7 @@ describe('Board', () => {
       ['B', 'B', 'B', ' ', ' '],
       [' ', ' ', ' ', ' ', ' ']
     ];
-    const board = getMockedBoard(template);
+    const board = newMockedBoard(template);
 
     const clicked = board.fields[1][1];
     board.check(clicked);
@@ -152,7 +171,7 @@ describe('Board', () => {
       [' ', 'B', ' '],
       [' ', ' ', ' ']
     ];
-    const board = getMockedBoard(template);
+    const board = newMockedBoard(template);
 
     const clicked = board.fields[0][0];
     board.check(clicked);
@@ -171,7 +190,7 @@ describe('Board', () => {
       [' ', 'B', ' '],
       [' ', ' ', ' ']
     ];
-    const board = getMockedBoard(template);
+    const board = newMockedBoard(template);
 
     const clicked = board.fields[1][1];
     board.check(clicked);
@@ -190,10 +209,20 @@ describe('Board', () => {
       ['B', 'B', ' '],
       [' ', ' ', ' ']
     ];
-    const board = getMockedBoard(template);
+    const board = newMockedBoard(template);
 
     const clicked = board.fields[0][0];
     const gameState = board.check(clicked);
+
+    expect(gameState).toBe(GameState.Continues);
+  });
+
+  it('should return GameState.Continues after checking flagged field', () => {
+    const board = newRandomBoard(1, 0);
+
+    const flagged = board.fields[0][0];
+    flagged.toggleFlag();
+    const gameState = board.check(flagged);
 
     expect(gameState).toBe(GameState.Continues);
   });
@@ -204,7 +233,7 @@ describe('Board', () => {
       [' ', ' ', ' '],
       [' ', ' ', 'B']
     ];
-    const board = getMockedBoard(template);
+    const board = newMockedBoard(template);
 
     const clicked = board.fields[0][0];
     const gameState = board.check(clicked);
@@ -218,7 +247,7 @@ describe('Board', () => {
       [' ', ' ', ' '],
       [' ', ' ', ' ']
     ];
-    const board = getMockedBoard(template);
+    const board = newMockedBoard(template);
 
     const clicked = board.fields[0][0];
     const gameState = board.check(clicked);
