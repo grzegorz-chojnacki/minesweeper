@@ -14,9 +14,9 @@
   <mat-form-field class="input" appearance="fill">
     <mat-label>Board dimension</mat-label>
     <input matInput type="number" formControlName="boardDimension"
-      [min]="1" [max]="50">
+      [min]="1" [max]="maxBoardDimension">
     <mat-error *ngIf="settingsForm.get('boardDimension').invalid">
-      Must be between 1 and 50
+      Must be between 1 and {{ maxBoardDimension }}
     </mat-error>
   </mat-form-field>
 

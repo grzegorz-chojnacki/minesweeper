@@ -1,4 +1,5 @@
 export class Difficulty {
+  public static readonly maxBoardDimension = 50;
   public readonly name: string;
   public readonly boardDimension: number;
   public readonly numberOfBombs: number;

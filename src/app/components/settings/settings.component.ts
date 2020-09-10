@@ -1,8 +1,10 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, Validators, FormGroup, ValidationErrors } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup,
+         ValidationErrors } from '@angular/forms';
 import { MatSliderChange } from '@angular/material/slider';
 
-import { difficulties, customDifficulty } from 'src/app/classes/difficulty';
+import { Difficulty, difficulties,
+         customDifficulty } from 'src/app/classes/difficulty';
 import { DifficultyService } from 'src/app/services/difficulty.service';
 import { SettingsService } from 'src/app/services/settings.service';
 
@@ -25,6 +27,7 @@ export class SettingsComponent implements OnInit {
     { validator: this.settingsFormValidator }
   );
   public maxNumberOfBombs = this.getMaxNumberOfBombs();
+  public maxBoardDimension = Difficulty.maxBoardDimension;
 
   constructor(
     public formBuilder: FormBuilder,
@@ -130,7 +133,9 @@ export class SettingsComponent implements OnInit {
     // boardDimension validators (numberOfBombs validators are based
     // on boardDimension, so they are added/updated in `this.refreshValidators`)
     this.settingsForm.get('boardDimension').setValidators([
-      Validators.required, Validators.min(1), Validators.max(50)
+      Validators.required,
+      Validators.min(1),
+      Validators.max(this.maxBoardDimension)
     ]);
     // Untouched inputs doesn't show if they are invalid
     this.settingsForm.markAllAsTouched();
