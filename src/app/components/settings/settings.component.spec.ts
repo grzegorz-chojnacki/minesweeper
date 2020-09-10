@@ -170,6 +170,17 @@ describe('SettingsComponent', () => {
     expect(error).toContain('between 0 and 3');
   });
 
+  it('should return number of bombs error when it can only be set to 1', () => {
+    component.ngOnInit();
+    component.settingsForm.patchValue({
+      boardDimension: 1,
+      numberOfBombs: 1
+    });
+
+    const error = component.getNumberOfBombsError();
+    expect(error).toContain('Must be 0');
+  });
+
   it('should mark number of bombs as invalid if value is below 0', () => {
     component.ngOnInit();
     component.settingsForm.patchValue({
