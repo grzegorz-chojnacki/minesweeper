@@ -15,7 +15,7 @@ describe('Field', () => {
     expect(middleField.value).not.toBe(1);
 
     const outerRim = fields
-      .reduce((acc, row) => acc.concat(row), [])
+      .reduce((flat, nextRow) => flat.concat(nextRow), [])
       .filter(field => field.value === 1);
     expect(outerRim.length).toBe(8);
   });

@@ -101,7 +101,7 @@ describe('Board', () => {
     board.toggleFlag(board.fields[0][0]);
     const numberOfFlaggedFields = board.fields
       .map(row => row.filter(field => field.isFlagged))
-      .reduce((acc, arr) => acc.concat(arr), [])
+      .reduce((flat, nextRow) => flat.concat(nextRow), [])
       .length;
 
     expect(numberOfFlaggedFields).toBe(numberOfBombs);
@@ -139,7 +139,7 @@ describe('Board', () => {
     board.check(clicked);
 
     const checkedFields = board.fields
-      .reduce((acc, row) => acc.concat(row))
+      .reduce((flat, nextRow) => flat.concat(nextRow), [])
       .filter(field => field.isChecked)
       .length;
 
@@ -158,7 +158,7 @@ describe('Board', () => {
     board.check(clicked);
 
     const checkedFields = board.fields
-      .reduce((acc, row) => acc.concat(row))
+      .reduce((flat, nextRow) => flat.concat(nextRow), [])
       .filter(field => field.isChecked)
       .length;
 
@@ -177,7 +177,7 @@ describe('Board', () => {
     board.check(clicked);
 
     const checkedFields = board.fields
-      .reduce((acc, row) => acc.concat(row))
+      .reduce((flat, nextRow) => flat.concat(nextRow), [])
       .filter(field => field.isChecked)
       .length;
 

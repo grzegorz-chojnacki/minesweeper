@@ -24,7 +24,7 @@ export class BombPlanter {
 
   public plantBombs(firstClicked: Field, fields: Field[][]): void {
     const fieldsFlatList = fields
-      .reduce((acc, row) => acc.concat(row), []) // flatten
+      .reduce((flat, nextRow) => flat.concat(nextRow), [])
       .filter(field => field !== firstClicked);
 
     this.shuffle(fieldsFlatList);
@@ -46,7 +46,7 @@ export class FakeBombPlanter extends BombPlanter {
     }
     const boardDimension = template.length;
     const numberOfBombs = template
-      .reduce((acc, row) => acc.concat(row), [])
+      .reduce((flat, nextRow) => flat.concat(nextRow), [])
       .filter(field => field.includes('B')).length;
     return new Difficulty(boardDimension, numberOfBombs);
   }

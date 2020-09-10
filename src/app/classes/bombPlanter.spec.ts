@@ -25,7 +25,7 @@ describe('BombPlanter', () => {
     bombPlanter.plantBombs(null, fields);
 
     const bombsGenerated = fields
-      .reduce((acc, arr) => acc.concat(arr), [])
+      .reduce((flat, nextRow) => flat.concat(nextRow), [])
       .filter(field => field.value === Field.bomb);
 
     expect(bombsGenerated.length).toBe(numberOfBombs);
@@ -48,7 +48,7 @@ describe('FakeBombPlanter', () => {
     bombPlanter.plantBombs(null, fields);
 
     const bombsGenerated = fields
-      .reduce((acc, arr) => acc.concat(arr), [])
+      .reduce((flat, nextRow) => flat.concat(nextRow), [])
       .filter(field => field.value === Field.bomb);
 
     expect(bombsGenerated.length).toBe(numberOfBombs);
