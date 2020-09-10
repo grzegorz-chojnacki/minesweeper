@@ -39,9 +39,12 @@ export class BombPlanter {
 
 export class FakeBombPlanter extends BombPlanter {
   private static parseTemplate(template: string[][]): Difficulty {
+    const notSquare = (arr: string[][]) => arr
+      .find(row => row.length !== arr.length) !== undefined;
+
     if (template.length === 0) {
       throw new Error('Template is empty');
-    } else if (template.find(row => row.length !== template[0].length)) {
+    } else if (notSquare(template)) {
       throw new Error('Template is not a square');
     }
     const boardDimension = template.length;

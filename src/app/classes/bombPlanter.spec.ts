@@ -33,6 +33,16 @@ describe('BombPlanter', () => {
 });
 
 describe('FakeBombPlanter', () => {
+  it('should throw error on empty template', () => {
+    const template = [];
+    expect(() => new FakeBombPlanter(template)).toThrow();
+  });
+
+  it('should throw error on not square template', () => {
+    const template = [[' '], [' ']];
+    expect(() => new FakeBombPlanter(template)).toThrow();
+  });
+
   it('should generate proper number of bombs', () => {
     const template = [
       ['B', ' ', ' ', ' ', 'B'],
