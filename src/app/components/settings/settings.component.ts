@@ -147,8 +147,10 @@ export class SettingsComponent implements OnInit {
 
   // Start new game (restart) and close sidenav if specified
   public onSubmit(): void {
-    this.difficultyService.newDifficulty(this.settingsForm.value);
-    this.formSubmitEvent.emit();
+    if (this.settingsForm.valid) {
+      this.difficultyService.newDifficulty(this.settingsForm.value);
+      this.formSubmitEvent.emit();
+    }
   }
 
 }
