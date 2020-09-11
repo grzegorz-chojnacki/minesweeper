@@ -14,10 +14,9 @@ describe('SettingsService', () => {
   it('should initialize fieldSize when local storage is empty', () => {
     const service = makeServiceWithEmptyStorage();
 
-    let fieldSize: number;
-    service.fieldSize.subscribe(fs => fieldSize = fs).unsubscribe();
-
-    expect(fieldSize).toBe(service.minFieldSize);
+    service.fieldSize.subscribe(fieldSize =>
+      expect(fieldSize).toBe(service.minFieldSize)
+    ).unsubscribe();
   });
 
   it('should load fieldSize when local storage is not empty', () => {
@@ -26,44 +25,41 @@ describe('SettingsService', () => {
     storage.setItem('fieldSize', savedFieldSize.toString());
 
     const service = new SettingsService(storage);
-    let fieldSize: number;
-    service.fieldSize.subscribe(fs => fieldSize = fs).unsubscribe();
 
-    expect(fieldSize).toBe(savedFieldSize);
+    service.fieldSize.subscribe(fieldSize =>
+      expect(fieldSize).toBe(savedFieldSize)
+    ).unsubscribe();
   });
 
   it('should set and update new fieldSize value', () => {
     const service = makeServiceWithEmptyStorage();
     const newFieldSize = 32;
 
-    let fieldSize: number;
     service.setFieldSize(newFieldSize);
-    service.fieldSize.subscribe(fs => fieldSize = fs).unsubscribe();
 
-    expect(fieldSize).toBe(newFieldSize);
+    service.fieldSize.subscribe(fieldSize =>
+      expect(fieldSize).toBe(newFieldSize)
+    ).unsubscribe();
   });
 
   it('should not allow for fieldSize to be set out of its bounds', () => {
     const service = makeServiceWithEmptyStorage();
-    const invalid = [service.minFieldSize - 1, service.maxFieldSize + 1];
+    const invalidValues = [service.minFieldSize - 1, service.maxFieldSize + 1];
 
-    invalid.forEach(value => {
-      let fieldSize: number;
+    for (const value of invalidValues) {
       service.setFieldSize(value);
-      service.fieldSize.subscribe(fs => fieldSize = fs).unsubscribe();
-
-      expect(fieldSize).not.toBe(value);
-    });
+      service.fieldSize.subscribe(fieldSize =>
+        expect(fieldSize).not.toBe(value)
+      ).unsubscribe();
+    }
   });
 
   it('should initialize sidenavAutoHide when local storage is empty', () => {
     const service = makeServiceWithEmptyStorage();
 
-    let sidenavAutoHide: boolean;
-    service.sidenavAutoHide.subscribe(sah => sidenavAutoHide = sah)
-      .unsubscribe();
-
-    expect(sidenavAutoHide).toBe(service.defaultSidenavAutoHide);
+    service.sidenavAutoHide.subscribe(sidenavAutoHide =>
+      expect(sidenavAutoHide).toBe(service.defaultSidenavAutoHide)
+    ).unsubscribe();
   });
 
   it('should load sidenavAutoHide when local storage is not empty', () => {
@@ -72,22 +68,18 @@ describe('SettingsService', () => {
     storage.setItem('sidenavAutoHide', savedValue.toString());
 
     const service = new SettingsService(storage);
-    let sidenavAutoHide: boolean;
-    service.sidenavAutoHide.subscribe(sah => sidenavAutoHide = sah)
-      .unsubscribe();
-
-    expect(sidenavAutoHide).toBe(savedValue);
+    service.sidenavAutoHide.subscribe(sidenavAutoHide =>
+      expect(sidenavAutoHide).toBe(savedValue)
+    ).unsubscribe();
   });
 
   it('should set and update new sidenavAutoHide value', () => {
     const service = makeServiceWithEmptyStorage();
     const newValue = false;
 
-    let sidenavAutoHide: boolean;
     service.setSidenavAutoHide(newValue);
-    service.sidenavAutoHide.subscribe(sah => sidenavAutoHide = sah)
-      .unsubscribe();
-
-    expect(sidenavAutoHide).toBe(newValue);
+    service.sidenavAutoHide.subscribe(sidenavAutoHide =>
+    expect(sidenavAutoHide).toBe(newValue)
+    ).unsubscribe();
   });
 });
