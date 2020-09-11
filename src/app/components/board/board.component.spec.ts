@@ -82,15 +82,10 @@ describe('BoardComponent', () => {
     const difficultyService = TestBed.inject(DifficultyService);
 
     component.ngOnInit();
-    const generatedFieldsDimension = component.board.fields.length;
-    const expectedFieldDimension =
-      difficultyService.initialDifficulty.boardDimension;
-    expect(generatedFieldsDimension).toBe(expectedFieldDimension);
+    const generatedBoardDifficulty = component.board.difficulty;
+    const expectedBoardDifficulty = difficultyService.initialDifficulty;
 
-    const generatedNumberOfBombs = component.board.flagCounter;
-    const expectedNumberOfBombs =
-      difficultyService.initialDifficulty.numberOfBombs;
-    expect(generatedNumberOfBombs).toBe(expectedNumberOfBombs);
+    expect(generatedBoardDifficulty).toBe(expectedBoardDifficulty);
   });
 
   it('should properly render board as HTML', () => {
@@ -207,7 +202,6 @@ describe('BoardComponent', () => {
     const board = new Board(bombPlanter);
 
     component.useBoard(board);
-    // fixture.detectChanges();
 
     const clicked = component.board.fields[1][1];
     component.onClick(clicked);
