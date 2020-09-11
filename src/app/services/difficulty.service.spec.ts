@@ -1,46 +1,23 @@
 import { DifficultyService } from './difficulty.service';
 import { Difficulty, difficulties } from 'src/app/classes/difficulty';
+import { FakeStorage } from './fakeStorage';
 
-class FakeStorage implements Storage {
-  private storage: {[key: string]: string} = {};
-  public get length(): number {
-    return Object.keys(this.storage).length;
-  }
-  public getItem(key: string): string {
-    return (key in this.storage) ? this.storage[key] : null;
-  }
-  public setItem(key: string, value: string): void {
-    this.storage[key] = value;
-  }
-  public key(index: number): string {
-    return Object.keys(this.storage)[index];
-  }
-  public removeItem(key: string): void {
-    delete this.storage[key];
-  }
-  public clear = () => {
-    this.storage = {};
-  }
-}
-
-function serviceWithEmptyStorage(): DifficultyService {
+function makeServiceWithEmptyStorage(): DifficultyService {
   return new DifficultyService(new FakeStorage());
 }
 
 describe('DifficultyService', () => {
   it('should be created', () => {
-    const service = serviceWithEmptyStorage();
+    const service = makeServiceWithEmptyStorage();
     expect(service).toBeTruthy();
   });
 
   it('should initialize when local storage is empty', () => {
-    const service = serviceWithEmptyStorage();
+    const service = makeServiceWithEmptyStorage();
 
-    let result: Difficulty;
-    service.difficulty.subscribe(difficulty => result = difficulty)
-      .unsubscribe();
-
-    expect(result).toBe(difficulties[0]);
+    service.difficulty.subscribe(difficulty => {
+      expect(difficulty).toBe(difficulties[0]);
+    }).unsubscribe();
   });
 
   it('should load data when local storage is not empty', () => {
@@ -50,23 +27,19 @@ describe('DifficultyService', () => {
 
     const service = new DifficultyService(storage);
 
-    let result: Difficulty;
-    service.difficulty.subscribe(difficulty => result = difficulty)
-      .unsubscribe();
-
-    expect({...result}).toEqual({...newDifficulty});
+    service.difficulty.subscribe(difficulty => {
+      expect(difficulty).toEqual({...newDifficulty});
+    }).unsubscribe();
   });
 
   it('should set and update new difficulty value', () => {
-    const service = serviceWithEmptyStorage();
+    const service = makeServiceWithEmptyStorage();
     const newDifficulty = new Difficulty(5, 5);
 
     service.newDifficulty(newDifficulty);
 
-    let result: Difficulty;
-    service.difficulty.subscribe(difficulty => result = difficulty)
-      .unsubscribe();
-
-    expect(result).toEqual(newDifficulty);
+    service.difficulty.subscribe(difficulty => {
+      expect(difficulty).toEqual(newDifficulty);
+    }).unsubscribe();
   });
 });
