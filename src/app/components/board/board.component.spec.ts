@@ -13,24 +13,25 @@ import { PrintFieldPipe } from 'src/app/pipes/print-field.pipe';
 import { Board } from 'src/app/classes/board';
 import { FakeBombPlanter } from 'src/app/classes/bombPlanter';
 
-class SettingsServiceStub implements Partial<SettingsService> {
-  public fieldSize = new BehaviorSubject<number>(30);
+class SettingsServiceStub {
+  public readonly fieldSize = new BehaviorSubject<number>(30);
   public setFieldSize = (n: number): void => this.fieldSize.next(n);
 }
-const settingsServiceStub = new SettingsServiceStub();
 
-class DifficultyServiceStub implements Partial<DifficultyService> {
-  public initialDifficulty = new Difficulty(7, 7);
-  public difficulty = new BehaviorSubject<Difficulty>(this.initialDifficulty);
+class DifficultyServiceStub {
+  public readonly initialDifficulty = new Difficulty(7, 7);
+  public readonly difficulty = new BehaviorSubject(this.initialDifficulty);
   public newDifficulty = (d: Difficulty): void => this.difficulty.next(d);
 }
-const difficultyServiceStub = new DifficultyServiceStub();
 
 describe('BoardComponent', () => {
   let component: BoardComponent;
   let fixture: ComponentFixture<BoardComponent>;
 
   beforeEach(async(() => {
+    const difficultyServiceStub = new DifficultyServiceStub();
+    const settingsServiceStub = new SettingsServiceStub();
+
     TestBed.configureTestingModule({
       declarations: [
         BoardComponent,
@@ -45,7 +46,7 @@ describe('BoardComponent', () => {
           },
           dismiss: () => {} }},
         { provide: SettingsService, useValue: settingsServiceStub },
-        { provide: DifficultyService, difficultyServiceStub },
+        { provide: DifficultyService, useValue: difficultyServiceStub },
         { provide: FlagService },
         { provide: ChangeDetectorRef }
       ]
