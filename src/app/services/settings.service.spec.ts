@@ -1,22 +1,18 @@
-import { TestBed } from '@angular/core/testing';
-
 import { SettingsService } from './settings.service';
+import { FakeStorage } from './fakeStorage';
+
+function makeServiceWithEmptyStorage(): SettingsService {
+  return new SettingsService(new FakeStorage());
+}
 
 describe('SettingsService', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    window.localStorage.clear();
-  });
-
   it('should be created', () => {
-    const service = TestBed.inject(SettingsService);
+    const service = makeServiceWithEmptyStorage();
     expect(service).toBeTruthy();
   });
 
-  // Field size
-
   it('should initialize fieldSize when local storage is empty', () => {
-    const service = TestBed.inject(SettingsService);
+    const service = makeServiceWithEmptyStorage();
 
     let fieldSize: number;
     service.fieldSize.subscribe(fs => fieldSize = fs).unsubscribe();
@@ -26,9 +22,10 @@ describe('SettingsService', () => {
 
   it('should load fieldSize when local storage is not empty', () => {
     const savedFieldSize = 32;
-    localStorage.setItem('fieldSize', savedFieldSize.toString());
+    const storage = new FakeStorage();
+    storage.setItem('fieldSize', savedFieldSize.toString());
 
-    const service = TestBed.inject(SettingsService);
+    const service = new SettingsService(storage);
     let fieldSize: number;
     service.fieldSize.subscribe(fs => fieldSize = fs).unsubscribe();
 
@@ -36,7 +33,7 @@ describe('SettingsService', () => {
   });
 
   it('should set and update new fieldSize value', () => {
-    const service = TestBed.inject(SettingsService);
+    const service = makeServiceWithEmptyStorage();
     const newFieldSize = 32;
 
     let fieldSize: number;
@@ -47,7 +44,7 @@ describe('SettingsService', () => {
   });
 
   it('should not allow for fieldSize to be set out of its bounds', () => {
-    const service = TestBed.inject(SettingsService);
+    const service = makeServiceWithEmptyStorage();
     const invalid = [service.minFieldSize - 1, service.maxFieldSize + 1];
 
     invalid.forEach(value => {
@@ -59,10 +56,8 @@ describe('SettingsService', () => {
     });
   });
 
-  // Sidenav auto hide
-
   it('should initialize sidenavAutoHide when local storage is empty', () => {
-    const service = TestBed.inject(SettingsService);
+    const service = makeServiceWithEmptyStorage();
 
     let sidenavAutoHide: boolean;
     service.sidenavAutoHide.subscribe(sah => sidenavAutoHide = sah)
@@ -73,9 +68,10 @@ describe('SettingsService', () => {
 
   it('should load sidenavAutoHide when local storage is not empty', () => {
     const savedValue = false;
-    localStorage.setItem('sidenavAutoHide', savedValue.toString());
+    const storage = new FakeStorage();
+    storage.setItem('sidenavAutoHide', savedValue.toString());
 
-    const service = TestBed.inject(SettingsService);
+    const service = new SettingsService(storage);
     let sidenavAutoHide: boolean;
     service.sidenavAutoHide.subscribe(sah => sidenavAutoHide = sah)
       .unsubscribe();
@@ -84,7 +80,7 @@ describe('SettingsService', () => {
   });
 
   it('should set and update new sidenavAutoHide value', () => {
-    const service = TestBed.inject(SettingsService);
+    const service = makeServiceWithEmptyStorage();
     const newValue = false;
 
     let sidenavAutoHide: boolean;

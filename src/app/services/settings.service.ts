@@ -2,43 +2,45 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
+  useFactory: () => new SettingsService(localStorage)
 })
 export class SettingsService {
   public readonly minFieldSize = 30;
   public readonly maxFieldSize = 60;
   public readonly defaultSidenavAutoHide = true;
 
-  private fieldSizeSource = new BehaviorSubject(
-    Number(localStorage.getItem('fieldSize')) || this.minFieldSize);
+  private readonly fieldSizeSource = new BehaviorSubject(
+    Number(this.storage.getItem('fieldSize')) || this.minFieldSize);
 
-  private sidenavAutoHideSource = new BehaviorSubject(
-    this.localStorageGetBoolean(
-      localStorage.getItem('sidenavAutoHide'),
+  private readonly sidenavAutoHideSource = new BehaviorSubject(
+    this.parseStorageBoolean(
+      this.storage.getItem('sidenavAutoHide'),
       this.defaultSidenavAutoHide));
 
-  // Parse boolean from local storage or return some initial value if not found
-  private localStorageGetBoolean(item: string, initValue = false): boolean {
+  constructor(private readonly storage: Storage) { }
+
+  private parseStorageBoolean(item: string, initValue = false): boolean {
     return (item !== null) ? item === 'true' : initValue;
   }
 
-  get fieldSize(): Observable<number> {
+  public get fieldSize(): Observable<number> {
     return this.fieldSizeSource.asObservable();
   }
 
   public setFieldSize(newFieldSize: number): void {
     if (this.minFieldSize <= newFieldSize && newFieldSize <= this.maxFieldSize) {
       this.fieldSizeSource.next(newFieldSize);
-      localStorage.setItem('fieldSize', newFieldSize.toString());
+      this.storage.setItem('fieldSize', newFieldSize.toString());
     }
   }
 
-  get sidenavAutoHide(): Observable<boolean> {
+  public get sidenavAutoHide(): Observable<boolean> {
     return this.sidenavAutoHideSource.asObservable();
   }
 
   public setSidenavAutoHide(newOption: boolean): void {
     this.sidenavAutoHideSource.next(newOption);
-    localStorage.setItem('sidenavAutoHide', newOption.toString());
+    this.storage.setItem('sidenavAutoHide', newOption.toString());
   }
 }
