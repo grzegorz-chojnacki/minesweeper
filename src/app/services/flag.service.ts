@@ -6,12 +6,12 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class FlagService {
   private counterSource = new BehaviorSubject<number>(undefined);
-  get counter(): Observable<number> {
+
+  public get counter(): Observable<number> {
     return this.counterSource.asObservable();
   }
 
   public setCounter(newCount: number): void {
     this.counterSource.next(newCount);
   }
-
 }
