@@ -1,25 +1,27 @@
-import { TestBed } from '@angular/core/testing';
-
 import { FlagService } from './flag.service';
 
 describe('FlagsService', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-  });
-
   it('should be created', () => {
-    const service = TestBed.inject(FlagService);
+    const service = new FlagService();
     expect(service).toBeTruthy();
   });
 
+  it('should init with undefined flag count', () => {
+    const service = new FlagService();
+
+    service.counter.subscribe(count => {
+      expect(count).toBe(undefined);
+    }).unsubscribe();
+  });
+
   it('should set and and update new flag count', () => {
-    const service = TestBed.inject(FlagService);
+    const service = new FlagService();
     const newFlagCount = 7;
 
-    let result: number;
     service.setCounter(newFlagCount);
-    service.counter.subscribe(count => result = count).unsubscribe();
 
-    expect(result).toBe(newFlagCount);
+    service.counter.subscribe(count => {
+      expect(count).toBe(newFlagCount);
+    }).unsubscribe();
   });
 });
