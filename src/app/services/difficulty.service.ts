@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Difficulty, difficulties } from 'src/app/classes/difficulty';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
+  useFactory: () => new DifficultyService(localStorage)
 })
 export class DifficultyService {
   public readonly initialDifficulty: Difficulty =
-    JSON.parse(localStorage.getItem('difficulty')) || difficulties[0];
+  JSON.parse(this.storage.getItem('difficulty'))
+  || difficulties[0];
 
-  private difficultySource = new BehaviorSubject(this.initialDifficulty);
-  get difficulty(): Observable<Difficulty> {
-    return this.difficultySource.asObservable();
-  }
+  constructor(private readonly storage: Storage) { }
 
-  public newDifficulty(newDifficulty: Difficulty): void {
-    this.difficultySource.next(newDifficulty);
-    localStorage.setItem('difficulty', JSON.stringify(newDifficulty));
+  public readonly difficulty = new BehaviorSubject(this.initialDifficulty);
+  public newDifficulty(d: Difficulty): void {
+    this.storage.setItem('difficulty', JSON.stringify(d));
+    this.difficulty.next(d);
   }
 }
