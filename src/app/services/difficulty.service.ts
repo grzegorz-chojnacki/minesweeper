@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Difficulty, difficulties } from 'src/app/classes/difficulty';
 
 @Injectable({
@@ -8,14 +8,18 @@ import { Difficulty, difficulties } from 'src/app/classes/difficulty';
 })
 export class DifficultyService {
   public readonly initialDifficulty: Difficulty =
-  JSON.parse(this.storage.getItem('difficulty'))
-  || difficulties[0];
+    JSON.parse(this.storage.getItem('difficulty'))
+    || difficulties[0];
+
+  public readonly difficultySource = new BehaviorSubject(this.initialDifficulty);
+  public get difficulty(): Observable<Difficulty> {
+    return this.difficultySource.asObservable();
+  }
 
   constructor(private readonly storage: Storage) { }
 
-  public readonly difficulty = new BehaviorSubject(this.initialDifficulty);
   public newDifficulty(d: Difficulty): void {
     this.storage.setItem('difficulty', JSON.stringify(d));
-    this.difficulty.next(d);
+    this.difficultySource.next(d);
   }
 }
