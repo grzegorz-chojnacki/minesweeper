@@ -56,7 +56,6 @@ describe('BoardComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BoardComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -95,20 +94,19 @@ describe('BoardComponent', () => {
   });
 
   it('should properly render board as HTML', () => {
+    const isSquare = (arr: any[]) =>
+      arr.find(row => row.length !== arr.length) !== undefined;
     const difficultyService = TestBed.inject(DifficultyService);
     const expectedDimension = difficultyService.initialDifficulty.boardDimension;
-
     component.ngOnInit();
+    fixture.detectChanges();
+
     const boardContainer = fixture.debugElement
       .query(By.css('.board-container'));
+    const boardFields = boardContainer.children;
 
-    const rowContainers = boardContainer.children;
-
-    expect(rowContainers.length).toBe(expectedDimension);
-
-    rowContainers.forEach(rowContainer => expect(rowContainer.children.length)
-      .toBe(expectedDimension)
-    );
+    expect(boardFields.length).toBe(expectedDimension);
+    expect(isSquare(boardFields)).toBe(true);
   });
 
   it('should handle click events', () => {
@@ -124,6 +122,7 @@ describe('BoardComponent', () => {
     component.ngOnInit();
     const difficultyService = TestBed.inject(DifficultyService);
     difficultyService.newDifficulty(new Difficulty(5, 24));
+    fixture.detectChanges();
 
     const clicked = component.board.fields[0][0];
     component.onClick(clicked);
@@ -151,6 +150,7 @@ describe('BoardComponent', () => {
     const difficultyService = TestBed.inject(DifficultyService);
     difficultyService.newDifficulty(new Difficulty(3, 3));
     component.ngOnInit();
+    fixture.detectChanges();
 
     const flagged = component.board.fields[0][0];
     component.onRightClick(flagged);
@@ -207,7 +207,7 @@ describe('BoardComponent', () => {
     const board = new Board(bombPlanter);
 
     component.useBoard(board);
-    fixture.detectChanges();
+    // fixture.detectChanges();
 
     const clicked = component.board.fields[1][1];
     component.onClick(clicked);
