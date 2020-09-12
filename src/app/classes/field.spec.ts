@@ -7,6 +7,10 @@ describe('Field', () => {
     fields.every(row => expect(row.length).toBe(fields.length));
   });
 
+  it('should throw error on wrong field matrix size', () => {
+    expect(() => Field.makeMatrix(0)).toThrow();
+  });
+
   it('should apply function around itself in field matrix', () => {
     const fields = Field.makeMatrix(5);
     const middleField = fields[2][2];

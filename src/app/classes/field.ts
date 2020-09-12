@@ -13,6 +13,9 @@ export class Field {
   }
 
   public static makeMatrix(boardDimension: number): Field[][] {
+    if (boardDimension < 1) {
+      throw new Error('Board dimension smaller than 1');
+    }
     const fields = new Array<Array<Field>>();
     for (let y = 0; y < boardDimension; y++) {
       fields[y] = new Array<Field>();
