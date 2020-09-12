@@ -43,15 +43,11 @@ export class SettingsComponent implements OnInit {
     this.settingsForm.patchValue({ name: matched.name }, { emitEvent: false });
   }
 
-  private setPresetValues(): void {
-    const formDifficulty = this.settingsForm.value;
-    const matched = this.presetList
-      .find(preset => preset.name === formDifficulty.name);
-
-    if (matched !== NamedDifficulty.custom) {
+  private setPresetValues(preset: NamedDifficulty): void {
+    if (preset !== NamedDifficulty.custom) {
       this.settingsForm.patchValue({
-        boardDimension: matched.boardDimension,
-        numberOfBombs: matched.numberOfBombs
+        boardDimension: preset.boardDimension,
+        numberOfBombs: preset.numberOfBombs
       }, { emitEvent: false });
     }
   }
@@ -94,7 +90,8 @@ export class SettingsComponent implements OnInit {
     this.settingsForm.get('name').valueChanges
       .subscribe(() => {
         this.refreshValidators();
-        this.setPresetValues();
+        const preset = this.getSelectedPreset();
+        this.setPresetValues(preset);
       });
 
     // Inputs
@@ -112,6 +109,11 @@ export class SettingsComponent implements OnInit {
 
     this.settingsService.sidenavAutoHide
       .subscribe(sidenavAutoHide => this.sidenavAutoHide = sidenavAutoHide);
+  }
+
+  private getSelectedPreset(): NamedDifficulty {
+    const selectedName = this.settingsForm.get('name').value;
+    return this.presetList.find(preset => preset.name === selectedName);
   }
 
   public ngOnInit(): void {
