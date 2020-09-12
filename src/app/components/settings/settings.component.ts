@@ -89,9 +89,9 @@ export class SettingsComponent implements OnInit {
     // Select
     this.settingsForm.get('name').valueChanges
       .subscribe(() => {
-        this.refreshValidators();
         const preset = this.getSelectedPreset();
         this.setPresetValues(preset);
+        this.refreshValidators();
       });
 
     // Inputs
