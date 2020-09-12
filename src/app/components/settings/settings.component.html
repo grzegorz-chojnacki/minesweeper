@@ -3,9 +3,9 @@
   <mat-form-field class="input" appearance="fill">
     <mat-label>Choose difficulty</mat-label>
     <mat-select formControlName="name">
-      <mat-option *ngFor="let difficultyName of difficultyNames"
-        [value]="difficultyName">
-        {{ difficultyName }}
+      <mat-option *ngFor="let name of presetNames"
+        [value]="name">
+        {{ name }}
       </mat-option>
     </mat-select>
   </mat-form-field>

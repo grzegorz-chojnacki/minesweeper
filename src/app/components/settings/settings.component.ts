@@ -17,9 +17,9 @@ export class SettingsComponent implements OnInit {
   public fieldSize: number;
   public sidenavAutoHide: boolean;
 
-  public difficultyList = [NamedDifficulty.custom, ...NamedDifficulty.presets];
-  public difficultyNames = this.difficultyList
-    .map(difficulty => difficulty.name);
+  public presetList = [NamedDifficulty.custom, ...NamedDifficulty.presets];
+  public presetNames = this.presetList
+    .map(preset => preset.name);
 
   public settingsForm = this.formBuilder.group(
     NamedDifficulty.matchToPreset(this.difficultyService.initialDifficulty),
@@ -48,7 +48,7 @@ export class SettingsComponent implements OnInit {
   // Set boardDimension & numberOfBombs to values from selected preset
   private updateInputs(): void {
     const formDifficulty = this.settingsForm.value;
-    const matched = this.difficultyList
+    const matched = this.presetList
       .find(preset => preset.name === formDifficulty.name);
 
     if (matched !== NamedDifficulty.custom) {

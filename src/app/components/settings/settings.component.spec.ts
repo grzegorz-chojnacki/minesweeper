@@ -77,7 +77,7 @@ describe('SettingsComponent', () => {
   it('should have full list of difficulty names', () => {
     component.ngOnInit();
 
-    const difficultyNamesLength = component.difficultyNames.length;
+    const difficultyNamesLength = component.presetNames.length;
     const expectedLength = [
       NamedDifficulty.custom, ...NamedDifficulty.presets
     ].length;
