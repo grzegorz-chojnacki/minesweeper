@@ -14,55 +14,42 @@ import { SettingsService } from 'src/app/services/settings.service';
 })
 export class SettingsComponent implements OnInit {
   @Output() public formSubmitEvent = new EventEmitter<void>();
-  public fieldSize: number;
-  public sidenavAutoHide: boolean;
-
-  public presetList = [NamedDifficulty.custom, ...NamedDifficulty.presets];
-  public presetNames = this.presetList
-    .map(preset => preset.name);
-
   public settingsForm = this.formBuilder.group(
     NamedDifficulty.matchToPreset(this.difficultyService.initial),
-    { validator: this.settingsFormValidator }
-  );
+    { validator: SettingsComponent.settingsFormValidator });
+  public presetList = [NamedDifficulty.custom, ...NamedDifficulty.presets];
+  public presetNames = this.presetList.map(preset => preset.name);
+
   public maxNumberOfBombs = this.getMaxNumberOfBombs();
   public maxBoardDimension = Difficulty.maxBoardDimension;
+
+  public fieldSize: number;
+  public sidenavAutoHide: boolean;
 
   constructor(
     public formBuilder: FormBuilder,
     public settingsService: SettingsService,
     private difficultyService: DifficultyService) { }
 
-  public onFieldSizeChange(event: MatSliderChange): void {
-    this.settingsService.setFieldSize(event.value);
-  }
-
-  private matchAndSetPresetName(): void {
-    this.settingsForm.updateValueAndValidity({ emitEvent: false });
-    const formDifficulty = this.settingsForm.value;
-    const matched = NamedDifficulty.matchToPreset(formDifficulty);
-    this.settingsForm.patchValue({ name: matched.name }, { emitEvent: false });
-  }
-
-  private setPresetValues(preset: NamedDifficulty): void {
-    if (preset !== NamedDifficulty.custom) {
-      this.settingsForm.patchValue({
-        boardDimension: preset.boardDimension,
-        numberOfBombs: preset.numberOfBombs
-      }, { emitEvent: false });
-    }
-  }
-
-  private getMaxNumberOfBombs(): number {
-    return this.settingsForm.get('boardDimension').value ** 2 - 1;
-  }
-
-  private settingsFormValidator(fg: FormGroup): ValidationErrors {
+  private static settingsFormValidator(fg: FormGroup): ValidationErrors {
     if (fg.get('boardDimension').invalid) {
       fg.get('numberOfBombs').setErrors({ undefinedDimension: true });
-    } else {
-      return null;
+    } else { return null; }
+  }
+
+  public onCheckboxChange(): void {
+    this.settingsService.setSidenavAutoHide(this.sidenavAutoHide);
+  }
+
+  public onSubmit(): void {
+    if (this.settingsForm.valid) {
+      this.difficultyService.newDifficulty(this.settingsForm.value);
+      this.formSubmitEvent.emit();
     }
+  }
+
+  public onFieldSizeChange(event: MatSliderChange): void {
+    this.settingsService.setFieldSize(event.value);
   }
 
   public getNumberOfBombsError(): string {
@@ -75,41 +62,34 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  private refreshValidators(): void {
-    this.maxNumberOfBombs = this.getMaxNumberOfBombs();
+  public ngOnInit(): void {
+    this.setupFormSubscriptions();
+    this.setupSettingsSubscriptions();
+    this.setBoardDimensionValidators();
 
-    this.settingsForm.get('numberOfBombs').setValidators([
-      Validators.required, Validators.min(0),
-      Validators.max(this.maxNumberOfBombs)
-    ]);
-
-    this.settingsForm.updateValueAndValidity({ emitEvent: false });
+    // Untouched inputs doesn't show if they are invalid
+    this.settingsForm.markAllAsTouched();
   }
 
-  private setupSubscriptions(): void {
-    // Select
-    this.settingsForm.get('name').valueChanges
-      .subscribe(() => {
-        const preset = this.getSelectedPreset();
-        this.setPresetValues(preset);
-        this.refreshValidators();
-      });
+  private setupFormSubscriptions(): void {
+    const nameInput = this.settingsForm.get('name');
+    const valueInputs = [
+      this.settingsForm.get('boardDimension'),
+      this.settingsForm.get('numberOfBombs')
+    ];
 
-    // Inputs
-    [this.settingsForm.get('boardDimension'),
-     this.settingsForm.get('numberOfBombs')]
-    .map(input => input.valueChanges
-      .subscribe(() => {
+    nameInput.valueChanges.subscribe(() => {
+      const preset = this.getSelectedPreset();
+      this.setPresetValues(preset);
+      this.resetNumberOfBombsValidators();
+    });
+
+    valueInputs.forEach(input =>
+      input.valueChanges.subscribe(() => {
+        this.resetNumberOfBombsValidators();
         this.matchAndSetPresetName();
-        this.refreshValidators();
-    }));
-
-    // Settings
-    this.settingsService.fieldSize
-      .subscribe(fieldSize => this.fieldSize = fieldSize);
-
-    this.settingsService.sidenavAutoHide
-      .subscribe(sidenavAutoHide => this.sidenavAutoHide = sidenavAutoHide);
+      })
+    );
   }
 
   private getSelectedPreset(): NamedDifficulty {
@@ -117,29 +97,53 @@ export class SettingsComponent implements OnInit {
     return this.presetList.find(preset => preset.name === selectedName);
   }
 
-  public ngOnInit(): void {
-    this.setupSubscriptions();
-    // boardDimension validators (numberOfBombs validators are based
-    // on boardDimension, so they are added/updated in `this.refreshValidators`)
+  private matchAndSetPresetName(): void {
+    this.settingsForm.updateValueAndValidity({ emitEvent: false });
+    const formDifficulty = this.settingsForm.value;
+    const matched = NamedDifficulty.matchToPreset(formDifficulty);
+    this.settingsForm.patchValue({ name: matched.name }, { emitEvent: false });
+  }
+
+  private resetNumberOfBombsValidators(): void {
+    this.maxNumberOfBombs = this.getMaxNumberOfBombs();
+
+    this.settingsForm.get('numberOfBombs').setValidators([
+      Validators.required, Validators.min(0),
+      Validators.max(this.maxNumberOfBombs)
+    ]);
+
+    this.settingsForm.get('boardDimension')
+      .updateValueAndValidity({ emitEvent: false });
+    this.settingsForm.get('numberOfBombs')
+      .updateValueAndValidity({ emitEvent: false });
+  }
+
+  private getMaxNumberOfBombs(): number {
+    return this.settingsForm.get('boardDimension').value ** 2 - 1;
+  }
+
+  private setPresetValues(preset: NamedDifficulty): void {
+    if (preset !== NamedDifficulty.custom) {
+      this.settingsForm.patchValue({
+        boardDimension: preset.boardDimension,
+        numberOfBombs: preset.numberOfBombs
+      }, { emitEvent: false });
+    }
+  }
+
+  private setupSettingsSubscriptions(): void {
+    this.settingsService.fieldSize
+    .subscribe(fieldSize => this.fieldSize = fieldSize);
+
+    this.settingsService.sidenavAutoHide
+      .subscribe(sidenavAutoHide => this.sidenavAutoHide = sidenavAutoHide);
+  }
+
+  private setBoardDimensionValidators(): void {
     this.settingsForm.get('boardDimension').setValidators([
       Validators.required,
       Validators.min(1),
       Validators.max(this.maxBoardDimension)
     ]);
-    // Untouched inputs doesn't show if they are invalid
-    this.settingsForm.markAllAsTouched();
   }
-
-  public onCheckboxChange(): void {
-    this.settingsService.setSidenavAutoHide(this.sidenavAutoHide);
-  }
-
-  // Start new game (restart) and close sidenav if specified
-  public onSubmit(): void {
-    if (this.settingsForm.valid) {
-      this.difficultyService.newDifficulty(this.settingsForm.value);
-      this.formSubmitEvent.emit();
-    }
-  }
-
 }
