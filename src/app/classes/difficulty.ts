@@ -6,6 +6,8 @@ export class Difficulty {
   constructor(boardDimension: number, numberOfBombs: number) {
     if (boardDimension < 1) {
       throw new Error('Board dimension smaller than 1');
+    } else if (boardDimension > Difficulty.maxBoardDimension) {
+      throw new Error('Board dimension bigger than max');
     } else if (numberOfBombs < 0) {
       throw new Error('Number of bombs smaller than 0');
     } else if (numberOfBombs > boardDimension ** 2 - 1) {

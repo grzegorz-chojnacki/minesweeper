@@ -9,6 +9,7 @@ describe('Difficulty', () => {
   it('should throw error on wrong board dimension', () => {
     expect(() => new Difficulty( 0, 0)).toThrow();
     expect(() => new Difficulty(-1, 0)).toThrow();
+    expect(() => new Difficulty(Difficulty.maxBoardDimension + 1, 0)).toThrow();
     expect(() => new Difficulty( 1, 0)).not.toThrow();
   });
 
