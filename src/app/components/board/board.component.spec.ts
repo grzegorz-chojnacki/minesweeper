@@ -95,11 +95,9 @@ describe('BoardComponent', () => {
   });
 
   describe('Template behaviour', () => {
-    const getFirstButton = (context: ComponentFixture<BoardComponent>) =>
-      context.debugElement.query(By.css('.field'));
-
-    const getBoardContainer = (context: ComponentFixture<BoardComponent>) =>
-      context.debugElement.query(By.css('.board-container'));
+    const getFirstButton = () => fixture.debugElement.query(By.css('.field'));
+    const getBoardContainer = () => fixture.debugElement
+      .query(By.css('.board-container'));
 
     const isSquare = (arr: any[]): boolean =>
       arr.find(row => row.length !== arr.length) !== undefined;
@@ -112,7 +110,7 @@ describe('BoardComponent', () => {
       expect(component.fieldSize).toBe(42);
 
       fixture.detectChanges();
-      const styles = getBoardContainer(fixture).styles;
+      const styles = getBoardContainer().styles;
 
       expect(styles.minWidth).toBe('42px');
       expect(styles.minHeight).toBe(styles.minWidth);
@@ -124,8 +122,7 @@ describe('BoardComponent', () => {
       component.ngOnInit();
       fixture.detectChanges();
 
-      const boardContainer = fixture.debugElement
-        .query(By.css('.board-container'));
+      const boardContainer = getBoardContainer();
       const boardFields = boardContainer.children;
 
       expect(boardFields.length).toBe(expectedDimension);
@@ -149,7 +146,7 @@ describe('BoardComponent', () => {
 
       fixture.detectChanges();
 
-      const clickedButton = getFirstButton(fixture).nativeElement;
+      const clickedButton = getFirstButton().nativeElement;
       expect(clickedButton.innerHTML).toContain('3');
     });
 
@@ -161,7 +158,7 @@ describe('BoardComponent', () => {
       component.onRightClick(flagged);
       fixture.detectChanges();
 
-      const flaggedButton = getFirstButton(fixture).nativeElement;
+      const flaggedButton = getFirstButton().nativeElement;
       expect(flaggedButton.innerHTML).toContain(PrintFieldPipe.flagIcon);
     });
 
@@ -175,7 +172,7 @@ describe('BoardComponent', () => {
 
       fixture.detectChanges();
 
-      const bombButton = getFirstButton(fixture).nativeElement;
+      const bombButton = getFirstButton().nativeElement;
       expect(bombButton.innerHTML).toContain(PrintFieldPipe.bombIcon);
     });
   });
