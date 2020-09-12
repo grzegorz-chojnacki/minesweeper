@@ -41,12 +41,28 @@ describe('Board', () => {
       expect(board).toBeTruthy();
     });
 
+    it('should have proper fields matrix set', () => {
+      const boardDimension = 10;
+      const numberOfBombs = 10;
+      const board = newRandomBoard(boardDimension, numberOfBombs);
+
+      expect(board.fields.length).toBe(boardDimension);
+    });
+
     it('should have proper number of flags set', () => {
       const boardDimension = 10;
       const numberOfBombs = 10;
       const board = newRandomBoard(boardDimension, numberOfBombs);
 
       expect(board.flagCounter).toBe(numberOfBombs);
+    });
+
+    it('should have proper difficulty set', () => {
+      const difficulty = new Difficulty(8, 6);
+      const bombPlanter = new BombPlanter(difficulty);
+      const board = new Board(bombPlanter);
+
+      expect(board.difficulty).toBe(difficulty);
     });
   });
 
