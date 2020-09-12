@@ -23,7 +23,7 @@ export class SettingsComponent implements OnInit {
     .map(difficulty => difficulty.name);
 
   public settingsForm = this.formBuilder.group(
-    this.difficultyService.initialDifficulty,
+    Difficulty.matchToPreset(this.difficultyService.initialDifficulty),
     { validator: this.settingsFormValidator }
   );
   public maxNumberOfBombs = this.getMaxNumberOfBombs();
@@ -40,15 +40,12 @@ export class SettingsComponent implements OnInit {
 
   // Try to match difficulty preset with boardDimension & numberOfBombs values
   private updateSelect(): void {
-    const boardDimension = this.settingsForm.get('boardDimension').value;
-    const numberOfBombs = this.settingsForm.get('numberOfBombs').value;
+    const boardDimension: number = this.settingsForm.get('boardDimension').value;
+    const numberOfBombs: number = this.settingsForm.get('numberOfBombs').value;
 
-    const preset = this.difficultyList.find(difficulty =>
-      boardDimension === difficulty.boardDimension
-      && numberOfBombs === difficulty.numberOfBombs
-    ) || customDifficulty;
+    const matched = Difficulty.matchToPreset({ boardDimension, numberOfBombs });
 
-    this.settingsForm.patchValue({ name: preset.name }, { emitEvent: false });
+    this.settingsForm.patchValue({ name: matched.name }, { emitEvent: false });
   }
 
   // Set boardDimension & numberOfBombs to values from selected preset

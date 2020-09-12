@@ -11,7 +11,7 @@ describe('BombPercentagePipe', () => {
   it('should output correct message for passed difficulty', () => {
     const pipe = new BombPercentagePipe();
     const difficulty: Difficulty =
-      { name: '', boardDimension: 10, numberOfBombs: 10 };
+      { boardDimension: 10, numberOfBombs: 10 };
 
     expect(pipe.transform(difficulty)).toContain('10%');
   });
@@ -19,8 +19,8 @@ describe('BombPercentagePipe', () => {
   it('should output correct message for both bounds', () => {
     const pipe = new BombPercentagePipe();
     const bounds: Difficulty[] = [
-      { name: '', boardDimension: 10, numberOfBombs:   0 },
-      { name: '', boardDimension: 10, numberOfBombs: 100 }
+      { boardDimension: 10, numberOfBombs:   0 },
+      { boardDimension: 10, numberOfBombs: 100 }
     ];
 
     expect(pipe.transform(bounds[0])).toContain('0%');
@@ -30,7 +30,7 @@ describe('BombPercentagePipe', () => {
   it('should handle division by zero', () => {
     const pipe = new BombPercentagePipe();
     const difficulty: Difficulty =
-      { name: '', boardDimension: 0, numberOfBombs: 100 };
+      { boardDimension: 0, numberOfBombs: 100 };
 
     expect(pipe.transform(difficulty)).toBe('');
   });
@@ -38,9 +38,9 @@ describe('BombPercentagePipe', () => {
   it('should handle negative numbers', () => {
     const pipe = new BombPercentagePipe();
     const negatives: Difficulty[] = [
-      { name: '', boardDimension: -10, numberOfBombs:  10 },
-      { name: '', boardDimension:  10, numberOfBombs: -10 },
-      { name: '', boardDimension: -10, numberOfBombs: -10 }
+      { boardDimension: -10, numberOfBombs:  10 },
+      { boardDimension:  10, numberOfBombs: -10 },
+      { boardDimension: -10, numberOfBombs: -10 }
     ];
 
     expect(pipe.transform(negatives[0])).toBe('');
@@ -51,7 +51,7 @@ describe('BombPercentagePipe', () => {
   it('should output message with rounded percentage', () => {
     const pipe = new BombPercentagePipe();
     const difficulty: Difficulty =
-      { name: '', boardDimension: 7, numberOfBombs: 7 };
+      { boardDimension: 7, numberOfBombs: 7 };
 
     expect(pipe.transform(difficulty)).toContain('14%');
   });

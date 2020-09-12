@@ -1,12 +1,9 @@
-import { Difficulty } from './difficulty';
+import { Difficulty, NamedDifficulty } from './difficulty';
 
 describe('Difficulty', () => {
   it('should be created', () => {
-    const bareDifficulty = new Difficulty(10, 10);
-    expect(bareDifficulty).toBeTruthy();
-
-    const namedDifficulty = new Difficulty(10, 10, 'Difficulty name');
-    expect(namedDifficulty).toBeTruthy();
+    const difficulty = new Difficulty(10, 10);
+    expect(difficulty).toBeTruthy();
   });
 
   it('should throw error on wrong board dimension', () => {
@@ -20,5 +17,24 @@ describe('Difficulty', () => {
     expect(() => new Difficulty(10, 100)).toThrow();
     expect(() => new Difficulty(10,   0)).not.toThrow();
     expect(() => new Difficulty(10,  99)).not.toThrow();
+  });
+});
+
+describe('NamedDifficulty', () => {
+  it('should be created', () => {
+    const namedDifficulty = new NamedDifficulty('Name', 10, 10);
+    expect(namedDifficulty).toBeTruthy();
+  });
+
+  it('should throw error on null name', () => {
+    expect(() => new NamedDifficulty(null, 10, 10)).toThrow();
+  });
+
+  it('should throw error on undefined name', () => {
+    expect(() => new NamedDifficulty(undefined, 10, 10)).toThrow();
+  });
+
+  it('should throw error on empty name', () => {
+    expect(() => new NamedDifficulty('', 10, 10)).toThrow();
   });
 });

@@ -1,10 +1,16 @@
 export class Difficulty {
   public static readonly maxBoardDimension = 50;
-  public readonly name: string;
   public readonly boardDimension: number;
   public readonly numberOfBombs: number;
 
-  constructor(boardDimension: number, numberOfBombs: number, name = '') {
+  public static matchToPreset(difficulty: Difficulty): NamedDifficulty {
+    return difficulties.find(preset =>
+        preset.boardDimension === difficulty.boardDimension &&
+        preset.numberOfBombs  === difficulty.numberOfBombs)
+    || {...difficulty, name: customDifficulty.name };
+  }
+
+  constructor(boardDimension: number, numberOfBombs: number) {
     if (boardDimension < 1) {
       throw new Error('Board dimension smaller than 1');
     } else if (numberOfBombs < 0) {
@@ -12,21 +18,33 @@ export class Difficulty {
     } else if (numberOfBombs > boardDimension ** 2 - 1) {
       throw new Error('Number of bombs is greater than number of available fields');
     }
-    this.name = name;
     this.boardDimension = boardDimension;
     this.numberOfBombs = numberOfBombs;
   }
 }
 
+export class NamedDifficulty extends Difficulty {
+  public readonly name: string;
+
+  constructor(name: string, boardDimension: number, numberOfBombs: number) {
+    super(boardDimension, numberOfBombs);
+    if (name.length > 0) {
+      this.name = name;
+    } else {
+      throw new Error('Name is empty');
+    }
+  }
+}
+
 // Special custom difficulty
-export const customDifficulty: Difficulty = {
+export const customDifficulty: NamedDifficulty = {
   name: 'Custom',
   boardDimension: undefined,
   numberOfBombs: undefined
 };
 
 // Difficulty presets
-export const difficulties: Difficulty[] = [
+export const difficulties: NamedDifficulty[] = [
   {
     name: 'Beginner',
     boardDimension: 10,

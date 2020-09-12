@@ -289,9 +289,13 @@ describe('SettingsComponent', () => {
 
   it('should init inputs with initialDifficulty', () => {
     const difficultyService = TestBed.inject(DifficultyService);
+    const expected = difficultyService.initialDifficulty;
+
     component.ngOnInit();
+
     const difficulty: Difficulty = component.settingsForm.value;
-    expect(difficulty).toEqual({ ...difficultyService.initialDifficulty });
+    expect(difficulty.boardDimension).toEqual(expected.boardDimension);
+    expect(difficulty.numberOfBombs).toEqual(expected.numberOfBombs);
   });
 
   it('should prevent form submition if it is invalid', () => {
@@ -311,7 +315,7 @@ describe('SettingsComponent', () => {
 
   it('should set new difficulty on form submit', () => {
     const difficultyService = TestBed.inject(DifficultyService);
-    const expected = new Difficulty(13, 37, 'Custom');
+    const expected = new Difficulty(13, 37);
     component.ngOnInit();
 
     component.settingsForm.patchValue({
@@ -320,9 +324,10 @@ describe('SettingsComponent', () => {
     });
 
     component.onSubmit();
-    difficultyService.difficulty.subscribe(difficulty =>
-      expect(difficulty).toEqual({ ...expected })
-    ).unsubscribe();
+    difficultyService.difficulty.subscribe(difficulty => {
+      expect(difficulty.boardDimension).toEqual(expected.boardDimension);
+      expect(difficulty.numberOfBombs).toEqual(expected.numberOfBombs);
+    }).unsubscribe();
   });
 
   it('should emit event on form submit', () => {
