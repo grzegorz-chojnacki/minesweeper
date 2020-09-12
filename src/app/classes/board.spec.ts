@@ -61,12 +61,10 @@ describe('Board', () => {
       spyOn(bombPlanter, 'plantBombs').and.callThrough();
       const board = new Board(bombPlanter);
 
-      let clicked = board.fields[0][0];
-      board.check(clicked);
+      board.check(board.fields[0][0]);
       expect(bombPlanter.plantBombs).toHaveBeenCalledTimes(1);
 
-      clicked = board.fields[0][1];
-      board.check(clicked);
+      board.check(board.fields[0][1]);
       expect(bombPlanter.plantBombs).toHaveBeenCalledTimes(1);
     });
 
@@ -172,8 +170,8 @@ describe('Board', () => {
       expect(board.flagCounter).toBe(0);
       board.toggleFlag(board.fields[0][0]);
       const numberOfFlaggedFields = board.fields
-        .map(row => row.filter(field => field.isFlagged))
         .reduce((flat, nextRow) => flat.concat(nextRow), [])
+        .filter(field => field.isFlagged)
         .length;
 
       expect(numberOfFlaggedFields).toBe(numberOfBombs);
