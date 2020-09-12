@@ -5,8 +5,8 @@ import { Field } from 'src/app/classes/field';
   name: 'printField'
 })
 export class PrintFieldPipe implements PipeTransform {
-  private static readonly bombIcon = PrintFieldPipe.buildIcon('gps_fixed');
-  private static readonly flagIcon = PrintFieldPipe.buildIcon('tour');
+  public static readonly bombIcon = PrintFieldPipe.buildIcon('gps_fixed');
+  public static readonly flagIcon = PrintFieldPipe.buildIcon('tour');
 
   private static buildIcon(iconName: string): string {
     return `<span class="material-icons field-icon">${iconName}</span>`;
