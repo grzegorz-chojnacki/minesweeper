@@ -16,7 +16,7 @@ describe('DifficultyService', () => {
     const service = makeServiceWithEmptyStorage();
 
     service.difficulty.subscribe(difficulty => {
-      expect(difficulty).toBe(NamedDifficulty.presets[0]);
+      expect(difficulty).toBe(NamedDifficulty.initial);
     }).unsubscribe();
   });
 

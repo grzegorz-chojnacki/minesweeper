@@ -39,7 +39,7 @@ describe('NamedDifficulty', () => {
   });
 
   it('should match difficulty to named difficulty preset', () => {
-    const preset = NamedDifficulty.presets[0];
+    const preset = NamedDifficulty.initial;
     const difficulty = new Difficulty(
       preset.boardDimension,
       preset.numberOfBombs

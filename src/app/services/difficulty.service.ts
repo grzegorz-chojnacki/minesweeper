@@ -9,7 +9,7 @@ import { Difficulty, NamedDifficulty } from 'src/app/classes/difficulty';
 export class DifficultyService {
   public readonly initial: Difficulty =
     JSON.parse(this.storage.getItem('difficulty'))
-    || NamedDifficulty.presets[0];
+    || NamedDifficulty.initial;
 
   public readonly difficultySource = new BehaviorSubject(this.initial);
   public get difficulty(): Observable<Difficulty> {

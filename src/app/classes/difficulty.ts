@@ -25,6 +25,7 @@ export class NamedDifficulty extends Difficulty {
     { name: 'Advanced',     boardDimension: 25, numberOfBombs: 120 },
     { name: 'Master',       boardDimension: 25, numberOfBombs: 180 }
   ];
+  public static readonly initial = NamedDifficulty.presets[0];
   public readonly name: string;
 
   public static matchToPreset(difficulty: Difficulty): NamedDifficulty {
