@@ -7,11 +7,11 @@ import { Difficulty, NamedDifficulty } from 'src/app/classes/difficulty';
   useFactory: () => new DifficultyService(localStorage)
 })
 export class DifficultyService {
-  public readonly initialDifficulty: Difficulty =
+  public readonly initial: Difficulty =
     JSON.parse(this.storage.getItem('difficulty'))
     || NamedDifficulty.presets[0];
 
-  public readonly difficultySource = new BehaviorSubject(this.initialDifficulty);
+  public readonly difficultySource = new BehaviorSubject(this.initial);
   public get difficulty(): Observable<Difficulty> {
     return this.difficultySource.asObservable();
   }

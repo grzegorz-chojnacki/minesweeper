@@ -29,8 +29,8 @@ class SettingsServiceStub implements Partial<SettingsService> {
 const settingsServiceStub = new SettingsServiceStub();
 
 class DifficultyServiceStub implements Partial<DifficultyService> {
-  public initialDifficulty = new Difficulty(7, 7);
-  public difficulty = new BehaviorSubject<Difficulty>(this.initialDifficulty);
+  public initial = new Difficulty(7, 7);
+  public difficulty = new BehaviorSubject<Difficulty>(this.initial);
   public newDifficulty = (d: Difficulty): void => this.difficulty.next(d);
 }
 const difficultyServiceStub = new DifficultyServiceStub();
@@ -289,9 +289,9 @@ describe('SettingsComponent', () => {
     expect(name).toBe(NamedDifficulty.custom.name);
   });
 
-  it('should init inputs with initialDifficulty', () => {
+  it('should init inputs with initial', () => {
     const difficultyService = TestBed.inject(DifficultyService);
-    const expected = difficultyService.initialDifficulty;
+    const expected = difficultyService.initial;
 
     component.ngOnInit();
 

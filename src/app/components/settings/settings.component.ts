@@ -22,7 +22,7 @@ export class SettingsComponent implements OnInit {
     .map(preset => preset.name);
 
   public settingsForm = this.formBuilder.group(
-    NamedDifficulty.matchToPreset(this.difficultyService.initialDifficulty),
+    NamedDifficulty.matchToPreset(this.difficultyService.initial),
     { validator: this.settingsFormValidator }
   );
   public maxNumberOfBombs = this.getMaxNumberOfBombs();

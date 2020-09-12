@@ -19,8 +19,8 @@ class SettingsServiceStub {
 }
 
 class DifficultyServiceStub {
-  public readonly initialDifficulty = new Difficulty(7, 7);
-  public readonly difficulty = new BehaviorSubject(this.initialDifficulty);
+  public readonly initial = new Difficulty(7, 7);
+  public readonly difficulty = new BehaviorSubject(this.initial);
   public newDifficulty = (d: Difficulty): void => this.difficulty.next(d);
 }
 
@@ -83,7 +83,7 @@ describe('BoardComponent', () => {
 
     component.ngOnInit();
     const generatedBoardDifficulty = component.board.difficulty;
-    const expectedBoardDifficulty = difficultyService.initialDifficulty;
+    const expectedBoardDifficulty = difficultyService.initial;
 
     expect(generatedBoardDifficulty).toBe(expectedBoardDifficulty);
   });
@@ -92,7 +92,7 @@ describe('BoardComponent', () => {
     const isSquare = (arr: any[]) =>
       arr.find(row => row.length !== arr.length) !== undefined;
     const difficultyService = TestBed.inject(DifficultyService);
-    const expectedDimension = difficultyService.initialDifficulty.boardDimension;
+    const expectedDimension = difficultyService.initial.boardDimension;
     component.ngOnInit();
     fixture.detectChanges();
 
