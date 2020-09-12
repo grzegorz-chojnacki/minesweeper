@@ -19,6 +19,8 @@ export class MockSettingsComponent { }
 describe('AppComponent', () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
+  const getElement = (selector: string): HTMLElement => fixture.debugElement
+    .query(By.css(selector)).nativeElement;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -45,91 +47,85 @@ describe('AppComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display correct number of flags if set', () => {
-    const newFlagCount = 7;
-    const flagService = TestBed.inject(FlagService);
-    flagService.setCounter(newFlagCount);
+  describe('Flag counter behaviour', () => {
+    it('should display correct number of flags if set', () => {
+      const newFlagCount = 7;
+      const flagService = TestBed.inject(FlagService);
+      flagService.setCounter(newFlagCount);
 
-    component.ngOnInit();
-    fixture.detectChanges();
-    const el = fixture.debugElement
-      .query(By.css('.flag-counter')).nativeElement;
+      component.ngOnInit();
+      fixture.detectChanges();
 
-    expect(el.textContent).toContain(newFlagCount.toString());
+      const flagCounter = getElement('.flag-counter');
+      expect(flagCounter.innerHTML).toContain(newFlagCount.toString());
+    });
+
+    it('should not display number of flags if undefined', () => {
+      const flagService = TestBed.inject(FlagService);
+      flagService.setCounter(undefined);
+
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      const flagCounter = getElement('.flag-counter');
+      expect(flagCounter.innerHTML).toBe('');
+    });
   });
 
-  it('should not display number of flags if undefined', () => {
-    const flagService = TestBed.inject(FlagService);
-    flagService.setCounter(undefined);
+  describe('Sidenav behaviour', () => {
+    it('should open sidenav on start', () => {
+      component.ngOnInit();
+      fixture.detectChanges();
 
-    component.ngOnInit();
-    fixture.detectChanges();
-    const el = fixture.debugElement
-      .query(By.css('.flag-counter')).nativeElement;
+      expect(component.sidenav.opened).toBe(true);
+    });
 
-    expect(el.textContent).toBe('');
-  });
+    it('should hide sidenav if content is clicked and option set to true', () => {
+      const settingsService = TestBed.inject(SettingsService);
+      settingsService.setSidenavAutoHide(true);
+      component.ngOnInit();
+      fixture.detectChanges();
 
-  it('should open sidenav on start', () => {
-    component.ngOnInit();
-    fixture.detectChanges();
+      const content = getElement('mat-sidenav-content');
+      content.click();
 
-    expect(component.sidenav.opened).toBe(true);
-  });
+      expect(component.sidenav.opened).toBe(false);
+    });
 
-  it(`should auto hide sidenav if content is clicked and sidenavAutoHide
-      is set to true`, () => {
-    const settingsService = TestBed.inject(SettingsService);
-    settingsService.setSidenavAutoHide(true);
+    it('should not hide sidenav if content is clicked and option set to false', () => {
+      const settingsService = TestBed.inject(SettingsService);
+      settingsService.setSidenavAutoHide(false);
+      component.ngOnInit();
+      fixture.detectChanges();
 
-    component.ngOnInit();
-    fixture.detectChanges();
-    const content = fixture.debugElement
-      .query(By.css('mat-sidenav-content')).nativeElement;
-    content.click();
+      const content = getElement('mat-sidenav-content');
+      content.click();
 
-    expect(component.sidenav.opened).toBe(false);
-  });
+      expect(component.sidenav.opened).toBe(true);
+    });
 
-  it(`should not auto hide sidenav if content is clicked and sidenavAutoHide
-      is set to false`, () => {
-    const settingsService = TestBed.inject(SettingsService);
-    settingsService.setSidenavAutoHide(false);
+    it('should hide sidenav on formSubmitEvent if option is true', () => {
+      const settingsService = TestBed.inject(SettingsService);
+      settingsService.setSidenavAutoHide(true);
+      component.ngOnInit();
+      fixture.detectChanges();
 
-    component.ngOnInit();
-    fixture.detectChanges();
-    const content = fixture.debugElement
-      .query(By.css('mat-sidenav-content')).nativeElement;
-    content.click();
+      const settings = getElement('app-settings');
+      settings.dispatchEvent(new Event('formSubmitEvent'));
 
-    expect(component.sidenav.opened).toBe(true);
-  });
+      expect(component.sidenav.opened).toBe(false);
+    });
 
-  it(`should auto hide sidenav on formSubmitEvent and if sidenavAutoHide
-      is set to true`, () => {
-    const settingsService = TestBed.inject(SettingsService);
-    settingsService.setSidenavAutoHide(true);
+    it('should not hide sidenav on formSubmitEvent if option is false', () => {
+      const settingsService = TestBed.inject(SettingsService);
+      settingsService.setSidenavAutoHide(false);
+      component.ngOnInit();
+      fixture.detectChanges();
 
-    component.ngOnInit();
-    fixture.detectChanges();
-    const settings = fixture.debugElement
-      .query(By.css('app-settings')).nativeElement;
-    settings.dispatchEvent(new Event('formSubmitEvent'));
+      const settings = getElement('app-settings');
+      settings.dispatchEvent(new Event('formSubmitEvent'));
 
-    expect(component.sidenav.opened).toBe(false);
-  });
-
-  it(`should not auto hide sidenav on formSubmitEvent and if sidenavAutoHide
-      is set to false`, () => {
-    const settingsService = TestBed.inject(SettingsService);
-    settingsService.setSidenavAutoHide(false);
-
-    component.ngOnInit();
-    fixture.detectChanges();
-    const settings = fixture.debugElement
-      .query(By.css('app-settings')).nativeElement;
-    settings.dispatchEvent(new Event('formSubmitEvent'));
-
-    expect(component.sidenav.opened).toBe(true);
+      expect(component.sidenav.opened).toBe(true);
+    });
   });
 });
