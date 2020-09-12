@@ -1,5 +1,5 @@
 import { DifficultyService } from './difficulty.service';
-import { Difficulty, difficulties } from 'src/app/classes/difficulty';
+import { Difficulty, NamedDifficulty } from 'src/app/classes/difficulty';
 import { FakeStorage } from './fakeStorage';
 
 function makeServiceWithEmptyStorage(): DifficultyService {
@@ -16,7 +16,7 @@ describe('DifficultyService', () => {
     const service = makeServiceWithEmptyStorage();
 
     service.difficulty.subscribe(difficulty => {
-      expect(difficulty).toBe(difficulties[0]);
+      expect(difficulty).toBe(NamedDifficulty.presets[0]);
     }).unsubscribe();
   });
 

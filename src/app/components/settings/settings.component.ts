@@ -3,8 +3,7 @@ import { FormBuilder, Validators, FormGroup,
          ValidationErrors } from '@angular/forms';
 import { MatSliderChange } from '@angular/material/slider';
 
-import { Difficulty, difficulties,
-         customDifficulty } from 'src/app/classes/difficulty';
+import { Difficulty, NamedDifficulty } from 'src/app/classes/difficulty';
 import { DifficultyService } from 'src/app/services/difficulty.service';
 import { SettingsService } from 'src/app/services/settings.service';
 
@@ -18,12 +17,12 @@ export class SettingsComponent implements OnInit {
   public fieldSize: number;
   public sidenavAutoHide: boolean;
 
-  public difficultyList = [customDifficulty, ...difficulties];
+  public difficultyList = [NamedDifficulty.custom, ...NamedDifficulty.presets];
   public difficultyNames = this.difficultyList
     .map(difficulty => difficulty.name);
 
   public settingsForm = this.formBuilder.group(
-    Difficulty.matchToPreset(this.difficultyService.initialDifficulty),
+    NamedDifficulty.matchToPreset(this.difficultyService.initialDifficulty),
     { validator: this.settingsFormValidator }
   );
   public maxNumberOfBombs = this.getMaxNumberOfBombs();
@@ -41,7 +40,7 @@ export class SettingsComponent implements OnInit {
   // Try to match difficulty preset with boardDimension & numberOfBombs values
   private updateSelect(): void {
     const formDifficulty = this.settingsForm.value;
-    const matched = Difficulty.matchToPreset(formDifficulty);
+    const matched = NamedDifficulty.matchToPreset(formDifficulty);
 
     this.settingsForm.patchValue({ name: matched.name }, { emitEvent: false });
   }
@@ -52,7 +51,7 @@ export class SettingsComponent implements OnInit {
     const matched = this.difficultyList
       .find(preset => preset.name === formDifficulty.name);
 
-    if (matched !== customDifficulty) {
+    if (matched !== NamedDifficulty.custom) {
       this.settingsForm.patchValue({
         boardDimension: matched.boardDimension,
         numberOfBombs: matched.numberOfBombs

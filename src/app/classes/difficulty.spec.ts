@@ -37,4 +37,24 @@ describe('NamedDifficulty', () => {
   it('should throw error on empty name', () => {
     expect(() => new NamedDifficulty('', 10, 10)).toThrow();
   });
+
+  it('should match difficulty to named difficulty preset', () => {
+    const preset = NamedDifficulty.presets[0];
+    const difficulty = new Difficulty(
+      preset.boardDimension,
+      preset.numberOfBombs
+    );
+
+    const matched = NamedDifficulty.matchToPreset(difficulty);
+    expect(matched).toBe(preset);
+  });
+
+  it('should return custom difficulty when it failed to match', () => {
+    const difficulty = new Difficulty(1, 0);
+
+    const matched = NamedDifficulty.matchToPreset(difficulty);
+    expect(matched.name).toBe(NamedDifficulty.custom.name);
+    expect(matched.boardDimension).toBe(difficulty.boardDimension);
+    expect(matched.numberOfBombs).toBe(difficulty.numberOfBombs);
+  });
 });

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -12,7 +12,7 @@ import { SettingsComponent } from './settings.component';
 import { SettingsService } from 'src/app/services/settings.service';
 import { DifficultyService } from 'src/app/services/difficulty.service';
 import { BombPercentagePipe } from 'src/app/pipes/bomb-percentage.pipe';
-import { Difficulty, difficulties, customDifficulty } from 'src/app/classes/difficulty';
+import { Difficulty, NamedDifficulty } from 'src/app/classes/difficulty';
 import { BehaviorSubject } from 'rxjs';
 import { By } from '@angular/platform-browser';
 
@@ -78,7 +78,9 @@ describe('SettingsComponent', () => {
     component.ngOnInit();
 
     const difficultyNamesLength = component.difficultyNames.length;
-    const expectedLength = [customDifficulty, ...difficulties].length;
+    const expectedLength = [
+      NamedDifficulty.custom, ...NamedDifficulty.presets
+    ].length;
 
     expect(difficultyNamesLength).toBe(expectedLength);
   });
@@ -239,24 +241,24 @@ describe('SettingsComponent', () => {
     });
 
     const selectedOption = component.settingsForm.get('name').value;
-    expect(selectedOption).toBe(customDifficulty.name);
+    expect(selectedOption).toBe(NamedDifficulty.custom.name);
   });
 
-  it('should set select to matched preset', () => {
+  it('should set preset name to matched preset', () => {
     component.ngOnInit();
-    const example = difficulties[1];
+    const example = NamedDifficulty.presets[1];
     component.settingsForm.patchValue({
       boardDimension: example.boardDimension,
       numberOfBombs: example.numberOfBombs
     });
 
-    const selectedOption = component.settingsForm.get('name').value;
-    expect(selectedOption).toBe(example.name);
+    const selectedPreset = component.settingsForm.get('name').value;
+    expect(selectedPreset).toBe(example.name);
   });
 
   it('should set inputs to values from selected preset', () => {
     component.ngOnInit();
-    const example = difficulties[1];
+    const example = NamedDifficulty.presets[1];
     component.settingsForm.patchValue({
       name: example.name,
     });
@@ -269,14 +271,14 @@ describe('SettingsComponent', () => {
 
   it('should not change inputs upon selecting custom difficulty', () => {
     component.ngOnInit();
-    const example = difficulties[1];
+    const example = NamedDifficulty.presets[1];
     component.settingsForm.patchValue({
       boardDimension: example.boardDimension,
       numberOfBombs: example.numberOfBombs
     });
 
     component.settingsForm.patchValue({
-      name: customDifficulty.name,
+      name: NamedDifficulty.custom.name,
     });
 
     const boardDimension = component.settingsForm.get('boardDimension').value;
@@ -284,7 +286,7 @@ describe('SettingsComponent', () => {
     const name = component.settingsForm.get('name').value;
     expect(boardDimension).toBe(example.boardDimension);
     expect(numberOfBombs).toBe(example.numberOfBombs);
-    expect(name).toBe(customDifficulty.name);
+    expect(name).toBe(NamedDifficulty.custom.name);
   });
 
   it('should init inputs with initialDifficulty', () => {
