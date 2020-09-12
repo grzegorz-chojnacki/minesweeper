@@ -74,7 +74,6 @@ describe('BoardComponent', () => {
       expect(generatedBoardDifficulty).toBe(expectedBoardDifficulty);
     });
   });
-  // describe(' behaviour', () => {});
 
   describe('Clicking behaviour', () => {
     it('should handle click events', () => {
@@ -97,9 +96,13 @@ describe('BoardComponent', () => {
 
   describe('Template behaviour', () => {
     const getFirstButton = (context: ComponentFixture<BoardComponent>) =>
-        context.debugElement.query(By.css('.field'));
+      context.debugElement.query(By.css('.field'));
+
     const getBoardContainer = (context: ComponentFixture<BoardComponent>) =>
-        context.debugElement.query(By.css('.board-container'));
+      context.debugElement.query(By.css('.board-container'));
+
+    const isSquare = (arr: any[]): boolean =>
+      arr.find(row => row.length !== arr.length) !== undefined;
 
     it('should update field size', () => {
       const settingsService = TestBed.inject(SettingsService);
@@ -116,9 +119,6 @@ describe('BoardComponent', () => {
     });
 
     it('should properly render board as HTML', () => {
-      const isSquare = (arr: any[]): boolean =>
-        arr.find(row => row.length !== arr.length) !== undefined;
-
       const difficultyService = TestBed.inject(DifficultyService);
       const expectedDimension = difficultyService.initial.boardDimension;
       component.ngOnInit();
