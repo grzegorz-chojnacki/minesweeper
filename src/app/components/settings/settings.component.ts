@@ -4,7 +4,7 @@ import { FormBuilder, Validators, FormGroup,
 import { MatSliderChange } from '@angular/material/slider';
 
 import { Difficulty, difficulties,
-         customDifficulty } from 'src/app/classes/difficulty';
+         customDifficulty, NamedDifficulty } from 'src/app/classes/difficulty';
 import { DifficultyService } from 'src/app/services/difficulty.service';
 import { SettingsService } from 'src/app/services/settings.service';
 
@@ -40,12 +40,19 @@ export class SettingsComponent implements OnInit {
 
   // Try to match difficulty preset with boardDimension & numberOfBombs values
   private updateSelect(): void {
-    const boardDimension: number = this.settingsForm.get('boardDimension').value;
-    const numberOfBombs: number = this.settingsForm.get('numberOfBombs').value;
+    const formDifficulty = this.getSettingsFormValue();
 
-    const matched = Difficulty.matchToPreset({ boardDimension, numberOfBombs });
+    const matched = Difficulty.matchToPreset(formDifficulty);
 
     this.settingsForm.patchValue({ name: matched.name }, { emitEvent: false });
+  }
+
+  private getSettingsFormValue(): NamedDifficulty {
+    return {
+      name: this.settingsForm.get('name').value,
+      boardDimension: this.settingsForm.get('boardDimension').value,
+      numberOfBombs: this.settingsForm.get('numberOfBombs').value,
+    };
   }
 
   // Set boardDimension & numberOfBombs to values from selected preset
