@@ -12,6 +12,7 @@ import { Difficulty } from 'src/app/classes/difficulty';
 import { PrintFieldPipe } from 'src/app/pipes/print-field.pipe';
 import { Board } from 'src/app/classes/board';
 import { FakeBombPlanter } from 'src/app/classes/bombPlanter';
+import { Field } from 'src/app/classes/field';
 
 class SettingsServiceStub {
   public readonly fieldSize = new BehaviorSubject<number>(30);
@@ -58,186 +59,216 @@ describe('BoardComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  describe('Initialization behaviour', () => {
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
+
+    it('should properly generate new board with initial difficulty', () => {
+      const difficultyService = TestBed.inject(DifficultyService);
+
+      component.ngOnInit();
+      const generatedBoardDifficulty = component.board.difficulty;
+      const expectedBoardDifficulty = difficultyService.initial;
+
+      expect(generatedBoardDifficulty).toBe(expectedBoardDifficulty);
+    });
+  });
+  // describe(' behaviour', () => {});
+
+  describe('Clicking behaviour', () => {
+    it('should handle click events', () => {
+      component.ngOnInit();
+
+      const clicked = component.board.fields[0][0];
+      component.onClick(clicked);
+
+      expect(clicked.isChecked).toBe(true);
+    });
+
+    it('should handle right click events', () => {
+      component.ngOnInit();
+
+      const flagged = component.board.fields[0][0];
+      component.onRightClick(flagged);
+      expect(flagged.isFlagged).toBe(true);
+    });
   });
 
-  it('should update field size', () => {
-    const settingsService = TestBed.inject(SettingsService);
-    settingsService.setFieldSize(42);
+  describe('Template behaviour', () => {
+    const getFirstButton = (context: ComponentFixture<BoardComponent>) =>
+        context.debugElement.query(By.css('.field'));
+    const getBoardContainer = (context: ComponentFixture<BoardComponent>) =>
+        context.debugElement.query(By.css('.board-container'));
 
-    component.ngOnInit();
-    expect(component.fieldSize).toBe(42);
+    it('should update field size', () => {
+      const settingsService = TestBed.inject(SettingsService);
+      settingsService.setFieldSize(42);
 
-    fixture.detectChanges();
-    const styles = fixture.debugElement
-      .query(By.css('.board-container'))
-      .styles;
+      component.ngOnInit();
+      expect(component.fieldSize).toBe(42);
 
-    expect(styles.minWidth).toBe('42px');
-    expect(styles.minHeight).toBe(styles.minWidth);
+      fixture.detectChanges();
+      const styles = getBoardContainer(fixture).styles;
+
+      expect(styles.minWidth).toBe('42px');
+      expect(styles.minHeight).toBe(styles.minWidth);
+    });
+
+    it('should properly render board as HTML', () => {
+      const isSquare = (arr: any[]): boolean =>
+        arr.find(row => row.length !== arr.length) !== undefined;
+
+      const difficultyService = TestBed.inject(DifficultyService);
+      const expectedDimension = difficultyService.initial.boardDimension;
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      const boardContainer = fixture.debugElement
+        .query(By.css('.board-container'));
+      const boardFields = boardContainer.children;
+
+      expect(boardFields.length).toBe(expectedDimension);
+      expect(isSquare(boardFields)).toBe(true);
+    });
+
+    it('should show hints on checked buttons', () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+      const template = [
+        [' ', 'B'],
+        ['B', 'B']
+      ];
+      const bombPlanter = new FakeBombPlanter(template);
+      const board = new Board(bombPlanter);
+      component.useBoard(board);
+
+      const clicked = component.board.fields[0][0];
+      component.onClick(clicked);
+      expect(clicked.value).toBe(3);
+
+      fixture.detectChanges();
+
+      const clickedButton = getFirstButton(fixture).nativeElement;
+      expect(clickedButton.innerHTML).toContain('3');
+    });
+
+    it('should render flags', () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      const flagged = component.board.fields[0][0];
+      component.onRightClick(flagged);
+      fixture.detectChanges();
+
+      const flaggedButton = getFirstButton(fixture).nativeElement;
+      expect(flaggedButton.innerHTML).toContain(PrintFieldPipe.flagIcon);
+    });
+
+    it('should render bombs', () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      const bombed = component.board.fields[0][0];
+      bombed.value = Field.bomb;
+      component.onClick(bombed);
+
+      fixture.detectChanges();
+
+      const bombButton = getFirstButton(fixture).nativeElement;
+      expect(bombButton.innerHTML).toContain(PrintFieldPipe.bombIcon);
+    });
   });
 
-  it('should properly generate new board with initial difficulty', () => {
-    const difficultyService = TestBed.inject(DifficultyService);
+  describe('Flag counter behaviour', () => {
+    it('should set flag counter on new game', () => {
+      const flagService = TestBed.inject(FlagService);
+      const difficultyService = TestBed.inject(DifficultyService);
 
-    component.ngOnInit();
-    const generatedBoardDifficulty = component.board.difficulty;
-    const expectedBoardDifficulty = difficultyService.initial;
+      difficultyService.newDifficulty(new Difficulty(5, 5));
+      component.ngOnInit();
 
-    expect(generatedBoardDifficulty).toBe(expectedBoardDifficulty);
+      flagService.counter.subscribe(counter => expect(counter).toBe(5))
+        .unsubscribe();
+    });
+
+    it('should update flag counter', () => {
+      component.ngOnInit();
+      const flagService = TestBed.inject(FlagService);
+      const difficultyService = TestBed.inject(DifficultyService);
+      difficultyService.newDifficulty(new Difficulty(4, 4));
+
+      const flagged = component.board.fields[0][0];
+      component.onRightClick(flagged);
+
+      flagService.counter.subscribe(counter => expect(counter).toBe(3))
+        .unsubscribe();
+    });
   });
 
-  it('should properly render board as HTML', () => {
-    const isSquare = (arr: any[]) =>
-      arr.find(row => row.length !== arr.length) !== undefined;
-    const difficultyService = TestBed.inject(DifficultyService);
-    const expectedDimension = difficultyService.initial.boardDimension;
-    component.ngOnInit();
-    fixture.detectChanges();
+  describe('Snack bar behaviour', () => {
+    it('should spawn game won snack bar', () => {
+      const difficultyService = TestBed.inject(DifficultyService);
+      const fakeMatSnackBar = TestBed.inject(MatSnackBar);
+      spyOn(fakeMatSnackBar, 'open').and.callThrough();
 
-    const boardContainer = fixture.debugElement
-      .query(By.css('.board-container'));
-    const boardFields = boardContainer.children;
+      difficultyService.newDifficulty(new Difficulty(1, 0));
+      fixture.detectChanges();
 
-    expect(boardFields.length).toBe(expectedDimension);
-    expect(isSquare(boardFields)).toBe(true);
-  });
+      const clicked = component.board.fields[0][0];
+      component.onClick(clicked);
+      fixture.detectChanges();
 
-  it('should handle click events', () => {
-    component.ngOnInit();
+      expect(fakeMatSnackBar.open)
+        .toHaveBeenCalledWith('You won!', jasmine.anything(), jasmine.anything());
+    });
 
-    const clicked = component.board.fields[0][0];
-    component.onClick(clicked);
+    it('should spawn game lost snack bar', () => {
+      const fakeMatSnackBar = TestBed.inject(MatSnackBar);
+      spyOn(fakeMatSnackBar, 'open').and.callThrough();
 
-    expect(clicked.isChecked).toBe(true);
-  });
+      const template = [
+        [' ', ' ', ' '],
+        [' ', 'B', ' '],
+        [' ', ' ', ' ']
+      ];
+      const bombPlanter = new FakeBombPlanter(template);
+      const board = new Board(bombPlanter);
+      component.useBoard(board);
 
-  it('should show hints on checked buttons', () => {
-    component.ngOnInit();
-    const difficultyService = TestBed.inject(DifficultyService);
-    difficultyService.newDifficulty(new Difficulty(5, 24));
-    fixture.detectChanges();
+      const clicked = component.board.fields[1][1];
+      component.onClick(clicked);
+      fixture.detectChanges();
 
-    const clicked = component.board.fields[0][0];
-    component.onClick(clicked);
-    expect(clicked.value).toBe(3);
+      expect(fakeMatSnackBar.open)
+        .toHaveBeenCalledWith('Game over', jasmine.anything(), jasmine.anything());
+    });
 
-    fixture.detectChanges();
+    it('should not spawn snack bar when game continues', () => {
+      const fakeMatSnackBar = TestBed.inject(MatSnackBar);
+      spyOn(fakeMatSnackBar, 'open').and.callThrough();
+      fixture.detectChanges();
 
-    const clickedButton = fixture.debugElement
-      .query(By.css('.field')).nativeElement as HTMLButtonElement;
-    expect(clickedButton.innerHTML).toContain('3');
-  });
+      const clicked = component.board.fields[0][0];
+      component.onClick(clicked);
 
-  it('should set flagService counter on new game', () => {
-    const flagService = TestBed.inject(FlagService);
-    const difficultyService = TestBed.inject(DifficultyService);
+      fixture.detectChanges();
 
-    difficultyService.newDifficulty(new Difficulty(5, 5));
-    component.ngOnInit();
+      expect(fakeMatSnackBar.open).not.toHaveBeenCalled();
+    });
 
-    flagService.counter.subscribe(counter => expect(counter).toBe(5))
-      .unsubscribe();
-  });
+    it('should dismiss snack bars on new difficulty', () => {
+      const difficultyService = TestBed.inject(DifficultyService);
+      const fakeMatSnackBar = TestBed.inject(MatSnackBar);
+      spyOn(fakeMatSnackBar, 'dismiss').and.callThrough();
+      fixture.detectChanges();
 
-  it('should handle right click events', () => {
-    const difficultyService = TestBed.inject(DifficultyService);
-    difficultyService.newDifficulty(new Difficulty(3, 3));
-    component.ngOnInit();
-    fixture.detectChanges();
+      // Start new game, dismiss snackbars
+      difficultyService.newDifficulty(new Difficulty(7, 7));
 
-    const flagged = component.board.fields[0][0];
-    component.onRightClick(flagged);
-    expect(flagged.isFlagged).toBe(true);
+      fixture.detectChanges();
 
-    fixture.detectChanges();
-
-    const flaggedButton = fixture.debugElement
-      .query(By.css('.field')).nativeElement as HTMLButtonElement;
-    const buttonContent = flaggedButton.firstChild as HTMLElement;
-
-    expect(buttonContent.classList).toContain('material-icons');
-  });
-
-  it('should update flagService counter', () => {
-    const flagService = TestBed.inject(FlagService);
-    const difficultyService = TestBed.inject(DifficultyService);
-
-    difficultyService.newDifficulty(new Difficulty(4, 4));
-    component.ngOnInit();
-    const flagged = component.board.fields[0][0];
-    component.onRightClick(flagged);
-
-    flagService.counter.subscribe(counter => expect(counter).toBe(3))
-      .unsubscribe();
-  });
-
-  it('should spawn game won snack bar', () => {
-    const difficultyService = TestBed.inject(DifficultyService);
-    difficultyService.newDifficulty(new Difficulty(1, 0));
-    const fakeMatSnackBar = TestBed.inject(MatSnackBar);
-    spyOn(fakeMatSnackBar, 'open').and.callThrough();
-    fixture.detectChanges();
-
-    const clicked = component.board.fields[0][0];
-    component.onClick(clicked);
-
-    fixture.detectChanges();
-
-    expect(fakeMatSnackBar.open)
-      .toHaveBeenCalledWith('You won!', jasmine.anything(), jasmine.anything());
-  });
-
-  it('should spawn game lost snack bar', () => {
-    const fakeMatSnackBar = TestBed.inject(MatSnackBar);
-    spyOn(fakeMatSnackBar, 'open').and.callThrough();
-
-    const template = [
-      [' ', ' ', ' '],
-      [' ', 'B', ' '],
-      [' ', ' ', ' ']
-    ];
-    const bombPlanter = new FakeBombPlanter(template);
-    const board = new Board(bombPlanter);
-
-    component.useBoard(board);
-
-    const clicked = component.board.fields[1][1];
-    component.onClick(clicked);
-
-    fixture.detectChanges();
-
-    expect(fakeMatSnackBar.open)
-      .toHaveBeenCalledWith('Game over', jasmine.anything(), jasmine.anything());
-  });
-
-  it('should not spawn snack bar when game continues', () => {
-    const difficultyService = TestBed.inject(DifficultyService);
-    difficultyService.newDifficulty(new Difficulty(2, 2));
-    const fakeMatSnackBar = TestBed.inject(MatSnackBar);
-    spyOn(fakeMatSnackBar, 'open').and.callThrough();
-    fixture.detectChanges();
-
-    const clicked = component.board.fields[0][0];
-    component.onClick(clicked);
-
-    fixture.detectChanges();
-
-    expect(fakeMatSnackBar.open).not.toHaveBeenCalled();
-  });
-
-  it('should dismiss snack bars', () => {
-    const difficultyService = TestBed.inject(DifficultyService);
-    const fakeMatSnackBar = TestBed.inject(MatSnackBar);
-    spyOn(fakeMatSnackBar, 'dismiss').and.callThrough();
-    fixture.detectChanges();
-
-    // Start new game, dismiss snackbars
-    difficultyService.newDifficulty(new Difficulty(7, 7));
-
-    fixture.detectChanges();
-
-    expect(fakeMatSnackBar.dismiss).toHaveBeenCalled();
+      expect(fakeMatSnackBar.dismiss).toHaveBeenCalled();
+    });
   });
 });
