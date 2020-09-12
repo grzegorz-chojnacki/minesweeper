@@ -39,7 +39,13 @@ describe('NamedDifficulty', () => {
     expect(() => new NamedDifficulty('', 10, 10)).toThrow();
   });
 
-  it('should match difficulty to named difficulty preset', () => {
+  it('should have initial difficulty from presets', () => {
+    const presets = NamedDifficulty.presets;
+    const initial = NamedDifficulty.initial;
+    expect(presets.includes(initial)).toBe(true);
+  });
+
+  it('should match difficulty to named difficulty preset if it exists', () => {
     const preset = NamedDifficulty.initial;
     const difficulty = new Difficulty(
       preset.boardDimension,
