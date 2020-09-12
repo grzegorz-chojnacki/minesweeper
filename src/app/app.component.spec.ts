@@ -45,10 +45,6 @@ describe('AppComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it(`should have as title 'minesweeper'`, () => {
-    expect(component.title).toEqual('minesweeper');
-  });
-
   it('should display correct number of flags if set', () => {
     const newFlagCount = 7;
     const flagService = TestBed.inject(FlagService);

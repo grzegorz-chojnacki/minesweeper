@@ -14,7 +14,6 @@ import { SettingsService } from './services/settings.service';
 })
 export class AppComponent implements OnInit {
   @ViewChild('sidenav') public sidenav: MatSidenav;
-  public title = 'minesweeper';
   public flagCounter: string;
   public sidenavAutoHide: boolean;
 
