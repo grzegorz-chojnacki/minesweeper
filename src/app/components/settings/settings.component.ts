@@ -38,6 +38,7 @@ export class SettingsComponent implements OnInit {
   }
 
   private matchAndSetPresetName(): void {
+    this.settingsForm.updateValueAndValidity({ emitEvent: false });
     const formDifficulty = this.settingsForm.value;
     const matched = NamedDifficulty.matchToPreset(formDifficulty);
     this.settingsForm.patchValue({ name: matched.name }, { emitEvent: false });
@@ -99,8 +100,8 @@ export class SettingsComponent implements OnInit {
      this.settingsForm.get('numberOfBombs')]
     .map(input => input.valueChanges
       .subscribe(() => {
-        this.refreshValidators();
         this.matchAndSetPresetName();
+        this.refreshValidators();
     }));
 
     // Settings
