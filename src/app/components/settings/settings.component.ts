@@ -37,16 +37,13 @@ export class SettingsComponent implements OnInit {
     this.settingsService.setFieldSize(event.value);
   }
 
-  // Try to match difficulty preset with boardDimension & numberOfBombs values
-  private updateSelect(): void {
+  private matchAndSetPresetName(): void {
     const formDifficulty = this.settingsForm.value;
     const matched = NamedDifficulty.matchToPreset(formDifficulty);
-
     this.settingsForm.patchValue({ name: matched.name }, { emitEvent: false });
   }
 
-  // Set boardDimension & numberOfBombs to values from selected preset
-  private updateInputs(): void {
+  private setPresetValues(): void {
     const formDifficulty = this.settingsForm.value;
     const matched = this.presetList
       .find(preset => preset.name === formDifficulty.name);
@@ -63,7 +60,6 @@ export class SettingsComponent implements OnInit {
     return this.settingsForm.get('boardDimension').value ** 2 - 1;
   }
 
-  // Indicate error on both inputs, when boarDimension is invalid
   private settingsFormValidator(fg: FormGroup): ValidationErrors {
     if (fg.get('boardDimension').invalid) {
       fg.get('numberOfBombs').setErrors({ undefinedDimension: true });
@@ -72,7 +68,6 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  // Dynamic error messages
   public getNumberOfBombsError(): string {
     if (this.settingsForm.get('boardDimension').invalid) {
       return 'Board dimension must be valid';
@@ -99,7 +94,7 @@ export class SettingsComponent implements OnInit {
     this.settingsForm.get('name').valueChanges
       .subscribe(() => {
         this.refreshValidators();
-        this.updateInputs();
+        this.setPresetValues();
       });
 
     // Inputs
@@ -108,7 +103,7 @@ export class SettingsComponent implements OnInit {
     .map(input => input.valueChanges
       .subscribe(() => {
         this.refreshValidators();
-        this.updateSelect();
+        this.matchAndSetPresetName();
     }));
 
     // Settings
