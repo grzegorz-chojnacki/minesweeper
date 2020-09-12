@@ -4,7 +4,7 @@ import { FormBuilder, Validators, FormGroup,
 import { MatSliderChange } from '@angular/material/slider';
 
 import { Difficulty, difficulties,
-         customDifficulty, NamedDifficulty } from 'src/app/classes/difficulty';
+         customDifficulty } from 'src/app/classes/difficulty';
 import { DifficultyService } from 'src/app/services/difficulty.service';
 import { SettingsService } from 'src/app/services/settings.service';
 
@@ -40,31 +40,22 @@ export class SettingsComponent implements OnInit {
 
   // Try to match difficulty preset with boardDimension & numberOfBombs values
   private updateSelect(): void {
-    const formDifficulty = this.getSettingsFormValue();
-
+    const formDifficulty = this.settingsForm.value;
     const matched = Difficulty.matchToPreset(formDifficulty);
 
     this.settingsForm.patchValue({ name: matched.name }, { emitEvent: false });
   }
 
-  private getSettingsFormValue(): NamedDifficulty {
-    return {
-      name: this.settingsForm.get('name').value,
-      boardDimension: this.settingsForm.get('boardDimension').value,
-      numberOfBombs: this.settingsForm.get('numberOfBombs').value,
-    };
-  }
-
   // Set boardDimension & numberOfBombs to values from selected preset
   private updateInputs(): void {
-    const difficultyName = this.settingsForm.get('name').value;
-    const preset = this.difficultyList
-      .find(difficulty => difficulty.name === difficultyName);
+    const formDifficulty = this.settingsForm.value;
+    const matched = this.difficultyList
+      .find(preset => preset.name === formDifficulty.name);
 
-    if (preset !== customDifficulty) {
+    if (matched !== customDifficulty) {
       this.settingsForm.patchValue({
-        boardDimension: preset.boardDimension,
-        numberOfBombs: preset.numberOfBombs
+        boardDimension: matched.boardDimension,
+        numberOfBombs: matched.numberOfBombs
       }, { emitEvent: false });
     }
   }
@@ -101,18 +92,15 @@ export class SettingsComponent implements OnInit {
       Validators.max(this.maxNumberOfBombs)
     ]);
 
-    this.settingsForm.get('boardDimension')
-      .updateValueAndValidity({ emitEvent: false });
-    this.settingsForm.get('numberOfBombs')
-      .updateValueAndValidity({ emitEvent: false });
+    this.settingsForm.updateValueAndValidity({ emitEvent: false });
   }
 
   private setupSubscriptions(): void {
     // Select
     this.settingsForm.get('name').valueChanges
       .subscribe(() => {
-        this.updateInputs();
         this.refreshValidators();
+        this.updateInputs();
       });
 
     // Inputs
@@ -120,8 +108,8 @@ export class SettingsComponent implements OnInit {
      this.settingsForm.get('numberOfBombs')]
     .map(input => input.valueChanges
       .subscribe(() => {
-        this.updateSelect();
         this.refreshValidators();
+        this.updateSelect();
     }));
 
     // Settings
