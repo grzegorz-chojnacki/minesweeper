@@ -13,33 +13,16 @@ import { SettingsService } from 'src/app/services/settings.service';
 import { DifficultyService } from 'src/app/services/difficulty.service';
 import { BombPercentagePipe } from 'src/app/pipes/bomb-percentage.pipe';
 import { Difficulty, NamedDifficulty } from 'src/app/classes/difficulty';
-import { BehaviorSubject } from 'rxjs';
 import { By } from '@angular/platform-browser';
-
-class SettingsServiceStub {
-  public readonly minFieldSize = 30;
-  public readonly maxFieldSize = 60;
-  public fieldSize = new BehaviorSubject<number>(this.minFieldSize);
-  public sidenavAutoHide = new BehaviorSubject<boolean>(true);
-
-  public setFieldSize = (n: number): void => this.fieldSize.next(n);
-  public setSidenavAutoHide = (b: boolean): void =>
-    this.sidenavAutoHide.next(b)
-}
-
-class DifficultyServiceStub {
-  public initial = new Difficulty(7, 7);
-  public difficulty = new BehaviorSubject<Difficulty>(this.initial);
-  public newDifficulty = (d: Difficulty): void => this.difficulty.next(d);
-}
+import { FakeStorage } from 'src/app/services/fakeStorage';
 
 describe('SettingsComponent', () => {
   let component: SettingsComponent;
   let fixture: ComponentFixture<SettingsComponent>;
 
   beforeEach(async(() => {
-    const settingsServiceStub = new SettingsServiceStub();
-    const difficultyServiceStub = new DifficultyServiceStub();
+    const settingsServiceStub = new SettingsService(new FakeStorage());
+    const difficultyServiceStub = new DifficultyService(new FakeStorage());
 
     TestBed.configureTestingModule({
       imports: [

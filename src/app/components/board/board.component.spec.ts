@@ -7,31 +7,26 @@ import { BoardComponent } from './board.component';
 import { SettingsService } from 'src/app/services/settings.service';
 import { DifficultyService } from 'src/app/services/difficulty.service';
 import { FlagService } from 'src/app/services/flag.service';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { Difficulty } from 'src/app/classes/difficulty';
 import { PrintFieldPipe } from 'src/app/pipes/print-field.pipe';
 import { Board } from 'src/app/classes/board';
 import { FakeBombPlanter } from 'src/app/classes/bombPlanter';
 import { Field } from 'src/app/classes/field';
-
-class SettingsServiceStub {
-  public readonly fieldSize = new BehaviorSubject<number>(30);
-  public setFieldSize = (n: number): void => this.fieldSize.next(n);
-}
-
-class DifficultyServiceStub {
-  public readonly initial = new Difficulty(7, 7);
-  public readonly difficulty = new BehaviorSubject(this.initial);
-  public newDifficulty = (d: Difficulty): void => this.difficulty.next(d);
-}
+import { FakeStorage } from 'src/app/services/fakeStorage';
 
 describe('BoardComponent', () => {
   let component: BoardComponent;
   let fixture: ComponentFixture<BoardComponent>;
 
   beforeEach(async(() => {
-    const difficultyServiceStub = new DifficultyServiceStub();
-    const settingsServiceStub = new SettingsServiceStub();
+    const difficultyServiceStub = new DifficultyService(new FakeStorage());
+    const settingsServiceStub = new SettingsService(new FakeStorage());
+    const matSnackBarStub = {
+      open: (message: string, action: string, config: MatSnackBarConfig) =>
+        ({ onAction: () => of() }),
+      dismiss: () => {}
+    };
 
     TestBed.configureTestingModule({
       declarations: [
@@ -39,13 +34,7 @@ describe('BoardComponent', () => {
         PrintFieldPipe
       ],
       providers: [
-        { provide: MatSnackBar, useValue: {
-          open: (message: string,
-                 action: string,
-                 config: MatSnackBarConfig) => {
-            return { onAction: () => of() };
-          },
-          dismiss: () => {} }},
+        { provide: MatSnackBar, useValue: matSnackBarStub },
         { provide: SettingsService, useValue: settingsServiceStub },
         { provide: DifficultyService, useValue: difficultyServiceStub },
         { provide: FlagService },
