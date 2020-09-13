@@ -51,13 +51,12 @@ describe('BoardComponent', () => {
         { provide: FlagService },
         { provide: ChangeDetectorRef }
       ]
+    }).compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(BoardComponent);
+        component = fixture.componentInstance;
     });
   }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(BoardComponent);
-    component = fixture.componentInstance;
-  });
 
   describe('Initialization behaviour', () => {
     it('should create', () => {

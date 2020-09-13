@@ -61,14 +61,12 @@ describe('SettingsComponent', () => {
         { provide: SettingsService, useValue: settingsServiceStub },
         { provide: DifficultyService, useValue: difficultyServiceStub }
       ]
-    }).compileComponents();
+    }).compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(SettingsComponent);
+        component = fixture.componentInstance;
+    });
   }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SettingsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
 
   describe('Initialization behaviour', () => {
     it('should create', () => {
