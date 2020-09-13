@@ -11,7 +11,7 @@ export class DifficultyService {
     JSON.parse(this.storage.getItem('difficulty'))
     || NamedDifficulty.initial;
 
-  public readonly difficultySource = new BehaviorSubject(this.initial);
+  private readonly difficultySource = new BehaviorSubject(this.initial);
   public get difficulty(): Observable<Difficulty> {
     return this.difficultySource.asObservable();
   }
