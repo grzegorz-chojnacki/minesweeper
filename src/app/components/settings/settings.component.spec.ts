@@ -16,7 +16,7 @@ import { Difficulty, NamedDifficulty } from 'src/app/classes/difficulty';
 import { BehaviorSubject } from 'rxjs';
 import { By } from '@angular/platform-browser';
 
-class SettingsServiceStub implements Partial<SettingsService> {
+class SettingsServiceStub {
   public readonly minFieldSize = 30;
   public readonly maxFieldSize = 60;
   public fieldSize = new BehaviorSubject<number>(this.minFieldSize);
@@ -26,20 +26,21 @@ class SettingsServiceStub implements Partial<SettingsService> {
   public setSidenavAutoHide = (b: boolean): void =>
     this.sidenavAutoHide.next(b)
 }
-const settingsServiceStub = new SettingsServiceStub();
 
-class DifficultyServiceStub implements Partial<DifficultyService> {
+class DifficultyServiceStub {
   public initial = new Difficulty(7, 7);
   public difficulty = new BehaviorSubject<Difficulty>(this.initial);
   public newDifficulty = (d: Difficulty): void => this.difficulty.next(d);
 }
-const difficultyServiceStub = new DifficultyServiceStub();
 
 describe('SettingsComponent', () => {
   let component: SettingsComponent;
   let fixture: ComponentFixture<SettingsComponent>;
 
   beforeEach(async(() => {
+    const settingsServiceStub = new SettingsServiceStub();
+    const difficultyServiceStub = new DifficultyServiceStub();
+
     TestBed.configureTestingModule({
       imports: [
         FormsModule,
