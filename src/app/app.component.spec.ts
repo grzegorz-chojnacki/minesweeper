@@ -35,13 +35,12 @@ describe('AppComponent', () => {
         MatToolbarModule,
         MatIconModule
       ]
-    }).compileComponents();
+    }).compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(AppComponent);
+        component = fixture.componentInstance;
+    });
   }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AppComponent);
-    component = fixture.componentInstance;
-  });
 
   it('should create the app', () => {
     expect(component).toBeTruthy();
