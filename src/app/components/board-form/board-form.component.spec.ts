@@ -50,12 +50,12 @@ describe('BoardFormComponent', () => {
     it('should have full list of difficulty names', () => {
       component.ngOnInit();
 
-      const difficultyNamesLength = component.presetNames.length;
+      const presetNamesLength = component.presetNames.length;
       const expectedLength = [
         NamedDifficulty.custom, ...NamedDifficulty.presets
       ].length;
 
-      expect(difficultyNamesLength).toBe(expectedLength);
+      expect(presetNamesLength).toBe(expectedLength);
     });
 
     it('should init inputs with initial values', () => {
@@ -119,7 +119,7 @@ describe('BoardFormComponent', () => {
     });
   });
 
-  describe('Error generator behaviour', () => {
+  describe('Number of bombs error generator behaviour', () => {
     it('should return board dimension error', () => {
       component.ngOnInit();
       component.boardForm.patchValue({ boardDimension: 0 });
@@ -218,7 +218,9 @@ describe('BoardFormComponent', () => {
 
     it('should set preset name to matched preset', () => {
       component.ngOnInit();
-      const example = NamedDifficulty.presets[1];
+      component.boardForm.patchValue({ boardDimension: 1, numberOfBombs: 0 });
+
+      const example = NamedDifficulty.initial;
       component.boardForm.patchValue({
         boardDimension: example.boardDimension,
         numberOfBombs: example.numberOfBombs
@@ -239,7 +241,7 @@ describe('BoardFormComponent', () => {
       expect(numberOfBombs).toBe(example.numberOfBombs);
     });
 
-    it('should not change inputs upon selecting custom difficulty', () => {
+    it('should not change inputs when selecting custom difficulty', () => {
       component.ngOnInit();
       const example = NamedDifficulty.presets[1];
       component.boardForm.patchValue({
