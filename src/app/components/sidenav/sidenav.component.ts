@@ -6,8 +6,8 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
   styleUrls: ['./sidenav.component.scss']
 })
 export class SidenavComponent implements OnInit {
-  @Output() public passThrough = new EventEmitter();
+  @Output() public formSubmitEvent = new EventEmitter<void>();
 
   constructor() { }
-  ngOnInit(): void { }
+  public ngOnInit(): void { }
 }
