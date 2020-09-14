@@ -20,10 +20,6 @@ export class AppComponent implements OnInit {
   constructor(private flagService: FlagService,
               private settingsService: SettingsService) { }
 
-  private buildFlagCounter(count: number): string {
-    return (count !== undefined) ? `// Flags: ${count}` : '';
-  }
-
   public ngOnInit(): void {
     this.flagService.counter.subscribe(count => {
       this.flagCounter = this.buildFlagCounter(count);
@@ -32,6 +28,10 @@ export class AppComponent implements OnInit {
     this.settingsService.sidenavAutoHide.subscribe(option => {
       this.sidenavAutoHide = option;
     });
+  }
+
+  private buildFlagCounter(count: number): string {
+    return (count !== undefined) ? `// Flags: ${count}` : '';
   }
 
   public sidenavClose(): void {
