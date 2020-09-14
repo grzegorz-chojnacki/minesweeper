@@ -2,18 +2,18 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { ChangeDetectorRef } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import { of } from 'rxjs';
 
 import { BoardComponent } from './board.component';
 import { SettingsService } from 'src/app/services/settings.service';
 import { DifficultyService } from 'src/app/services/difficulty.service';
+import { FakeStorage } from 'src/app/services/fakeStorage';
 import { FlagService } from 'src/app/services/flag.service';
-import { of } from 'rxjs';
-import { Difficulty } from 'src/app/classes/difficulty';
 import { PrintFieldPipe } from 'src/app/pipes/print-field.pipe';
+import { Difficulty } from 'src/app/classes/difficulty';
+import { Field } from 'src/app/classes/field';
 import { Board } from 'src/app/classes/board';
 import { FakeBombPlanter } from 'src/app/classes/bombPlanter';
-import { Field } from 'src/app/classes/field';
-import { FakeStorage } from 'src/app/services/fakeStorage';
 
 describe('BoardComponent', () => {
   let component: BoardComponent;
@@ -248,7 +248,6 @@ describe('BoardComponent', () => {
       spyOn(fakeMatSnackBar, 'dismiss').and.callThrough();
       fixture.detectChanges();
 
-      // Start new game, dismiss snackbars
       difficultyService.newDifficulty(new Difficulty(7, 7));
 
       fixture.detectChanges();
