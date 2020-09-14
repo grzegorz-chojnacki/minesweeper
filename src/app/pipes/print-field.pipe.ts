@@ -12,11 +12,11 @@ export class PrintFieldPipe implements PipeTransform {
     return `<span class="material-icons field-icon">${iconName}</span>`;
   }
 
-  private colored(value: number): string {
-    return `<span class="color-${value}">${value}</span>`;
+  public transform(value: number, isFlagged: boolean, isChecked: boolean): string {
+    return (isChecked)
+      ? this.asChecked(value)
+      : this.asNotChecked(isFlagged);
   }
-
-  // Used when the field has been checked and you can view its contents
   private asChecked(value: number): string {
     switch (value) {
       case Field.bomb:
@@ -28,16 +28,13 @@ export class PrintFieldPipe implements PipeTransform {
     }
   }
 
-  // Used when the field hasn't been checked and you can only view if it's flagged
+  private colored(value: number): string {
+    return `<span class="color-${value}">${value}</span>`;
+  }
+
   private asNotChecked(isFlagged: boolean): string {
     return (isFlagged)
       ? PrintFieldPipe.flagIcon
       : '';
-  }
-
-  public transform(value: number, isFlagged: boolean, isChecked: boolean): string {
-    return (isChecked)
-      ? this.asChecked(value)
-      : this.asNotChecked(isFlagged);
   }
 }
