@@ -109,8 +109,8 @@ describe('AppComponent', () => {
       component.ngOnInit();
       fixture.detectChanges();
 
-      const settings = getElement('app-sidenav');
-      settings.dispatchEvent(new Event('formSubmitEvent'));
+      const sidenav = getElement('app-sidenav');
+      sidenav.dispatchEvent(new Event('formSubmitEvent'));
 
       expect(component.sidenav.opened).toBe(false);
     });
@@ -121,8 +121,8 @@ describe('AppComponent', () => {
       component.ngOnInit();
       fixture.detectChanges();
 
-      const settings = getElement('app-sidenav');
-      settings.dispatchEvent(new Event('formSubmitEvent'));
+      const sidenav = getElement('app-sidenav');
+      sidenav.dispatchEvent(new Event('formSubmitEvent'));
 
       expect(component.sidenav.opened).toBe(true);
     });
