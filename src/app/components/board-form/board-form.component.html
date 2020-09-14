@@ -1,4 +1,4 @@
-<form [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="boardForm" (ngSubmit)="onSubmit()">
 
   <mat-form-field class="input" appearance="fill">
     <mat-label>Choose difficulty</mat-label>
@@ -13,7 +13,7 @@
     <mat-label>Board dimension</mat-label>
     <input matInput type="number" formControlName="boardDimension"
       [min]="1" [max]="maxBoardDimension">
-    <mat-error *ngIf="settingsForm.get('boardDimension').invalid">
+    <mat-error *ngIf="boardForm.get('boardDimension').invalid">
       Must be between 1 and {{ maxBoardDimension }}
     </mat-error>
   </mat-form-field>
@@ -23,13 +23,13 @@
     <input matInput type="number" formControlName="numberOfBombs"
       [min]="0" [max]="maxNumberOfBombs">
     <mat-hint>
-      {{ settingsForm.value | bombPercentage}}
+      {{ boardForm.value | bombPercentage}}
     </mat-hint>
-    <mat-error *ngIf="settingsForm.invalid">
+    <mat-error *ngIf="boardForm.invalid">
       {{ getNumberOfBombsError() }}
     </mat-error>
   </mat-form-field>
 
   <button class="start-button" type="submit" mat-raised-button color="primary"
-    [disabled]="settingsForm.invalid">Start</button>
+    [disabled]="boardForm.invalid">Start</button>
 </form>
