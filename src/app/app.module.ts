@@ -20,6 +20,8 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { BoardComponent } from './components/board/board.component';
 import { PrintFieldPipe } from './pipes/print-field.pipe';
 import { BombPercentagePipe } from './pipes/bomb-percentage.pipe';
+import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { BoardFormComponent } from './components/board-form/board-form.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { BombPercentagePipe } from './pipes/bomb-percentage.pipe';
     SettingsComponent,
     BoardComponent,
     PrintFieldPipe,
-    BombPercentagePipe
+    BombPercentagePipe,
+    SidenavComponent,
+    BoardFormComponent
   ],
   imports: [
     BrowserModule,

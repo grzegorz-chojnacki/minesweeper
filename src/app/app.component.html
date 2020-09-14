@@ -7,8 +7,7 @@
 </mat-toolbar>
 <mat-sidenav-container hasBackdrop="false">
   <mat-sidenav #sidenav opened="true">
-    <app-settings
-      (formSubmitEvent)="sidenavClose()"></app-settings>
+    <app-sidenav (formSubmitEvent)="sidenavClose()"></app-sidenav>
   </mat-sidenav>
   <mat-sidenav-content (click)="sidenavClose()">
     <app-board></app-board>
