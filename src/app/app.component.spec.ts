@@ -13,8 +13,8 @@ import { SettingsService } from './services/settings.service';
 @Component({ selector: 'app-board' })
 export class MockBoardComponent { }
 
-@Component({ selector: 'app-settings' })
-export class MockSettingsComponent { }
+@Component({ selector: 'app-sidenav' })
+export class MockSidenavComponent { }
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -27,7 +27,7 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent,
         MockBoardComponent,
-        MockSettingsComponent
+        MockSidenavComponent
       ],
       imports: [
         BrowserAnimationsModule,
@@ -109,7 +109,7 @@ describe('AppComponent', () => {
       component.ngOnInit();
       fixture.detectChanges();
 
-      const settings = getElement('app-settings');
+      const settings = getElement('app-sidenav');
       settings.dispatchEvent(new Event('formSubmitEvent'));
 
       expect(component.sidenav.opened).toBe(false);
@@ -121,7 +121,7 @@ describe('AppComponent', () => {
       component.ngOnInit();
       fixture.detectChanges();
 
-      const settings = getElement('app-settings');
+      const settings = getElement('app-sidenav');
       settings.dispatchEvent(new Event('formSubmitEvent'));
 
       expect(component.sidenav.opened).toBe(true);
