@@ -3,8 +3,7 @@
   <mat-form-field class="input" appearance="fill">
     <mat-label>Choose difficulty</mat-label>
     <mat-select formControlName="name">
-      <mat-option *ngFor="let name of presetNames"
-        [value]="name">
+      <mat-option *ngFor="let name of presetNames" [value]="name">
         {{ name }}
       </mat-option>
     </mat-select>
@@ -31,6 +30,6 @@
     </mat-error>
   </mat-form-field>
 
-  <button class="start-button" mat-raised-button color="primary" type="submit"
+  <button class="start-button" type="submit" mat-raised-button color="primary"
     [disabled]="settingsForm.invalid">Start</button>
 </form>
