@@ -1,13 +1,13 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
+import { DifficultyService } from 'src/app/services/difficulty.service';
+import { SettingsService } from 'src/app/services/settings.service';
+import { FlagService } from 'src/app/services/flag.service';
 import { Difficulty } from 'src/app/classes/difficulty';
+import { Field } from 'src/app/classes/field';
 import { Board, GameState } from 'src/app/classes/board';
 import { BombPlanter } from 'src/app/classes/bombPlanter';
-import { Field } from 'src/app/classes/field';
-import { DifficultyService } from 'src/app/services/difficulty.service';
-import { FlagService } from 'src/app/services/flag.service';
-import { SettingsService } from 'src/app/services/settings.service';
 
 @Component({
   selector: 'app-board',
