@@ -1,19 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatSliderModule } from '@angular/material/slider';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
 
 import { SettingsComponent } from './settings.component';
 import { SettingsService } from 'src/app/services/settings.service';
-import { DifficultyService } from 'src/app/services/difficulty.service';
-import { BombPercentagePipe } from 'src/app/pipes/bomb-percentage.pipe';
-import { Difficulty, NamedDifficulty } from 'src/app/classes/difficulty';
-import { By } from '@angular/platform-browser';
 import { FakeStorage } from 'src/app/services/fakeStorage';
 
 describe('SettingsComponent', () => {
@@ -22,28 +14,16 @@ describe('SettingsComponent', () => {
 
   beforeEach(async(() => {
     const settingsServiceStub = new SettingsService(new FakeStorage());
-    const difficultyServiceStub = new DifficultyService(new FakeStorage());
 
     TestBed.configureTestingModule({
       imports: [
         FormsModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
         MatCheckboxModule,
-        MatInputModule,
-        MatDividerModule,
-        MatSliderModule,
-        MatFormFieldModule,
-        MatSelectModule
+        MatSliderModule
       ],
-      declarations: [
-        SettingsComponent,
-        BombPercentagePipe
-      ],
+      declarations: [ SettingsComponent ],
       providers: [
-        { provide: FormBuilder },
-        { provide: SettingsService, useValue: settingsServiceStub },
-        { provide: DifficultyService, useValue: difficultyServiceStub }
+        { provide: SettingsService, useValue: settingsServiceStub }
       ]
     }).compileComponents()
       .then(() => {
@@ -55,17 +35,6 @@ describe('SettingsComponent', () => {
   describe('Initialization behaviour', () => {
     it('should create', () => {
       expect(component).toBeTruthy();
-    });
-
-    it('should have full list of difficulty names', () => {
-      component.ngOnInit();
-
-      const difficultyNamesLength = component.presetNames.length;
-      const expectedLength = [
-        NamedDifficulty.custom, ...NamedDifficulty.presets
-      ].length;
-
-      expect(difficultyNamesLength).toBe(expectedLength);
     });
 
     it('should init field size value', () => {
@@ -90,17 +59,6 @@ describe('SettingsComponent', () => {
       expect(slider['ng-reflect-value']).toBe('32');
     });
 
-    it('should init inputs with initial values', () => {
-      const difficultyService = TestBed.inject(DifficultyService);
-      const expected = difficultyService.initial;
-
-      component.ngOnInit();
-
-      const difficulty: Difficulty = component.settingsForm.value;
-      expect(difficulty.boardDimension).toEqual(expected.boardDimension);
-      expect(difficulty.numberOfBombs).toEqual(expected.numberOfBombs);
-    });
-
     it('should init sidenav auto hide setting', () => {
       const settingsService = TestBed.inject(SettingsService);
       settingsService.setSidenavAutoHide(false);
@@ -108,101 +66,6 @@ describe('SettingsComponent', () => {
       component.ngOnInit();
 
       expect(component.sidenavAutoHide).toBe(false);
-    });
-  });
-
-  describe('Form validation behaviour', () => {
-    it('should mark number of bombs as invalid if value is below 0', () => {
-      component.ngOnInit();
-      component.settingsForm
-        .patchValue({ boardDimension: 1, numberOfBombs: -1 });
-
-      const numberOfBombs = component.settingsForm.get('numberOfBombs');
-      expect(numberOfBombs.invalid).toBe(true);
-    });
-
-    it('should mark number of bombs as invalid if value is above/eq max', () => {
-      component.ngOnInit();
-      component.settingsForm
-        .patchValue({ boardDimension: 1, numberOfBombs: 1 });
-
-      const numberOfBombs = component.settingsForm.get('numberOfBombs');
-      expect(numberOfBombs.invalid).toBe(true);
-    });
-
-    it('should mark number of bombs as invalid if board dimension is invalid', () => {
-      component.ngOnInit();
-      component.settingsForm
-        .patchValue({ boardDimension: 0, numberOfBombs: 1 });
-
-      const numberOfBombs = component.settingsForm.get('numberOfBombs');
-      expect(numberOfBombs.invalid).toBe(true);
-    });
-
-    it('should mark board dimension as invalid if value is below/eq 0', () => {
-      component.ngOnInit();
-      component.settingsForm
-        .patchValue({ boardDimension: 0, numberOfBombs: 1 });
-
-      const boardDimension = component.settingsForm.get('boardDimension');
-      expect(boardDimension.invalid).toBe(true);
-    });
-
-    it('should mark board dimension as invalid if value is above max', () => {
-      component.ngOnInit();
-      component.settingsForm.patchValue({
-        boardDimension: Difficulty.maxBoardDimension + 1,
-        numberOfBombs: 1
-      });
-
-      const boardDimension = component.settingsForm.get('boardDimension');
-      expect(boardDimension.invalid).toBe(true);
-    });
-  });
-
-  describe('Error generator behaviour', () => {
-    it('should return board dimension error', () => {
-      component.ngOnInit();
-      component.settingsForm.patchValue({ boardDimension: 0 });
-
-      const error = component.getNumberOfBombsError();
-      expect(error).toContain('dimension');
-    });
-
-    it('should return number of bombs error when bombs are unset', () => {
-      component.ngOnInit();
-      component.settingsForm
-        .patchValue({ boardDimension: 2, numberOfBombs: undefined });
-
-      const error = component.getNumberOfBombsError();
-      expect(error).toContain('between 0 and 3');
-    });
-
-    it('should return number of bombs out of bounds error when below 0', () => {
-      component.ngOnInit();
-      component.settingsForm
-        .patchValue({ boardDimension: 2, numberOfBombs: -1 });
-
-      const error = component.getNumberOfBombsError();
-      expect(error).toContain('between 0 and 3');
-    });
-
-    it('should return number of bombs out of bounds error when above max', () => {
-      component.ngOnInit();
-      component.settingsForm
-        .patchValue({ boardDimension: 2, numberOfBombs: 4 });
-
-      const error = component.getNumberOfBombsError();
-      expect(error).toContain('between 0 and 3');
-    });
-
-    it('should return number of bombs error when it can only be set to 1', () => {
-      component.ngOnInit();
-      component.settingsForm
-        .patchValue({ boardDimension: 1, numberOfBombs: 1 });
-
-      const error = component.getNumberOfBombsError();
-      expect(error).toContain('Must be 0');
     });
   });
 
@@ -221,7 +84,7 @@ describe('SettingsComponent', () => {
     });
   });
 
-  describe('Data propagation behaviour', () => {
+  describe('Settings interaction behaviour', () => {
     it('should update field size on slider change event', () => {
       const settingsService = TestBed.inject(SettingsService);
 
@@ -233,45 +96,6 @@ describe('SettingsComponent', () => {
         .unsubscribe();
     });
 
-    it('should prevent form submition if it is invalid', () => {
-      const difficultyService = TestBed.inject(DifficultyService);
-      spyOn(difficultyService, 'newDifficulty').and.callThrough();
-      component.ngOnInit();
-
-      component.settingsForm
-        .patchValue({ boardDimension: 10, numberOfBombs: 100 });
-
-      component.onSubmit();
-      expect(difficultyService.newDifficulty).not.toHaveBeenCalled();
-    });
-
-    it('should set new difficulty on form submit', () => {
-      const difficultyService = TestBed.inject(DifficultyService);
-      const expected = new Difficulty(13, 37);
-      component.ngOnInit();
-
-      component.settingsForm.patchValue({
-        boardDimension: expected.boardDimension,
-        numberOfBombs: expected.numberOfBombs
-      });
-
-      component.onSubmit();
-      difficultyService.difficulty.subscribe(difficulty => {
-        expect(difficulty.boardDimension).toEqual(expected.boardDimension);
-        expect(difficulty.numberOfBombs).toEqual(expected.numberOfBombs);
-      }).unsubscribe();
-    });
-
-    it('should emit event on form submit', () => {
-      spyOn(component.formSubmitEvent, 'emit');
-      component.ngOnInit();
-      component.settingsForm
-        .patchValue({ boardDimension: 1, numberOfBombs: 0 });
-
-      component.onSubmit();
-      expect(component.formSubmitEvent.emit).toHaveBeenCalled();
-    });
-
     it('should update sidenav auto hide setting', () => {
       const settingsService = TestBed.inject(SettingsService);
       spyOn(settingsService, 'setSidenavAutoHide');
@@ -280,58 +104,6 @@ describe('SettingsComponent', () => {
       component.onCheckboxChange();
 
       expect(settingsService.setSidenavAutoHide).toHaveBeenCalled();
-    });
-  });
-
-  describe('Form fields synchronization behaviour', () => {
-    it('should set select to custom preset if it does not match any', () => {
-      component.ngOnInit();
-      component.settingsForm
-        .patchValue({ boardDimension: 1, numberOfBombs: 0 });
-
-      const selectedOption = component.settingsForm.get('name').value;
-      expect(selectedOption).toBe(NamedDifficulty.custom.name);
-    });
-
-    it('should set preset name to matched preset', () => {
-      component.ngOnInit();
-      const example = NamedDifficulty.presets[1];
-      component.settingsForm.patchValue({
-        boardDimension: example.boardDimension,
-        numberOfBombs: example.numberOfBombs
-      });
-
-      const selectedPreset = component.settingsForm.get('name').value;
-      expect(selectedPreset).toBe(example.name);
-    });
-
-    it('should set inputs to values from selected preset', () => {
-      component.ngOnInit();
-      const example = NamedDifficulty.presets[1];
-      component.settingsForm.patchValue({ name: example.name });
-
-      const boardDimension = component.settingsForm.get('boardDimension').value;
-      const numberOfBombs = component.settingsForm.get('numberOfBombs').value;
-      expect(boardDimension).toBe(example.boardDimension);
-      expect(numberOfBombs).toBe(example.numberOfBombs);
-    });
-
-    it('should not change inputs upon selecting custom difficulty', () => {
-      component.ngOnInit();
-      const example = NamedDifficulty.presets[1];
-      component.settingsForm.patchValue({
-        boardDimension: example.boardDimension,
-        numberOfBombs: example.numberOfBombs
-      });
-
-      component.settingsForm.patchValue({
-        name: NamedDifficulty.custom.name,
-      });
-
-      const form = component.settingsForm.value;
-      expect(form.boardDimension).toBe(example.boardDimension);
-      expect(form.numberOfBombs).toBe(example.numberOfBombs);
-      expect(form.name).toBe(NamedDifficulty.custom.name);
     });
   });
 });
