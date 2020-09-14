@@ -76,8 +76,7 @@ describe('BoardFormComponent', () => {
       component.boardForm
         .patchValue({ boardDimension: 1, numberOfBombs: -1 });
 
-      const numberOfBombs = component.boardForm.get('numberOfBombs');
-      expect(numberOfBombs.invalid).toBe(true);
+      expect(component.numberOfBombsInput.invalid).toBe(true);
     });
 
     it('should mark number of bombs as invalid if value is above/eq max', () => {
@@ -85,8 +84,7 @@ describe('BoardFormComponent', () => {
       component.boardForm
         .patchValue({ boardDimension: 1, numberOfBombs: 1 });
 
-      const numberOfBombs = component.boardForm.get('numberOfBombs');
-      expect(numberOfBombs.invalid).toBe(true);
+      expect(component.numberOfBombsInput.invalid).toBe(true);
     });
 
     it('should mark number of bombs as invalid if board dimension is invalid', () => {
@@ -94,8 +92,7 @@ describe('BoardFormComponent', () => {
       component.boardForm
         .patchValue({ boardDimension: 0, numberOfBombs: 1 });
 
-      const numberOfBombs = component.boardForm.get('numberOfBombs');
-      expect(numberOfBombs.invalid).toBe(true);
+      expect(component.numberOfBombsInput.invalid).toBe(true);
     });
 
     it('should mark board dimension as invalid if value is below/eq 0', () => {
@@ -103,8 +100,7 @@ describe('BoardFormComponent', () => {
       component.boardForm
         .patchValue({ boardDimension: 0, numberOfBombs: 1 });
 
-      const boardDimension = component.boardForm.get('boardDimension');
-      expect(boardDimension.invalid).toBe(true);
+      expect(component.boardDimensionInput.invalid).toBe(true);
     });
 
     it('should mark board dimension as invalid if value is above max', () => {
@@ -114,8 +110,7 @@ describe('BoardFormComponent', () => {
         numberOfBombs: 1
       });
 
-      const boardDimension = component.boardForm.get('boardDimension');
-      expect(boardDimension.invalid).toBe(true);
+      expect(component.boardDimensionInput.invalid).toBe(true);
     });
   });
 
@@ -212,7 +207,7 @@ describe('BoardFormComponent', () => {
       component.boardForm
         .patchValue({ boardDimension: 1, numberOfBombs: 0 });
 
-      const selectedOption = component.boardForm.get('name').value;
+      const selectedOption = component.nameSelect.value;
       expect(selectedOption).toBe(NamedDifficulty.custom.name);
     });
 
@@ -226,7 +221,7 @@ describe('BoardFormComponent', () => {
         numberOfBombs: example.numberOfBombs
       });
 
-      const selectedPreset = component.boardForm.get('name').value;
+      const selectedPreset = component.nameSelect.value;
       expect(selectedPreset).toBe(example.name);
     });
 
@@ -235,8 +230,8 @@ describe('BoardFormComponent', () => {
       const example = NamedDifficulty.presets[1];
       component.boardForm.patchValue({ name: example.name });
 
-      const boardDimension = component.boardForm.get('boardDimension').value;
-      const numberOfBombs = component.boardForm.get('numberOfBombs').value;
+      const boardDimension = component.boardDimensionInput.value;
+      const numberOfBombs = component.numberOfBombsInput.value;
       expect(boardDimension).toBe(example.boardDimension);
       expect(numberOfBombs).toBe(example.numberOfBombs);
     });

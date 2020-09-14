@@ -16,9 +16,9 @@ export class BoardFormComponent implements OnInit {
     NamedDifficulty.matchToPreset(this.difficultyService.initial),
     { validator: this.boardFormValidator });
 
-  public readonly name = this.boardForm.get('name');
-  public readonly boardDimension = this.boardForm.get('boardDimension');
-  public readonly numberOfBombs = this.boardForm.get('numberOfBombs');
+  public readonly nameSelect = this.boardForm.get('name');
+  public readonly boardDimensionInput = this.boardForm.get('boardDimension');
+  public readonly numberOfBombsInput = this.boardForm.get('numberOfBombs');
 
   public readonly maxBoardDimension = Difficulty.maxBoardDimension;
   public readonly presetList = [
@@ -37,9 +37,9 @@ export class BoardFormComponent implements OnInit {
   }
 
   public getNumberOfBombsError(): string {
-    if (this.boardDimension.invalid) {
+    if (this.boardDimensionInput.invalid) {
       return 'Board dimension must be valid';
-    } else if (this.boardDimension.value === 1) {
+    } else if (this.boardDimensionInput.value === 1) {
       return 'Must be 0';
     } else {
       return `Must be between 0 and ${this.getMaxNumberOfBombs()}`;
@@ -47,7 +47,7 @@ export class BoardFormComponent implements OnInit {
   }
 
   public getMaxNumberOfBombs(): number {
-    return this.boardDimension.value ** 2 - 1;
+    return this.boardDimensionInput.value ** 2 - 1;
   }
 
   public onSubmit(): void {
@@ -66,9 +66,12 @@ export class BoardFormComponent implements OnInit {
   }
 
   private setupFormSubscriptions(): void {
-    this.name.valueChanges.subscribe(() => this.updateInputValues());
-    this.numberOfBombs.valueChanges.subscribe(() => this.updatePresetName());
-    this.boardDimension.valueChanges.subscribe(() => this.updatePresetName());
+    this.nameSelect.valueChanges
+      .subscribe(() => this.updateInputValues());
+    this.numberOfBombsInput.valueChanges
+      .subscribe(() => this.updatePresetName());
+    this.boardDimensionInput.valueChanges
+      .subscribe(() => this.updatePresetName());
   }
 
   private updateInputValues(): void {
@@ -83,7 +86,7 @@ export class BoardFormComponent implements OnInit {
   }
 
   private getSelectedPreset(): NamedDifficulty {
-    const selectedName = this.name.value;
+    const selectedName = this.nameSelect.value;
     return this.presetList.find(preset => preset.name === selectedName);
   }
 
@@ -97,7 +100,7 @@ export class BoardFormComponent implements OnInit {
   }
 
   private resetNumberOfBombsValidators(): void {
-    this.numberOfBombs.setValidators([
+    this.numberOfBombsInput.setValidators([
       Validators.required, Validators.min(0),
       Validators.max(this.getMaxNumberOfBombs())
     ]);
@@ -106,8 +109,8 @@ export class BoardFormComponent implements OnInit {
   }
 
   private updateInputsValueAndValidity(): void {
-    this.boardDimension.updateValueAndValidity({ emitEvent: false });
-    this.numberOfBombs.updateValueAndValidity({ emitEvent: false });
+    this.boardDimensionInput.updateValueAndValidity({ emitEvent: false });
+    this.numberOfBombsInput.updateValueAndValidity({ emitEvent: false });
   }
 
   private setInputsToValuesFrom(preset: NamedDifficulty): void {
@@ -120,7 +123,7 @@ export class BoardFormComponent implements OnInit {
   }
 
   private setBoardDimensionValidators(): void {
-    this.boardDimension.setValidators([
+    this.boardDimensionInput.setValidators([
       Validators.required,
       Validators.min(1),
       Validators.max(this.maxBoardDimension)
