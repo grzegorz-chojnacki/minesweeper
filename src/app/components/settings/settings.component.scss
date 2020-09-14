@@ -1,18 +1,9 @@
-:host {
-  text-align: center;
-}
-
 .field-width-container {
   margin: 1em 0;
 }
 
-.input {
-  width: 100%;
-  margin-bottom: 0.5em;
-}
-
-.start-button {
-  margin: 1em 0 0;
+h4 {
+  margin: 0;
 }
 
 /* Make slider grow and fix clipping with pixel width label*/
@@ -21,18 +12,10 @@
   margin-right: 0.5em;
 }
 
-h4 {
-  margin: 0;
-}
-
 .slider-container {
   display: flex;
   align-items: center;
   margin: 0 1em;
-}
-
-.divider {
-  margin: 2em 0;
 }
 
 .checkbox-container {
