@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDividerModule } from '@angular/material/divider';
+import { By } from '@angular/platform-browser';
 
 import { SidenavComponent } from './sidenav.component';
 
@@ -33,5 +34,17 @@ describe('SidenavComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should reemit formSubmitEvent', () => {
+    // component.ngOnInit();
+    // fixture.detectChanges();
+    spyOn(component.formSubmitEvent, 'emit').and.callThrough();
+
+    const boardForm = fixture.debugElement
+      .query(By.css('app-board-form')).nativeElement;
+    boardForm.dispatchEvent(new Event('formSubmitEvent'));
+
+    expect(component.formSubmitEvent.emit).toHaveBeenCalled();
   });
 });
