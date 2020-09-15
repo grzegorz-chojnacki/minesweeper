@@ -63,6 +63,14 @@ describe('BoardComponent', () => {
 
       expect(generatedBoardDifficulty).toBe(expectedBoardDifficulty);
     });
+
+    it('should set field size', () => {
+      const settingsService = TestBed.inject(SettingsService);
+      settingsService.setFieldSize(49);
+
+      component.ngOnInit();
+      expect(component.fieldSize).toBe(49);
+    });
   });
 
   describe('Clicking behaviour', () => {
@@ -85,6 +93,8 @@ describe('BoardComponent', () => {
   });
 
   describe('Template behaviour', () => {
+    const getFirstRow = () => fixture.debugElement
+      .query(By.css('.row-container'));
     const getFirstButton = () => fixture.debugElement.query(By.css('.field'));
     const getBoardContainer = () => fixture.debugElement
       .query(By.css('.board-container'));
@@ -92,12 +102,10 @@ describe('BoardComponent', () => {
     const isSquare = (arr: any[]): boolean =>
       arr.find(row => row.length !== arr.length) !== undefined;
 
-    it('should update field size', () => {
+    it('should sync styles to field size', () => {
       const settingsService = TestBed.inject(SettingsService);
       settingsService.setFieldSize(42);
-
       component.ngOnInit();
-      expect(component.fieldSize).toBe(42);
 
       fixture.detectChanges();
       const styles = getBoardContainer().styles;
@@ -164,6 +172,25 @@ describe('BoardComponent', () => {
 
       const bombButton = getFirstButton().nativeElement;
       expect(bombButton.innerHTML).toContain(PrintFieldPipe.bombIcon);
+    });
+
+    it('should have consistently sized buttons', () => {
+      const settingsService = TestBed.inject(SettingsService);
+      const fieldSize = 31;
+      settingsService.setFieldSize(fieldSize);
+      component.ngOnInit();
+
+      fixture.detectChanges();
+      const firstRow: HTMLElement = getFirstRow().nativeElement;
+      const rowLength = firstRow.children.length;
+      const firstButton: HTMLElement = getFirstButton().nativeElement;
+      fixture.detectChanges();
+
+      // offsetHeight/offsetWidth -> computed element height/width
+      expect(firstRow.offsetHeight).toBe(fieldSize);
+      expect(firstRow.offsetWidth).toBe(fieldSize * rowLength);
+      expect(firstButton.offsetHeight).toBe(fieldSize);
+      expect(firstButton.offsetWidth).toBe(fieldSize);
     });
   });
 
