@@ -9,6 +9,7 @@ import { Component } from '@angular/core';
 import { AppComponent } from './app.component';
 import { FlagService } from './services/flag.service';
 import { SettingsService } from './services/settings.service';
+import { FakeStorage } from './services/fakeStorage';
 
 @Component({ selector: 'app-board' })
 export class MockBoardComponent { }
@@ -23,6 +24,7 @@ describe('AppComponent', () => {
     .query(By.css(selector)).nativeElement;
 
   beforeEach(async(() => {
+    const settingsService = new SettingsService(new FakeStorage());
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
@@ -34,6 +36,10 @@ describe('AppComponent', () => {
         MatSidenavModule,
         MatToolbarModule,
         MatIconModule
+      ],
+      providers: [
+        { provide: FlagService },
+        { provide: SettingsService, useValue: settingsService },
       ]
     }).compileComponents()
       .then(() => {
@@ -48,8 +54,8 @@ describe('AppComponent', () => {
 
   describe('Flag counter behaviour', () => {
     it('should display correct number of flags if set', () => {
-      const newFlagCount = 7;
       const flagService = TestBed.inject(FlagService);
+      const newFlagCount = 7;
       flagService.setCounter(newFlagCount);
 
       component.ngOnInit();
