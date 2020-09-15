@@ -13,7 +13,7 @@ describe('SettingsComponent', () => {
   let fixture: ComponentFixture<SettingsComponent>;
 
   beforeEach(async(() => {
-    const settingsServiceStub = new SettingsService(new FakeStorage());
+    const settingsService = new SettingsService(new FakeStorage());
 
     TestBed.configureTestingModule({
       imports: [
@@ -23,7 +23,7 @@ describe('SettingsComponent', () => {
       ],
       declarations: [ SettingsComponent ],
       providers: [
-        { provide: SettingsService, useValue: settingsServiceStub }
+        { provide: SettingsService, useValue: settingsService }
       ]
     }).compileComponents()
       .then(() => {
