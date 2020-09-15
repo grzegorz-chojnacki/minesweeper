@@ -44,16 +44,14 @@ export class BoardComponent implements OnInit {
   }
 
   private newBoard(difficulty: Difficulty): void {
-    this.snackBarService.dismiss();
     const bombPlanter = new BombPlanter(difficulty);
-    this._board = new Board(bombPlanter);
-    this.flagService.setCounter(this.board.flagCounter);
-    this.cdr.markForCheck();
+    const board = new Board(bombPlanter);
+    this.useBoard(board);
   }
 
   public useBoard(board: Board): void {
-    this.snackBarService.dismiss();
     this._board = board;
+    this.snackBarService.dismiss();
     this.flagService.setCounter(this.board.flagCounter);
     this.cdr.markForCheck();
   }
