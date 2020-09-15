@@ -24,9 +24,11 @@ export class SettingsComponent implements OnInit {
 
   public ngOnInit(): void {
     this.settingsService.fieldSize
-      .subscribe(fieldSize => this.fieldSize = fieldSize);
+      .subscribe(fieldSize => this.fieldSize = fieldSize)
+      .unsubscribe();
 
     this.settingsService.sidenavAutoHide
-      .subscribe(sidenavAutoHide => this.sidenavAutoHide = sidenavAutoHide);
+      .subscribe(sidenavAutoHide => this.sidenavAutoHide = sidenavAutoHide)
+      .unsubscribe();
   }
 }

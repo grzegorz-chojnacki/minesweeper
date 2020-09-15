@@ -1,5 +1,7 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, ValidationErrors } from '@angular/forms';
+import { Subscription } from 'rxjs';
+
 import { Difficulty, NamedDifficulty } from 'src/app/classes/difficulty';
 import { DifficultyService } from 'src/app/services/difficulty.service';
 
@@ -8,7 +10,7 @@ import { DifficultyService } from 'src/app/services/difficulty.service';
   templateUrl: './board-form.component.html',
   styleUrls: ['./board-form.component.scss']
 })
-export class BoardFormComponent implements OnInit {
+export class BoardFormComponent implements OnInit, OnDestroy {
   @Output()
   public readonly formSubmitEvent = new EventEmitter<void>();
 
@@ -25,6 +27,7 @@ export class BoardFormComponent implements OnInit {
     NamedDifficulty.custom, ...NamedDifficulty.presets
   ];
   public readonly presetNames = this.presetList.map(preset => preset.name);
+  private readonly subscriptions = new Array<Subscription>();
 
   constructor(
     public formBuilder: FormBuilder,
@@ -65,13 +68,21 @@ export class BoardFormComponent implements OnInit {
     this.boardForm.markAllAsTouched();
   }
 
+  public ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  }
+
   private setupFormSubscriptions(): void {
-    this.nameSelect.valueChanges
+    const nameSubscription = this.nameSelect.valueChanges
       .subscribe(() => this.updateInputValues());
-    this.numberOfBombsInput.valueChanges
+    const numberOfBombsSubscription = this.numberOfBombsInput.valueChanges
       .subscribe(() => this.updatePresetName());
-    this.boardDimensionInput.valueChanges
+    const boardDimensionSubscription = this.boardDimensionInput.valueChanges
       .subscribe(() => this.updatePresetName());
+
+    this.subscriptions.push(
+      nameSubscription, numberOfBombsSubscription, boardDimensionSubscription
+    );
   }
 
   private updateInputValues(): void {
@@ -90,13 +101,13 @@ export class BoardFormComponent implements OnInit {
     return this.presetList.find(preset => preset.name === selectedName);
   }
 
-  private matchAndSetPresetName(): void {
-    this.boardForm.updateValueAndValidity({ emitEvent: false });
-
-    const formDifficulty = this.boardForm.value;
-    const matched = NamedDifficulty.matchToPreset(formDifficulty);
-
-    this.boardForm.patchValue({ name: matched.name }, { emitEvent: false });
+  private setInputsToValuesFrom(preset: NamedDifficulty): void {
+    if (preset !== NamedDifficulty.custom) {
+      this.boardForm.patchValue({
+        boardDimension: preset.boardDimension,
+        numberOfBombs: preset.numberOfBombs
+      }, { emitEvent: false });
+    }
   }
 
   private resetNumberOfBombsValidators(): void {
@@ -108,18 +119,18 @@ export class BoardFormComponent implements OnInit {
     this.updateInputsValueAndValidity();
   }
 
+  private matchAndSetPresetName(): void {
+    this.boardForm.updateValueAndValidity({ emitEvent: false });
+
+    const formDifficulty = this.boardForm.value;
+    const matched = NamedDifficulty.matchToPreset(formDifficulty);
+
+    this.boardForm.patchValue({ name: matched.name }, { emitEvent: false });
+  }
+
   private updateInputsValueAndValidity(): void {
     this.boardDimensionInput.updateValueAndValidity({ emitEvent: false });
     this.numberOfBombsInput.updateValueAndValidity({ emitEvent: false });
-  }
-
-  private setInputsToValuesFrom(preset: NamedDifficulty): void {
-    if (preset !== NamedDifficulty.custom) {
-      this.boardForm.patchValue({
-        boardDimension: preset.boardDimension,
-        numberOfBombs: preset.numberOfBombs
-      }, { emitEvent: false });
-    }
   }
 
   private setBoardDimensionValidators(): void {

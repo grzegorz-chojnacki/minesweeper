@@ -1,5 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { Subscription } from 'rxjs';
 
 import { DifficultyService } from 'src/app/services/difficulty.service';
 import { SettingsService } from 'src/app/services/settings.service';
@@ -15,7 +16,7 @@ import { BombPlanter } from 'src/app/classes/bombPlanter';
   styleUrls: ['./board.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BoardComponent implements OnInit {
+export class BoardComponent implements OnInit, OnDestroy {
   private _board: Board;
   public get board(): Board { return this._board; }
   public fieldSize: number; // Size of each field on the board, in pixels
@@ -25,6 +26,8 @@ export class BoardComponent implements OnInit {
     gameOver: { duration: 16000, panelClass: ['game-over-snack-bar'] }
   };
 
+  private readonly subscriptions = new Array<Subscription>();
+
   constructor(
     private cdr: ChangeDetectorRef,
     private settingsService: SettingsService,
@@ -33,14 +36,21 @@ export class BoardComponent implements OnInit {
     private flagService: FlagService) { }
 
   public ngOnInit(): void {
-    this.settingsService.fieldSize
+    const fieldSizeSubscription = this.settingsService.fieldSize
       .subscribe(fieldSize => {
         this.fieldSize = fieldSize;
         this.cdr.markForCheck();
       });
 
-    this.difficultyService.difficulty
+    const difficultyServiceSubscription = this.difficultyService.difficulty
       .subscribe(difficulty => this.newBoard(difficulty));
+
+    this.subscriptions
+      .push(fieldSizeSubscription, difficultyServiceSubscription);
+  }
+
+  public ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   private newBoard(difficulty: Difficulty): void {
