@@ -1,9 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { HarnessLoader } from '@angular/cdk/testing';
 import { MatInputModule } from '@angular/material/input';
+import { MatInputHarness } from '@angular/material/input/testing';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSelectHarness } from '@angular/material/select/testing';
 
 import { BombPercentagePipe } from 'src/app/pipes/bomb-percentage.pipe';
 import { DifficultyService } from 'src/app/services/difficulty.service';
@@ -13,6 +18,7 @@ import { FakeStorage } from 'src/app/services/fakeStorage';
 
 describe('BoardFormComponent', () => {
   let component: BoardFormComponent;
+  let loader: HarnessLoader;
   let fixture: ComponentFixture<BoardFormComponent>;
 
   beforeEach(async(() => {
@@ -38,6 +44,7 @@ describe('BoardFormComponent', () => {
     }).compileComponents()
       .then(() => {
       fixture = TestBed.createComponent(BoardFormComponent);
+      loader = TestbedHarnessEnvironment.loader(fixture);
       component = fixture.componentInstance;
     });
   }));

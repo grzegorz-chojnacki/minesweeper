@@ -14,8 +14,8 @@ import { FakeStorage } from 'src/app/services/fakeStorage';
 
 describe('SettingsComponent', () => {
   let component: SettingsComponent;
-  let fixture: ComponentFixture<SettingsComponent>;
   let loader: HarnessLoader;
+  let fixture: ComponentFixture<SettingsComponent>;
 
   beforeEach(async(() => {
     const settingsService = new SettingsService(new FakeStorage());
