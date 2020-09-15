@@ -48,6 +48,8 @@ describe('AppComponent', () => {
     });
   }));
 
+  afterEach(() => component.ngOnDestroy());
+
   it('should create the app', () => {
     expect(component).toBeTruthy();
   });

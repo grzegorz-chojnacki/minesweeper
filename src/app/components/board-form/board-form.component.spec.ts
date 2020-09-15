@@ -42,6 +42,8 @@ describe('BoardFormComponent', () => {
     });
   }));
 
+  afterEach(() => component.ngOnDestroy());
+
   describe('Initialization behaviour', () => {
     it('should create', () => {
       expect(component).toBeTruthy();
