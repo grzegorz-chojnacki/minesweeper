@@ -6,6 +6,7 @@ import { ComponentHarness, HarnessLoader, HarnessPredicate } from '@angular/cdk/
 import { MatInputModule } from '@angular/material/input';
 import { MatInputHarness } from '@angular/material/input/testing';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
 
@@ -126,6 +127,9 @@ describe('BoardFormComponent', () => {
     const getHarness = <T extends ComponentHarness>(
       predicate: HarnessPredicate<T>) => loader.getHarness(predicate);
 
+    const getFormFieldByLabel = (label: string) => loader
+      .getHarness(MatFormFieldHarness.with({ floatingLabelText: label }));
+
     const getSelect = () => getHarness(
       MatSelectHarness.with({ selector: `[formControlName="name"]` }));
 
@@ -213,17 +217,53 @@ describe('BoardFormComponent', () => {
       fixture.detectChanges();
       const preset = NamedDifficulty.presets[1];
 
-      const [boardDimension, numberOfBombs] = await getInputs();
-      await boardDimension.setValue(preset.boardDimension.toString());
-      await numberOfBombs.setValue(preset.numberOfBombs.toString());
+      const [boardDimensionInput, numberOfBombsInput] = await getInputs();
+      await boardDimensionInput.setValue(preset.boardDimension.toString());
+      await numberOfBombsInput.setValue(preset.numberOfBombs.toString());
 
       const name = await getSelectedName();
       expect(name).toBe(preset.name);
     });
 
-    // it('should set preset to custom if failed to match values', async () => {});
-    // it('should show hint under number of bombs', async () => {});
-    // it('should show errors when board dimension is invalid', async () => {});
+    it('should set preset to custom if failed to match values', async () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      const [boardDimensionInput, numberOfBombsInput] = await getInputs();
+      await boardDimensionInput.setValue('1');
+      await numberOfBombsInput.setValue('0');
+
+      const name = await getSelectedName();
+      expect(name).toBe(NamedDifficulty.custom.name);
+    });
+
+    it('should show hint under number of bombs', async () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      const [boardDimensionInput, numberOfBombsInput] = await getInputs();
+      await boardDimensionInput.setValue('10');
+      await numberOfBombsInput.setValue('10');
+
+      const hints = await (await getFormFieldByLabel('Number of bombs'))
+        .getTextHints();
+
+      expect(hints[0]).toContain('10%');
+    });
+
+    it('should show errors when board dimension is invalid', async () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      const [boardDimensionInput, numberOfBombsInput] = await getInputs();
+      await boardDimensionInput.setValue('10');
+      await numberOfBombsInput.setValue('100');
+
+      const errors = await (await getFormFieldByLabel('Number of bombs'))
+        .getTextErrors();
+
+      expect(errors.length).toBe(1);
+    });
     // it('should show errors when number of bombs is invalid', async () => {});
     // it('should show number of bombs error when board dimension is invalid', async () => {});
     // it('should update number of bombs validity after changing board dimension', async () => {});
