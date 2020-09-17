@@ -2,18 +2,19 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { HarnessLoader } from '@angular/cdk/testing';
+import { ComponentHarness, HarnessLoader, HarnessPredicate } from '@angular/cdk/testing';
 import { MatInputModule } from '@angular/material/input';
 import { MatInputHarness } from '@angular/material/input/testing';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSelectHarness } from '@angular/material/select/testing';
+import { MatSelectHarness, SelectHarnessFilters } from '@angular/material/select/testing';
 
 import { BombPercentagePipe } from 'src/app/pipes/bomb-percentage.pipe';
 import { DifficultyService } from 'src/app/services/difficulty.service';
 import { Difficulty, NamedDifficulty } from 'src/app/classes/difficulty';
 import { BoardFormComponent } from './board-form.component';
 import { FakeStorage } from 'src/app/services/fakeStorage';
+import { MatFormFieldControlHarness } from '@angular/material/form-field/testing/control';
 
 describe('BoardFormComponent', () => {
   let component: BoardFormComponent;
@@ -42,10 +43,10 @@ describe('BoardFormComponent', () => {
       ]
     }).compileComponents()
       .then(() => {
-      fixture = TestBed.createComponent(BoardFormComponent);
-      loader = TestbedHarnessEnvironment.loader(fixture);
-      component = fixture.componentInstance;
-    });
+        fixture = TestBed.createComponent(BoardFormComponent);
+        loader = TestbedHarnessEnvironment.loader(fixture);
+        component = fixture.componentInstance;
+      });
   }));
 
   afterEach(() => component.ngOnDestroy());
@@ -123,12 +124,15 @@ describe('BoardFormComponent', () => {
   });
 
   describe('Template behaviour', () => {
-    const getSelect = async () => await loader.getHarness(
-      MatSelectHarness.with({ selector: `[formControlName="name"]` })
-    );
-    const getInputByControlName = (name: string) => loader.getHarness(
-      MatInputHarness.with({ selector: `[formControlName="${name}"]` })
-    );
+    const getHarness = <T extends ComponentHarness>(
+      predicate: HarnessPredicate<T>) => loader.getHarness(predicate);
+
+    const getSelect = () => getHarness(
+      MatSelectHarness.with({ selector: `[formControlName="name"]` }));
+
+    const getInputByControlName = (controlName: string) => getHarness(
+      MatInputHarness.with({ selector: `[formControlName="${controlName}"]` }));
+
     const getInputs = async () => [
       await getInputByControlName('boardDimension'),
       await getInputByControlName('numberOfBombs')
@@ -140,6 +144,18 @@ describe('BoardFormComponent', () => {
 
       const select = await getSelect();
       expect(select).toBeTruthy();
+    });
+
+    it('should have select form field with every preset option', async () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      const select = await getSelect();
+      (await select.host()).click();
+
+      const options = await select.getOptions();
+      const optionNames: string[] = await Promise.all(options.map(option => option.getText()));
+      expect(optionNames).toEqual(component.presetNames);
     });
 
     it('should have board dimension form field with label', async () => {
