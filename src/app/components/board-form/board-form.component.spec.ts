@@ -123,6 +123,45 @@ describe('BoardFormComponent', () => {
     });
   });
 
+  describe('Template behaviour', () => {
+    const getFormFieldByLabel = (label: string) => loader
+      .getHarness(MatFormFieldHarness.with({ floatingLabelText: label }));
+
+    const getInputs = () => [
+      getFormFieldByLabel('Board dimension'),
+      getFormFieldByLabel('Number of bombs')
+    ];
+    const getSelect = () => getFormFieldByLabel('Choose difficulty');
+
+    it('should have select form field with label', async () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      const select = getSelect();
+      const label = await select.then(s => s.getLabel());
+      expect(label).toContain('difficulty');
+    });
+
+    it('should have board dimension form field with label', async () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      const [boardDimension, _] = getInputs();
+      const label = await boardDimension.then(i => i.getLabel());
+      expect(label).toContain('dimension');
+    });
+
+    it('should have number of bombs form field with label', async () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      const [_, numberOfBombs] = getInputs();
+      const label = await numberOfBombs.then(i => i.getLabel());
+      expect(label).toContain('bombs');
+    });
+
+  });
+
   describe('Number of bombs error generator behaviour', () => {
     it('should return board dimension error', () => {
       component.ngOnInit();
