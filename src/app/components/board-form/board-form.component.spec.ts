@@ -7,14 +7,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatInputHarness } from '@angular/material/input/testing';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSelectHarness, SelectHarnessFilters } from '@angular/material/select/testing';
+import { MatSelectHarness } from '@angular/material/select/testing';
 
 import { BombPercentagePipe } from 'src/app/pipes/bomb-percentage.pipe';
 import { DifficultyService } from 'src/app/services/difficulty.service';
 import { Difficulty, NamedDifficulty } from 'src/app/classes/difficulty';
 import { BoardFormComponent } from './board-form.component';
 import { FakeStorage } from 'src/app/services/fakeStorage';
-import { MatFormFieldControlHarness } from '@angular/material/form-field/testing/control';
 
 describe('BoardFormComponent', () => {
   let component: BoardFormComponent;
@@ -135,45 +134,102 @@ describe('BoardFormComponent', () => {
 
     const getInputs = async () => [
       await getInputByControlName('boardDimension'),
-      await getInputByControlName('numberOfBombs')
-    ];
+      await getInputByControlName('numberOfBombs') ];
 
-    it('should have select form field with label', async () => {
+    const getSelectedName = async () => (await getSelect()).getValueText();
+    const getOptionNames = async () => getSelect()
+      .then(select => select.getOptions())
+      .then(options => Promise.all(
+        options.map(option => option.getText())) );
+
+    const getInputValues = async () => getInputs()
+      .then(inputs => Promise.all(
+        inputs.map(input => input.getValue())) );
+
+    it('should have name form field', async () => {
       component.ngOnInit();
       fixture.detectChanges();
 
-      const select = await getSelect();
-      expect(select).toBeTruthy();
+      const nameSelect = await getSelect();
+      expect(nameSelect).toBeTruthy();
     });
 
-    it('should have select form field with every preset option', async () => {
+    it('should have board dimension form field', async () => {
       component.ngOnInit();
       fixture.detectChanges();
 
-      const select = await getSelect();
-      (await select.host()).click();
-
-      const options = await select.getOptions();
-      const optionNames: string[] = await Promise.all(options.map(option => option.getText()));
-      expect(optionNames).toEqual(component.presetNames);
-    });
-
-    it('should have board dimension form field with label', async () => {
-      component.ngOnInit();
-      fixture.detectChanges();
-
-      const [boardDimension, _] = await getInputs();
-      expect(boardDimension).toBeTruthy();
+      const [boardDimensionInput, _] = await getInputs();
+      expect(boardDimensionInput).toBeTruthy();
     });
 
     it('should have number of bombs form field', async () => {
       component.ngOnInit();
       fixture.detectChanges();
 
-      const [_, numberOfBombs] = await getInputs();
-      expect(numberOfBombs).toBeTruthy();
+      const [_, numberOfBombsInput] = await getInputs();
+      expect(numberOfBombsInput).toBeTruthy();
     });
 
+    it('should have name form field with every preset option', async () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      const nameSelect = await getSelect();
+      await nameSelect.open();
+
+      const optionNames: string[] = await getOptionNames();
+      expect(optionNames).toEqual(component.presetNames);
+    });
+
+    it('should set initial preset values', async () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+      const initial = NamedDifficulty.initial;
+
+      const name = await getSelectedName();
+      const [boardDimension, numberOfBombs] = await getInputValues();
+
+      expect(name).toBe(initial.name);
+      expect(boardDimension).toBe(initial.boardDimension.toString());
+      expect(numberOfBombs).toBe(initial.numberOfBombs.toString());
+    });
+
+    it('should set preset values after selecting it', async () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+      const preset = NamedDifficulty.presets[1];
+
+      const nameSelect = await getSelect();
+      await nameSelect.clickOptions({ text: preset.name });
+
+      const [boardDimension, numberOfBombs] = await getInputValues();
+
+      expect(boardDimension).toBe(preset.boardDimension.toString());
+      expect(numberOfBombs).toBe(preset.numberOfBombs.toString());
+    });
+
+    it('should select preset if it matches input values', async () => {
+      component.ngOnInit();
+      fixture.detectChanges();
+      const preset = NamedDifficulty.presets[1];
+
+      const [boardDimension, numberOfBombs] = await getInputs();
+      await boardDimension.setValue(preset.boardDimension.toString());
+      await numberOfBombs.setValue(preset.numberOfBombs.toString());
+
+      const name = await getSelectedName();
+      expect(name).toBe(preset.name);
+    });
+
+    // it('should set preset to custom if failed to match values', async () => {});
+    // it('should show hint under number of bombs', async () => {});
+    // it('should show errors when board dimension is invalid', async () => {});
+    // it('should show errors when number of bombs is invalid', async () => {});
+    // it('should show number of bombs error when board dimension is invalid', async () => {});
+    // it('should update number of bombs validity after changing board dimension', async () => {});
+    // it('should update board dimension validity after changing number of bombs', async () => {});
+    // it('should update number of bombs validity after changing preset', async () => {});
+    // it('should disable submit button if form is invalid', async () => {});
   });
 
   describe('Number of bombs error generator behaviour', () => {
