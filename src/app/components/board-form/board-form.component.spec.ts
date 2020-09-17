@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
+import { MatButtonHarness } from '@angular/material/button/testing';
 
 import { BombPercentagePipe } from 'src/app/pipes/bomb-percentage.pipe';
 import { DifficultyService } from 'src/app/services/difficulty.service';
@@ -228,22 +229,76 @@ describe('BoardFormComponent', () => {
       expect(hints[0]).toContain('25%');
     });
 
-    it('should show errors when board dimension is invalid', async () => {
-      const [boardDimensionInput, numberOfBombsInput] = await getInputs();
-      await boardDimensionInput.setValue('10');
-      await numberOfBombsInput.setValue('100');
+    it('should mark board dimension as invalid', async () => {
+      const [boardDimensionInput, _] = await getInputs();
+      const invalidBoardDimension = Difficulty.maxBoardDimension + 1;
+      await boardDimensionInput.setValue(invalidBoardDimension.toString());
 
-      const errors = await (await getFormFieldByLabel('Number of bombs'))
-        .getTextErrors();
+      const isValid = await (await getFormFieldByLabel('Board dimension'))
+        .isControlValid();
 
-      expect(errors.length).toBe(1);
+      expect(isValid).toBe(false);
     });
-    // it('should show errors when number of bombs is invalid', async () => {});
-    // it('should show number of bombs error when board dimension is invalid', async () => {});
-    // it('should update number of bombs validity after changing board dimension', async () => {});
-    // it('should update board dimension validity after changing number of bombs', async () => {});
-    // it('should update number of bombs validity after changing preset', async () => {});
-    // it('should disable submit button if form is invalid', async () => {});
+
+    it('should mark number of bombs as invalid', async () => {
+      const [boardDimensionInput, numberOfBombsInput] = await getInputs();
+      await boardDimensionInput.setValue('3');
+      await numberOfBombsInput.setValue('10');
+
+      const isValid = await (await getFormFieldByLabel('Number of bombs'))
+        .isControlValid();
+
+      expect(isValid).toBe(false);
+    });
+
+    it('should mark number of bombs as invalid', async () => {
+      const [boardDimensionInput, _] = await getInputs();
+      const invalidBoardDimension = Difficulty.maxBoardDimension + 1;
+      await boardDimensionInput.setValue(invalidBoardDimension.toString());
+
+      const isValid = await (await getFormFieldByLabel('Number of bombs'))
+        .isControlValid();
+
+      expect(isValid).toBe(false);
+    });
+
+    it('should update number of bombs validity after changing board dimension', async () => {
+      const [boardDimensionInput, numberOfBombsInput] = await getInputs();
+      await boardDimensionInput.setValue('4');
+      await numberOfBombsInput.setValue('10');
+      await boardDimensionInput.setValue('3');
+
+      const isValid = await (await getFormFieldByLabel('Number of bombs'))
+        .isControlValid();
+
+      expect(isValid).toBe(false);
+    });
+
+    it('should update number of bombs validity after changing preset', async () => {
+      const lastIndex = NamedDifficulty.presets.length - 1;
+      const lastPreset = NamedDifficulty.presets[lastIndex];
+      const firstPreset = NamedDifficulty.presets[0];
+      const firstPresetFields = firstPreset.boardDimension ** 2;
+      expect(lastPreset.numberOfBombs).toBeGreaterThan(firstPresetFields);
+
+      const nameInput = await getSelect();
+      await nameInput.clickOptions({ text: lastPreset.name });
+      await nameInput.clickOptions({ text: firstPreset.name });
+
+      const isValid = await (await getFormFieldByLabel('Number of bombs'))
+        .isControlValid();
+
+      expect(isValid).toBe(true);
+    });
+
+    it('should disable submit button if form is invalid', async () => {
+      const [boardDimensionInput, _] = await getInputs();
+      const invalidBoardDimension = Difficulty.maxBoardDimension + 1;
+      await boardDimensionInput.setValue(invalidBoardDimension.toString());
+
+      const submitButton = await loader.getHarness(MatButtonHarness);
+      expect(await submitButton.isDisabled()).toBe(true);
+    });
   });
 
   describe('Number of bombs error generator behaviour', () => {
