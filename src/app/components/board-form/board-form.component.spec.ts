@@ -6,7 +6,6 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { MatInputModule } from '@angular/material/input';
 import { MatInputHarness } from '@angular/material/input/testing';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
 
@@ -124,40 +123,39 @@ describe('BoardFormComponent', () => {
   });
 
   describe('Template behaviour', () => {
-    const getFormFieldByLabel = (label: string) => loader
-      .getHarness(MatFormFieldHarness.with({ floatingLabelText: label }));
-
-    const getInputs = () => [
-      getFormFieldByLabel('Board dimension'),
-      getFormFieldByLabel('Number of bombs')
+    const getSelect = async () => await loader.getHarness(
+      MatSelectHarness.with({ selector: `[formControlName="name"]` })
+    );
+    const getInputByControlName = (name: string) => loader.getHarness(
+      MatInputHarness.with({ selector: `[formControlName="${name}"]` })
+    );
+    const getInputs = async () => [
+      await getInputByControlName('boardDimension'),
+      await getInputByControlName('numberOfBombs')
     ];
-    const getSelect = () => getFormFieldByLabel('Choose difficulty');
 
     it('should have select form field with label', async () => {
       component.ngOnInit();
       fixture.detectChanges();
 
-      const select = getSelect();
-      const label = await select.then(s => s.getLabel());
-      expect(label).toContain('difficulty');
+      const select = await getSelect();
+      expect(select).toBeTruthy();
     });
 
     it('should have board dimension form field with label', async () => {
       component.ngOnInit();
       fixture.detectChanges();
 
-      const [boardDimension, _] = getInputs();
-      const label = await boardDimension.then(i => i.getLabel());
-      expect(label).toContain('dimension');
+      const [boardDimension, _] = await getInputs();
+      expect(boardDimension).toBeTruthy();
     });
 
-    it('should have number of bombs form field with label', async () => {
+    it('should have number of bombs form field', async () => {
       component.ngOnInit();
       fixture.detectChanges();
 
-      const [_, numberOfBombs] = getInputs();
-      const label = await numberOfBombs.then(i => i.getLabel());
-      expect(label).toContain('bombs');
+      const [_, numberOfBombs] = await getInputs();
+      expect(numberOfBombs).toBeTruthy();
     });
 
   });
